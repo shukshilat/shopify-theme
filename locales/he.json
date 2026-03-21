@@ -1,0 +1,113 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "search": {
+      "search": "חיפוש",
+      "submit": "חפש",
+      "placeholder": "חפש מוצרים"
+    },
+    "continue_shopping": "המשך בקניות"
+  },
+
+  "products": {
+    "product": {
+      "add_to_cart": "הוסף לעגלה",
+      "sold_out": "אזל מהמלאי",
+      "unavailable": "לא זמין",
+      "quantity": "כמות"
+    }
+  },
+
+  "cart": {
+    "general": {
+      "title": "עגלת קניות",
+      "empty": "העגלה שלך ריקה",
+      "continue_shopping": "המשך קניות",
+      "note": "הערה להזמנה"
+    },
+    "label": {
+      "product": "מוצר",
+      "quantity": "כמות",
+      "total": "סה״כ"
+    },
+    "checkout": "לתשלום"
+  },
+
+  "sections": {
+    "cart": {
+      "title": "עגלת קניות",
+      "checkout": "מעבר לתשלום",
+      "estimated_total": "סה״כ לתשלום",
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "מיסים ומשלוח יחושבו בקופה",
+      "headings": {
+        "product": "מוצר",
+        "quantity": "כמות",
+        "total": "סה״כ"
+      },
+      "login": {
+        "title": "יש לך כבר חשבון?",
+        "paragraph_html": "התחבר כדי לראות את העגלה שלך."
+      }
+    },
+
+    "featured_collection": {
+      "view_all": "צפה בכל המוצרים"
+    },
+
+    "collection_list": {
+      "view_all": "צפה בכל הקטגוריות"
+    },
+
+    "featured_blog": {
+      "view_all": "לכל הכתבות"
+    }
+  },
+
+  "newsletter": {
+    "label": "הצטרפו לרשימת התפוצה",
+    "button_label": "הרשמה"
+  },
+
+  "footer": {
+    "newsletter": {
+      "label": "הצטרפו לרשימת התפוצה",
+      "button_label": "הרשמה"
+    }
+  },
+
+  "customer": {
+    "account": {
+      "title": "החשבון שלי",
+      "orders": "הזמנות",
+      "logout": "התנתק"
+    },
+    "login": {
+      "title": "התחברות",
+      "email": "אימייל",
+      "password": "סיסמה",
+      "sign_in": "התחבר"
+    },
+    "register": {
+      "title": "יצירת חשבון"
+    }
+  },
+
+  "templates": {
+    "cart": {
+      "title": "עגלת קניות"
+    }
+  },
+
+  "onboarding": {
+    "collection_title": "המוצרים שלנו",
+    "no_products_html": "עדיין אין מוצרים להצגה"
+  }
+}

@@ -1,0 +1,26 @@
+{%- comment -%}
+  UNIT PRICE - RTL + HEBREW FIX (KG)
+{%- endcomment -%}
+
+{%- if price and measurement -%}
+
+  {%- assign unit = measurement.reference_unit -%}
+
+  {%- case unit -%}
+    {%- when 'kg' -%}
+      {%- assign unit_he = 'ק״ג' -%}
+    {%- when 'g' -%}
+      {%- assign unit_he = 'גרם' -%}
+    {%- when 'l' -%}
+      {%- assign unit_he = 'ליטר' -%}
+    {%- when 'ml' -%}
+      {%- assign unit_he = 'מ״ל' -%}
+    {%- else -%}
+      {%- assign unit_he = unit -%}
+  {%- endcase -%}
+
+  <div class="unit-price-custom" dir="rtl">
+    {{ price | money }} / {{ unit_he }}
+  </div>
+
+{%- endif -%}

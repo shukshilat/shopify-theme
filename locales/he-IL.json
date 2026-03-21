@@ -1,0 +1,172 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "search": {
+      "search": "חיפוש",
+      "submit": "חפש",
+      "placeholder": "חפש מוצרים",
+      "reset": "איפוס"
+    },
+    "continue_shopping": "המשך בקניות"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "הוסף לעגלה",
+      "sold_out": "אזל מהמלאי",
+      "unavailable": "לא זמין",
+      "quantity": "כמות"
+    },
+    "facets": {
+      "sort_by_label": "מיון לפי",
+      "filter_by_label": "סינון",
+      "product_count_simple": {
+        "one": "{{ count }} מוצרים",
+        "other": "{{ count }} מוצרים"
+      },
+      "filter_button": "סינון",
+      "show_more": "הצג עוד",
+      "show_less": "הצג פחות",
+      "max_price": "המחיר הגבוה ביותר הוא {{ price }}",
+      "reset": "איפוס",
+      "apply": "החל",
+      "clear": "נקה",
+      "clear_all": "נקה הכל",
+      "from": "מ-",
+      "filter_and_sort": "סינון ומיון",
+      "filter_selected_accessibility": "סינון ומיון",
+      "filter_and_operator_subtitle": "התאם הכל",
+      "filters_selected": {
+        "one": "נבחרו {{ count }}",
+        "other": "נבחרו {{ count }}"
+      },
+      "product_count": {
+        "one": "{{ product_count }} מתוך {{ count }} מוצרים",
+        "other": "{{ product_count }} מתוך {{ count }} מוצרים"
+      },
+      "sort_button": "מיון",
+      "to": "עד",
+      "clear_filter": "הסר סינון"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "עגלה",
+      "empty": "העגלה שלך ריקה",
+      "continue_shopping": "המשך קניות",
+      "note": "הערה להזמנה"
+    },
+    "label": {
+      "product": "מוצר",
+      "quantity": "כמות",
+      "total": "סה״כ"
+    },
+    "checkout": "לתשלום"
+  },
+  "sections": {
+    "cart": {
+      "empty": "העגלה שלך ריקה",
+      "estimated_total": "סה״כ לתשלום",
+      "taxes_at_checkout_shipping_at_checkout_without_policy": "מיסים ומשלוח יחושבו בקופה",
+      "login": {
+        "title": "יש לך כבר חשבון?",
+        "paragraph_html": "התחבר כדי לראות את העגלה שלך."
+      },
+      "headings": {
+        "price": "מחיר"
+      }
+    },
+    "featured_collection": {
+      "view_all": "צפה בכל המוצרים"
+    },
+    "collection_list": {
+      "view_all": "צפה בכל הקטגוריות"
+    },
+    "featured_blog": {
+      "view_all": "לכל הכתבות"
+    },
+    "collection_template": {
+      "title": "מוצרים"
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "label": "הצטרפו לרשימת התפוצה",
+      "button_label": "הרשמה"
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "החשבון שלי"
+    },
+    "login": {
+      "title": "התחברות",
+      "email": "אימייל",
+      "password": "סיסמה",
+      "sign_in": "התחבר"
+    },
+    "order": {
+      "price": "מחיר"
+    }
+  },
+  "templates": {
+    "cart": {
+      "title": "עגלת קניות"
+    },
+    "search": {
+      "no_results": "אין תוצאות",
+      "page": "עמוד",
+      "products": "מוצרים"
+    }
+  },
+  "onboarding": {
+    "collection_title": "המוצרים שלנו",
+    "no_products_html": "עדיין אין מוצרים להצגה"
+  },
+  "shopify": {
+    "checkout": {
+      "stock": {
+        "product_column_header": "מוצרים",
+        "price_column_header": "מחיר"
+      },
+      "order_summary": {
+        "price_label": "מחיר",
+        "original_price": "מחיר מקורי",
+        "sale_price": "מחיר מבצע"
+      }
+    },
+    "page_titles": {
+      "products": "מוצרים",
+      "reset_account": "איפוס חשבון"
+    },
+    "collections": {
+      "sorting": {
+        "az": "מיון לפי א-ת",
+        "price_ascending": "מחיר, מהנמוך לגבוה",
+        "price_descending": "מחיר, מהגבוה לנמוך"
+      }
+    },
+    "search": {
+      "sorting": {
+        "price_ascending": "מחיר, מהנמוך לגבוה",
+        "price_descending": "מחיר, מהגבוה לנמוך"
+      }
+    }
+  },
+  "customer_accounts": {
+    "orders": {
+      "order_list": {
+        "column_headers": {
+          "products_accessibility_label": "מוצרים"
+        }
+      }
+    }
+  }
+}

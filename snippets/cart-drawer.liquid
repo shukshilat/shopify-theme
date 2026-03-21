@@ -1,0 +1,275 @@
+{% comment %}
+PREMIUM CART DRAWER - FIXED
+{% endcomment %}
+
+{{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+<script src="{{ 'cart.js' | asset_url }}" defer></script>
+
+<style>
+.drawer { visibility: hidden; }
+
+cart-drawer { direction: rtl; }
+
+.drawer__inner {
+  border-radius: 20px 0 0 20px;
+  box-shadow: -10px 0 40px rgba(0,0,0,0.12);
+  background: #fff;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.drawer__contents {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 70px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  transition: 0.3s;
+}
+
+.cart-item__image {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.cart-item__name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.cart-remove-btn {
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.cart-remove-btn:hover { opacity: 1; }
+
+.qty-box {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.qty-box button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.qty-box input {
+  width: 40px;
+  text-align: center;
+}
+
+.cart-footer {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.checkout-btn {
+  width: 100%;
+  background: #2e7d32;
+  color: #fff;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-weight: bold;
+}
+</style>
+
+<cart-drawer class="drawer{% if cart == empty %} is-empty{% endif %}">
+  <div id="CartDrawer" class="cart-drawer">
+    <div id="CartDrawer-Overlay" class="cart-drawer__overlay"></div>
+
+    <div class="drawer__inner">
+
+      <div class="drawer__header">
+        <h2>עגלת קניות</h2>
+        <button onclick="this.closest('cart-drawer').close()">
+          {{ 'icon-close.svg' | inline_asset_content }}
+        </button>
+      </div>
+
+      <div class="drawer__contents">
+
+        {% if cart.items.size > 0 %}
+        <form>
+
+          <div class="cart-items">
+
+          {% for item in cart.items %}
+
+            <div class="cart-item">
+
+              <img class="cart-item__image"
+                src="{{ item.image | image_url: width: 120 }}">
+
+              <div>
+                <div style="display:flex;justify-content:space-between;">
+                  <span>{{ item.product.title }}</span>
+
+                  <button type="button"
+                    class="cart-remove-btn"
+                    onclick="removeItem(this, {{ item.index | plus: 1 }})">
+                    ✕
+                  </button>
+                </div>
+
+                <div>
+      <div class="cart-item__price">
+
+  {% if item.original_price != item.final_price %}
+    <s>{{ item.original_price | money }}</s>
+    <strong>{{ item.final_price | money }}</strong>
+  {% else %}
+    <strong>{{ item.original_price | money }}</strong>
+  {% endif %}
+
+  {% if item.variant.unit_price %}
+    <div class="unit-price">
+      {{ item.variant.unit_price | money }} / ק״ג
+    </div>
+  {% endif %}
+
+</div>
+
+</div> 
+                </div>
+
+                <div class="qty-box">
+
+  <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, 1)">+</button>
+
+  <input
+    type="number"
+    id="qty-{{ item.index | plus: 1 }}"
+    value="{{ item.quantity }}"
+    min="1"
+  >
+
+  <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, -1)">−</button>
+
+</div>
+
+              </div>
+
+              <div>
+                {{ item.final_line_price | money }}
+              </div>
+
+            </div>
+
+          {% endfor %}
+
+          </div>
+
+          <!-- FREE SHIPPING TEXT ONLY -->
+          <div class="free-shipping-text" style="margin:10px 0;">
+            נשאר לך {{ 15000 | minus: cart.total_price | money }} למשלוח חינם 🚚
+          </div>
+
+          <div class="cart-footer">
+            <div class="totals">
+              <strong>{{ cart.total_price | money }}</strong>
+            </div>
+
+            <button class="checkout-btn" name="checkout">
+              מעבר לתשלום
+            </button>
+          </div>
+
+        </form>
+        {% endif %}
+
+      </div>
+
+    </div>
+  </div>
+</cart-drawer>
+
+<script>
+
+function updateCartUI(cart) {
+
+  // סכום
+  const totalEl = document.querySelector('.totals strong');
+  if (totalEl) {
+    totalEl.innerText = (cart.total_price / 100).toLocaleString('he-IL') + ' ₪';
+  }
+
+  // משלוח חינם
+  const el = document.querySelector('.free-shipping-text');
+  const remain = 15000 - cart.total_price;
+
+  if (remain > 0) {
+    el.innerText = '🚚 נשאר לך ' + (remain/100).toFixed(2) + ' ₪ למשלוח חינם';
+  } else {
+    el.innerText = '🎉 יש לך משלוח חינם!';
+  }
+}
+
+function removeItem(el, line) {
+  const itemEl = el.closest('.cart-item');
+
+  itemEl.style.opacity = '0';
+
+  setTimeout(() => {
+    fetch('/cart/change.js', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ line: line, quantity: 0 })
+    })
+    .then(()=>fetch('/cart.js'))
+    .then(r=>r.json())
+    .then(cart=>{
+      itemEl.remove();
+      updateCartUI(cart);
+    });
+  },200);
+}
+
+function changeQty(line, change) {
+
+  const input = document.getElementById('qty-'+line);
+  let qty = parseInt(input.value) + change;
+
+  if(qty < 1) return;
+
+  fetch('/cart/change.js', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ line: line, quantity: qty })
+  })
+  .then(()=>fetch('/cart.js'))
+  .then(r=>r.json())
+  .then(cart=>{
+    input.value = qty;
+    updateCartUI(cart);
+  });
+}
+
+</script>
