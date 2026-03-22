@@ -5,6 +5,63 @@
   z-index: 1;
 }
 
+.card__quick-add-overlay {
+  position: absolute;
+  top: 1.2rem;
+  inset-inline-end: 1.2rem;
+  z-index: 3;
+}
+
+.card__quick-add-form {
+  margin: 0;
+}
+
+.card__quick-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.4rem;
+  height: 4.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(var(--color-background), 0.96);
+  color: rgb(var(--color-foreground));
+  box-shadow: 0 0.4rem 1.4rem rgba(var(--color-foreground), 0.14);
+  cursor: pointer;
+  transition: transform var(--duration-short) ease, box-shadow var(--duration-short) ease,
+    background var(--duration-short) ease;
+}
+
+.card__quick-add-button:hover:not([disabled]) {
+  transform: translateY(-0.1rem);
+  box-shadow: 0 0.6rem 1.8rem rgba(var(--color-foreground), 0.18);
+}
+
+.card__quick-add-button:focus-visible {
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.35);
+  outline-offset: 0.2rem;
+}
+
+.card__quick-add-button .icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.card__quick-add-button .loading__spinner {
+  position: absolute;
+}
+
+.card__quick-add-button.loading .card__quick-add-button-icon,
+.card__quick-add-button.loading > .icon {
+  opacity: 0;
+}
+
+.card__quick-add-button--sold-out {
+  color: rgba(var(--color-foreground), 0.45);
+  cursor: not-allowed;
+}
+
 .card--card .quick-add {
   margin: 0 1.3rem 1rem;
 }
