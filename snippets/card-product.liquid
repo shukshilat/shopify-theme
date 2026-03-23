@@ -12,6 +12,7 @@
   - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
   - skip_styles: {Boolean} Don't include component styles. Useful when rendering multiple product cards in a loop. Default: false (optional)
   - quick_add: {Boolean} Show the quick add button.
+  - show_icon_quick_add: {Boolean} Show the icon quick add button in the product image corner. Default: false (optional)
   - section_id: {String} The ID of the section that contains this card.
   - horizontal_class: {Boolean} Add a card--horizontal class if set to true. Default: false (optional)
   - horizontal_quick_add: {Boolean} Changes the quick add button styles when set to true. Default: false (optional)
@@ -32,8 +33,9 @@
   {%- liquid
     assign ratio = 1
     assign card_quick_add_mode = quick_add
-    if card_quick_add_mode == blank or card_quick_add_mode == 'none'
-      assign card_quick_add_mode = 'standard'
+    assign enable_icon_quick_add = false
+    if show_icon_quick_add and horizontal_quick_add != true
+      assign enable_icon_quick_add = true
     endif
     if card_product.featured_media and media_aspect_ratio == 'portrait'
       assign ratio = 0.8
@@ -64,10 +66,25 @@
         {%- liquid
           assign qty_rules = false
           assign show_quick_add_modal = false
+          assign enable_standard_quick_add = false
+          assign has_quick_add_trigger = false
+          assign render_bottom_quick_add = false
           if card_product.selected_or_first_available_variant.quantity_rule.min > 1 or card_product.selected_or_first_available_variant.quantity_rule.max != null or card_product.selected_or_first_available_variant.quantity_rule.increment > 1
             assign qty_rules = true
           endif
-          if card_quick_add_mode == 'standard' and card_product.available
+          if card_quick_add_mode == 'standard'
+            assign enable_standard_quick_add = true
+          endif
+          if enable_standard_quick_add or enable_icon_quick_add
+            assign has_quick_add_trigger = true
+          endif
+          if enable_standard_quick_add
+            assign render_bottom_quick_add = true
+            if enable_icon_quick_add and horizontal_quick_add != true
+              assign render_bottom_quick_add = false
+            endif
+          endif
+          if card_product.available and has_quick_add_trigger
             if card_product.variants_count > 1 or qty_rules
               assign show_quick_add_modal = true
             endif
@@ -123,7 +140,7 @@
             </div>
           </div>
         {%- endif -%}
-        {% if card_quick_add_mode == 'standard' %}
+        {% if enable_icon_quick_add %}
           <div class="card__quick-add-overlay no-js-hidden">
             {%- if card_product.available == false -%}
               <button
@@ -373,7 +390,7 @@
             {%- endif -%}
           </div>
         </div>
-        {% if quick_add == 'standard' and horizontal_quick_add %}
+        {% if render_bottom_quick_add %}
           <div class="quick-add no-js-hidden">
             {%- if card_product.variants_count > 1 or qty_rules -%}
               <modal-opener data-modal="#QuickAdd-{{ card_product.id }}">
