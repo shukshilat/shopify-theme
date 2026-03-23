@@ -25,6 +25,35 @@ menu-drawer > details[open] > summary::before {
   transition: opacity var(--duration-default) ease, visibility var(--duration-default) ease;
 }
 
+/*
+  Header navigation uses <header-drawer>, not <menu-drawer>. component-menu-drawer.css only targeted
+  <menu-drawer> (e.g. cart), so the header had no full-viewport backdrop — only a mis-sized overlay
+  could appear at the icon width. Fixed overlay covers the viewport; #menu-drawer stays above (z-index 3).
+*/
+.js header-drawer > details > summary::before,
+.js header-drawer > details[open]:not(.menu-opening) > summary::before {
+  content: '';
+  position: fixed;
+  cursor: default;
+  top: var(--header-bottom-position, 0px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  height: auto;
+  background: rgba(var(--color-foreground), 0.5);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 2;
+  transition: opacity 0s, visibility 0s;
+}
+
+header-drawer > details[open] > summary::before {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity var(--duration-default) ease, visibility var(--duration-default) ease;
+}
+
 .menu-drawer {
   position: absolute;
   transform: translateX(-100%);
@@ -40,6 +69,11 @@ menu-drawer > details[open] > summary::before {
     var(--drawer-shadow-horizontal-offset) var(--drawer-shadow-vertical-offset) var(--drawer-shadow-blur-radius)
       rgba(var(--color-shadow), var(--drawer-shadow-opacity))
   );
+}
+
+/* Sit above header-drawer’s fixed dimming layer (z-index: 2) */
+header-drawer .menu-drawer {
+  z-index: 4;
 }
 
 .js .menu-drawer {
