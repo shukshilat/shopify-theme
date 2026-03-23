@@ -3803,20 +3803,6 @@ cart-drawer .cart__checkout-button:hover {
   width: 24px;
   height: 24px;
 } 
-/* FIX RTL MENU */
-html[dir="rtl"] .menu-drawer {
-  right: 0 !important;
-  left: auto !important;
-  transform: translateX(0) !important;
-}
-
-html[dir="rtl"] .menu-drawer-container {
-  justify-content: flex-end;
-} 
-html[dir="rtl"] .menu-drawer {
-  width: 80%;
-  max-width: 300px;
-} 
 /* ===== HEADER MENU STYLE ===== */
 
 .header__inline-menu .list-menu__item {
@@ -3861,28 +3847,6 @@ html[dir="rtl"] .menu-drawer {
 .header__inline-menu .list-menu__item:hover::after {
   width: 100%;
 } 
-/* FIX MOBILE MENU RTL ISSUE */
-
-.menu-drawer {
-  direction: rtl;
-}
-
-.menu-drawer__menu {
-  text-align: right;
-}
-
-.menu-drawer-container {
-  direction: rtl;
-}
-
-/* חשוב מאוד – שלא יתהפך JS */
-.js .menu-drawer {
-  transform: translateX(100%);
-}
-
-.js details[open] > .menu-drawer {
-  transform: translateX(0);
-}
 /* ===================== */
 /* כותרת ראשית יוקרתית */
 /* ===================== */
@@ -4177,27 +4141,54 @@ h1 {
   border: none;
 } 
 
-/* Mobile drawer hardening: keep menu content visible in RTL customizations */
+/*
+  Mobile header menu (RTL): Dawn shows the panel only when <details> has .menu-opening (see global.js).
+  Do not force translateX(0) on .menu-drawer at all times — that breaks visibility/transform sync.
+*/
 @media screen and (max-width: 989px) {
-  .js header-drawer details[open] > #menu-drawer {
-    transform: translateX(0) !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    right: 0 !important;
-    left: auto !important;
-    min-height: 24rem;
+  header-drawer .menu-drawer-container,
+  header-drawer #menu-drawer {
+    direction: rtl;
   }
 
-  .js header-drawer #menu-drawer .menu-drawer__navigation,
-  .js header-drawer #menu-drawer .menu-drawer__menu,
-  .js header-drawer #menu-drawer .menu-drawer__menu > li {
-    display: block !important;
-    visibility: visible !important;
+  header-drawer #menu-drawer .menu-drawer__menu {
+    text-align: right;
   }
 
-  .js header-drawer #menu-drawer .menu-drawer__menu-item,
-  .js header-drawer #menu-drawer .menu-drawer__menu > li {
-    color: rgb(var(--color-foreground)) !important;
-    opacity: 1 !important;
+  header-drawer .menu-drawer-container {
+    justify-content: flex-end;
+  }
+
+  [dir='rtl'] header-drawer .menu-drawer {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  [dir='rtl'] .js header-drawer details[open].menu-opening > .menu-drawer {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  [dir='rtl'] .js header-drawer .menu-drawer__submenu {
+    left: auto;
+    right: 0;
+    transform: translateX(-100%);
+  }
+
+  [dir='rtl'] .js header-drawer details[open].menu-opening > .menu-drawer__submenu {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .js header-drawer details[open].menu-opening > #menu-drawer.menu-drawer {
+    min-height: min(100dvh, 100vh);
+  }
+
+  /* Undo global "details" cosmetic rules inside the drawer (they are meant for accordions elsewhere) */
+  header-drawer details,
+  header-drawer #menu-drawer details {
+    border-bottom: none;
+    padding: 0;
   }
 }

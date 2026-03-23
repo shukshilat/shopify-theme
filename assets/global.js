@@ -562,13 +562,14 @@ class HeaderDrawer extends MenuDrawer {
 
   openMenuDrawer(summaryElement) {
     this.header = this.header || document.querySelector('.section-header');
-    this.borderOffset =
-      this.borderOffset || this.closest('.header-wrapper').classList.contains('header-wrapper--border-bottom') ? 1 : 0;
-    document.documentElement.style.setProperty(
-      '--header-bottom-position',
-      `${parseInt(this.header.getBoundingClientRect().bottom - this.borderOffset)}px`
-    );
-    this.header.classList.add('menu-open');
+    if (this.borderOffset === undefined) {
+      const wrapper = this.closest('.header-wrapper');
+      this.borderOffset = wrapper && wrapper.classList.contains('header-wrapper--border-bottom') ? 1 : 0;
+    }
+    const bottomEl = this.header || this.closest('.header-wrapper');
+    const bottomPx = bottomEl ? Math.max(0, Math.floor(bottomEl.getBoundingClientRect().bottom - this.borderOffset)) : 0;
+    document.documentElement.style.setProperty('--header-bottom-position', `${bottomPx}px`);
+    this.header && this.header.classList.add('menu-open');
 
     setTimeout(() => {
       this.mainDetailsToggle.classList.add('menu-opening');
@@ -583,7 +584,7 @@ class HeaderDrawer extends MenuDrawer {
   closeMenuDrawer(event, elementToFocus) {
     if (!elementToFocus) return;
     super.closeMenuDrawer(event, elementToFocus);
-    this.header.classList.remove('menu-open');
+    this.header?.classList.remove('menu-open');
     window.removeEventListener('resize', this.onResize);
   }
 

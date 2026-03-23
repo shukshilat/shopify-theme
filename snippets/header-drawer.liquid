@@ -22,19 +22,11 @@
           <nav class="menu-drawer__navigation">
             {%- liquid
               assign menu_links = menu.links
-              if menu_links == blank and menu != blank
-                assign menu_links = linklists[menu].links
+              if menu_links == blank and menu != blank and menu.handle != blank
+                assign menu_links = linklists[menu.handle].links
               endif
               if menu_links == blank and linklists['main-menu'] != blank
                 assign menu_links = linklists['main-menu'].links
-              endif
-              if menu_links == blank
-                for menu_item in linklists
-                  if menu_item.links != blank
-                    assign menu_links = menu_item.links
-                    break
-                  endif
-                endfor
               endif
             -%}
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">

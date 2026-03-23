@@ -240,18 +240,4 @@ details[open].menu-opening > .menu-drawer__submenu {
     filter: none !important;
     transition: none !important;
   }
-} 
-/* FORCE RTL MENU FIX */
-.menu-drawer {
-  right: 0 !important;
-  left: auto !important;
-  transform: translateX(100%);
-}
-
-.menu-drawer--open {
-  transform: translateX(0) !important;
-}
-
-.menu-drawer__inner {
-  text-align: right;
 }
