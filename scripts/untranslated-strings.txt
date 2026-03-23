@@ -1,0 +1,581 @@
+404
+---
+<a href="{{ link }}">Shipping</a> calculated at checkout.
+---
+Account
+---
+Account details
+---
+Activate account
+---
+Add a new address
+---
+Add address
+---
+Add to Apple Wallet
+---
+Address 1
+---
+Address 2
+---
+Addresses
+---
+Announcement
+---
+Announcement bar
+---
+Are you sure you wish to delete this address?
+---
+Are you the store owner? <a href="/admin" class="link underlined-link">Log in here</a>
+---
+Back to blog
+---
+Billing Address
+---
+Blog
+---
+Blog post
+---
+Cancel
+---
+Carousel
+---
+Carrier
+---
+Cart
+---
+Cart items
+---
+Check availability at other stores
+---
+Choose options
+---
+Choose options for {{ product_name }}
+---
+Choosing a selection results in a full page refresh.
+---
+City
+---
+Close
+---
+Close share
+---
+Code copied successfully
+---
+Collapsible content
+---
+Comment
+---
+Company
+---
+Complementary products
+---
+Confirm password
+---
+Contact form
+---
+Continue
+---
+Continue as a guest
+---
+Copy gift card code
+---
+Copy link
+---
+Couldn't load pickup availability
+---
+Country/region
+---
+Create
+---
+Create account
+---
+Create your password to activate your account.
+---
+Date
+---
+Decline invitation
+---
+Default
+---
+Delete
+---
+Description
+---
+Discount
+---
+Duties
+---
+Duties and taxes included.
+---
+Duties and taxes included. Discounts and <a href="{{ link }}">shipping</a> calculated at checkout.
+---
+Duties and taxes included. Discounts and shipping calculated at checkout.
+---
+Duties included.
+---
+Duties included. Taxes, discounts and <a href="{{ link }}">shipping</a> calculated at checkout.
+---
+Duties included. Taxes, discounts and shipping calculated at checkout.
+---
+Edit
+---
+Edit address
+---
+Email
+---
+Enter
+---
+Enter a new password
+---
+Enter store using password:
+---
+Enter using password
+---
+Error
+---
+Example product title
+---
+Expired
+---
+Expires {{ expires_on }}
+---
+Facebook
+---
+First name
+---
+Forgot your password?
+---
+From {{ price }}
+---
+Fulfilled {{ date }}
+---
+Fulfillment Status
+---
+Fulfillment status
+---
+Gallery Viewer
+---
+Gift card code
+---
+Gift card recipient form collapsed
+---
+Gift card recipient form expanded
+---
+Give your customers a summary of your blog post
+---
+Here's your {{ value }} gift card balance for {{ shop }}!
+---
+I want to send this as a gift
+---
+Image {{ index }} is now available in gallery view
+---
+In stock
+---
+Instagram
+---
+Item added to your cart
+---
+Language
+---
+Last name
+---
+Leave a comment
+---
+Link
+---
+Link copied to clipboard
+---
+Load 3D Model {{ index }} in gallery view
+---
+Load image {{ index }} in gallery view
+---
+Load slide
+---
+Load video: {{ description }}
+---
+Loading...
+---
+Log in
+---
+Log out
+---
+Login
+---
+Low stock
+---
+Low stock: {{ quantity }} left
+---
+Media gallery
+---
+Menu
+---
+Message
+---
+Message (optional)
+---
+Name
+---
+New estimated total
+---
+Next announcement
+---
+Next page
+---
+Next slide
+---
+No products found
+---
+Open media {{ index }} in modal
+---
+Opens external website.
+---
+Opens in a new window.
+---
+Order
+---
+Order Cancelled on {{ date }}
+---
+Order history
+---
+Order number {{ number }}
+---
+Order special instructions
+---
+Order {{ name }}
+---
+Out of stock
+---
+Page not found
+---
+Page title
+---
+Page {{ number }}
+---
+Pages
+---
+Pagination
+---
+Password
+---
+Pause slideshow
+---
+Payment Status
+---
+Payment methods
+---
+Payment status
+---
+Phone
+---
+Phone number
+---
+Pickup available
+---
+Pickup available at <span class="color-foreground">{{ location_name }}</span>
+---
+Pickup currently unavailable at <span class="color-foreground">{{ location_name }}</span>
+---
+Pin on Pinterest
+---
+Pinterest
+---
+Placed on {{ date }}
+---
+Play 3D Viewer
+---
+Play slideshow
+---
+Play video
+---
+Play video {{ index }} in gallery view
+---
+Please adjust the following:
+---
+Please note, comments need to be approved before they are published.
+---
+Popular countries/regions
+---
+Post comment
+---
+Postal/ZIP code
+---
+Previous announcement
+---
+Previous page
+---
+Previous slide
+---
+Product
+---
+Product image
+---
+Product subtotal
+---
+Product variants
+---
+Province
+---
+QR code — scan to redeem gift card
+---
+Quantity
+---
+Read more: {{ title }}
+---
+Reason: {{ reason }}
+---
+Recipient email
+---
+Recipient email (optional)
+---
+Recipient name (optional)
+---
+Refresh
+---
+Refunded
+---
+Regular price
+---
+Remove 1 item from your cart?
+---
+Remove all
+---
+Remove all {{ quantity }} items from your cart?
+---
+Remove {{ title }}
+---
+Reset account password
+---
+Reset password
+---
+Reset your password
+---
+Return to Account details
+---
+SKU
+---
+Sale
+---
+Sale price
+---
+Search
+---
+Search for “{{ terms }}”
+---
+Search results
+---
+Send
+---
+Send on (optional)
+---
+Set as default address
+---
+Share on Facebook
+---
+Share on X
+---
+Share this article
+---
+Share this product
+---
+Shipping
+---
+Shipping Address
+---
+Sign in
+---
+Skip to content
+---
+Skip to product information
+---
+Slide
+---
+Slide left
+---
+Slide right
+---
+Slider
+---
+Snapchat
+---
+Submit
+---
+Subtotal
+---
+Suggestions
+---
+Tax
+---
+Taxes included.
+---
+Taxes included. Discounts and <a href="{{ link }}">shipping</a> calculated at checkout.
+---
+Taxes included. Discounts and shipping calculated at checkout.
+---
+Taxes, discounts and <a href="{{ link }}">shipping</a> calculated at checkout.
+---
+Thanks for contacting us. We'll get back to you as soon as possible.
+---
+Thanks for subscribing
+---
+There was an error while updating your cart. Please try again.
+---
+This item has a maximum of {{ max }}
+---
+This item has a minimum of {{ min }}
+---
+This shop will be powered by {{ shopify }}
+---
+TikTok
+---
+Total
+---
+Total items
+---
+Track shipment
+---
+Tracking link
+---
+Tracking number
+---
+Tumblr
+---
+Unit price
+---
+Update
+---
+Update address
+---
+Update country/region
+---
+Update language
+---
+Use fewer filters or <a class="{{ class }}" href="{{ link }}">remove all</a>
+---
+Use the gift card code online or QR code in-store
+---
+Variant
+---
+Variant sold out or unavailable
+---
+Variant total
+---
+Vendor
+---
+Vendor:
+---
+View addresses
+---
+View all products in the {{ collection_name }} collection
+---
+View cart
+---
+View cart ({{ count }})
+---
+View full details
+---
+View in your space
+---
+View in your space, loads item in augmented reality window
+---
+View store information
+---
+Vimeo
+---
+Visit online store
+---
+Volume Pricing
+---
+Volume pricing available
+---
+We will send you an email to reset your password
+---
+We've sent you an email with a link to update your password.
+---
+Wrong password!
+---
+X (Twitter)
+---
+YYYY-MM-DD
+---
+You can only add this item in increments of {{ step }}
+---
+You can only add {{ quantity }} of this item to your cart.
+---
+You haven't placed any orders yet.
+---
+YouTube
+---
+Your comment was posted successfully! Thank you!
+---
+Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.
+---
+Your gift card
+---
+Your password
+---
+at {{ price }}/ea
+---
+of
+---
+or
+---
+per
+---
+total reviews
+---
+{{ count }} comment
+---
+{{ count }} comments
+---
+{{ count }} countries/regions found
+---
+{{ count }} item
+---
+{{ count }} items
+---
+{{ count }} page
+---
+{{ count }} pages
+---
+{{ count }} product
+---
+{{ count }} products
+---
+{{ count }} result
+---
+{{ count }} result found for “{{ terms }}”
+---
+{{ count }} results
+---
+{{ count }} results found for “{{ terms }}”
+---
+{{ count }} suggestion
+---
+{{ count }} suggestions
+---
+{{ max_chars }} characters max
+---
+{{ minimum }} - {{ maximum }}
+---
+{{ money }}/ea
+---
+{{ option_value }} - Unavailable
+---
+{{ quantity }} in stock
+---
+{{ quantity }} item added
+---
+{{ quantity }} item removed
+---
+{{ quantity }} items added
+---
+{{ quantity }} items removed
+---
+{{ quantity }}+
+---
+{{ rating_value }} out of {{ rating_max }} stars
+---
+{{ title }} for {{ parent_title }}
+---
+{{ title }} opens full screen video in same window.
