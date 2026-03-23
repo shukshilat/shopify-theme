@@ -7,9 +7,17 @@
 
 .card__quick-add-overlay {
   position: absolute;
-  top: 1.2rem;
-  inset-inline-end: 1.2rem;
-  z-index: 3;
+  top: 1.4rem;
+  right: 1.4rem;
+  left: auto;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.card__quick-add-overlay > *,
+.card__quick-add-overlay .card__quick-add-form,
+.card__quick-add-overlay .card__quick-add-button {
+  pointer-events: auto;
 }
 
 .card__quick-add-form {
@@ -17,35 +25,67 @@
 }
 
 .card__quick-add-button {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 4.4rem;
-  height: 4.4rem;
+  width: 4.8rem;
+  height: 4.8rem;
   padding: 0;
-  border: 0;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.08);
   border-radius: 999px;
-  background: rgba(var(--color-background), 0.96);
+  background: linear-gradient(145deg, rgba(var(--color-background), 0.98), rgba(var(--color-background), 0.9));
   color: rgb(var(--color-foreground));
-  box-shadow: 0 0.4rem 1.4rem rgba(var(--color-foreground), 0.14);
+  box-shadow: 0 1rem 2.6rem rgba(var(--color-foreground), 0.12), 0 0.2rem 0.6rem rgba(var(--color-background), 0.85) inset;
+  -webkit-backdrop-filter: blur(1.2rem);
+  backdrop-filter: blur(1.2rem);
   cursor: pointer;
+  overflow: hidden;
   transition: transform var(--duration-short) ease, box-shadow var(--duration-short) ease,
-    background var(--duration-short) ease;
+    border-color var(--duration-short) ease, background var(--duration-short) ease;
+}
+
+.card__quick-add-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  opacity: 0.9;
+  z-index: -1;
 }
 
 .card__quick-add-button:hover:not([disabled]) {
-  transform: translateY(-0.1rem);
-  box-shadow: 0 0.6rem 1.8rem rgba(var(--color-foreground), 0.18);
+  transform: translateY(-0.2rem) scale(1.03);
+  border-color: rgba(var(--color-foreground), 0.16);
+  box-shadow: 0 1.4rem 3rem rgba(var(--color-foreground), 0.18), 0 0.2rem 0.6rem rgba(var(--color-background), 0.92) inset;
 }
 
 .card__quick-add-button:focus-visible {
-  outline: 0.2rem solid rgba(var(--color-foreground), 0.35);
-  outline-offset: 0.2rem;
+  outline: 0.2rem solid rgba(var(--color-foreground), 0.18);
+  outline-offset: 0.25rem;
+}
+
+.card__quick-add-button-icon,
+.card__quick-add-button-icon .svg-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.card__quick-add-button-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.8;
 }
 
 .card__quick-add-button .icon {
-  width: 2rem;
-  height: 2rem;
+  width: 2.2rem;
+  height: 2.2rem;
 }
 
 .card__quick-add-button .loading__spinner {
@@ -59,7 +99,20 @@
 
 .card__quick-add-button--sold-out {
   color: rgba(var(--color-foreground), 0.45);
+  background: linear-gradient(145deg, rgba(var(--color-background), 0.94), rgba(var(--color-background), 0.82));
   cursor: not-allowed;
+}
+
+@media screen and (max-width: 749px) {
+  .card__quick-add-overlay {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .card__quick-add-button {
+    width: 4.4rem;
+    height: 4.4rem;
+  }
 }
 
 .card--card .quick-add {
