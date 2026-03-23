@@ -21,10 +21,7 @@
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">
             {%- liquid
-              assign drawer_menu = menu
-              if drawer_menu == blank
-                assign drawer_menu = section.settings.menu
-              endif
+              assign drawer_menu = section.settings.menu
               assign menu_links = drawer_menu.links
               if menu_links == blank and drawer_menu != blank and drawer_menu.handle != blank
                 assign menu_links = linklists[drawer_menu.handle].links

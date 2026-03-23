@@ -571,6 +571,15 @@ class HeaderDrawer extends MenuDrawer {
     document.documentElement.style.setProperty('--header-bottom-position', `${bottomPx}px`);
     this.header && this.header.classList.add('menu-open');
 
+    /* Dawn hides the root ul when it has .submenu-open (drill-in). Stale class = looks like an empty menu. */
+    this.mainDetailsToggle.querySelectorAll('.submenu-open').forEach((el) => el.classList.remove('submenu-open'));
+    this.mainDetailsToggle.querySelectorAll('details').forEach((el) => {
+      if (el !== this.mainDetailsToggle) {
+        el.removeAttribute('open');
+        el.classList.remove('menu-opening');
+      }
+    });
+
     /* Show panel immediately; deferred add alone can leave the drawer invisible on some mobile/RTL stacks */
     this.mainDetailsToggle.classList.add('menu-opening');
     setTimeout(() => {
