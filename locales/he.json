@@ -207,6 +207,17 @@
       "reset": "איפוס",
       "sort_button": "מיון",
       "sort_by_label": "מיון לפי",
+      "sort_options": {
+        "manual": "מומלצים",
+        "best_selling": "הנמכרים ביותר",
+        "title_ascending": "מיון לפי א-ת",
+        "title_descending": "מיון לפי ת-א",
+        "price_ascending": "מחיר: מהנמוך לגבוה",
+        "price_descending": "מחיר: מהגבוה לנמוך",
+        "created_ascending": "תאריך: מהישן לחדש",
+        "created_descending": "תאריך: מהחדש לישן",
+        "relevance": "רלוונטיות"
+      },
       "to": "עד",
       "clear_filter": "הסר סינון"
     }

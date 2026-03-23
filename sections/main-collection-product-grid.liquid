@@ -53,25 +53,13 @@
                 >
                   {%- for option in collection.sort_options -%}
                     <option
-  value="{{ option.value | escape }}"
-  {% if option.value == sort_by %}
-    selected="selected"
-  {% endif %}
->
-  {% if option.name == 'Price, low to high' %}
-    מחיר: מהנמוך לגבוה
-  {% elsif option.name == 'Price, high to low' %}
-    מחיר: מהגבוה לנמוך
-  {% elsif option.name == 'Alphabetically, A-Z' %}
-    א-ת
-  {% elsif option.name == 'Alphabetically, Z-A' %}
-    ת-א
-  {% elsif option.name contains 'Price' %}
-    מחיר
-  {% else %}
-    {{ option.name | escape }}
-  {% endif %}
-</option>                                                 
+                      value="{{ option.value | escape }}"
+                      {% if option.value == sort_by %}
+                        selected="selected"
+                      {% endif %}
+                    >
+                      {% render 'facet-sort-option-label', option: option %}
+                    </option>
                   {%- endfor -%}
                 </select>
                 <span class="svg-wrapper">

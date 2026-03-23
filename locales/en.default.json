@@ -221,6 +221,17 @@
       "reset": "Reset",
       "sort_button": "Sort",
       "sort_by_label": "Sort by:",
+      "sort_options": {
+        "manual": "Featured",
+        "best_selling": "Best selling",
+        "title_ascending": "Alphabetically, A-Z",
+        "title_descending": "Alphabetically, Z-A",
+        "price_ascending": "Price, low to high",
+        "price_descending": "Price, high to low",
+        "created_ascending": "Date, old to new",
+        "created_descending": "Date, new to old",
+        "relevance": "Relevance"
+      },
       "to": "To",
       "clear_filter": "Remove filter"
     }

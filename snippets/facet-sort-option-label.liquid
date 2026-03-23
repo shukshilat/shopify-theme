@@ -1,0 +1,25 @@
+{% comment %}
+  Localized label for collection/search sort dropdown. Pass: option (sort option object).
+{% endcomment %}
+{% case option.value %}
+  {% when 'manual' %}
+    {{ 'products.facets.sort_options.manual' | t }}
+  {% when 'best-selling' %}
+    {{ 'products.facets.sort_options.best_selling' | t }}
+  {% when 'title-ascending' %}
+    {{ 'products.facets.sort_options.title_ascending' | t }}
+  {% when 'title-descending' %}
+    {{ 'products.facets.sort_options.title_descending' | t }}
+  {% when 'price-ascending' %}
+    {{ 'products.facets.sort_options.price_ascending' | t }}
+  {% when 'price-descending' %}
+    {{ 'products.facets.sort_options.price_descending' | t }}
+  {% when 'created-ascending' %}
+    {{ 'products.facets.sort_options.created_ascending' | t }}
+  {% when 'created-descending' %}
+    {{ 'products.facets.sort_options.created_descending' | t }}
+  {% when 'relevance' %}
+    {{ 'products.facets.sort_options.relevance' | t }}
+  {% else %}
+    {{ option.name | escape }}
+{% endcase %}

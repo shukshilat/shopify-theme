@@ -172,7 +172,7 @@
                           selected="selected"
                         {% endif %}
                       >
-                        {{ option.name | escape }}
+                        {% render 'facet-sort-option-label', option: option %}
                       </option>
                     {%- endfor -%}
                   </select>
