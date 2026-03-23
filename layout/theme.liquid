@@ -371,36 +371,7 @@
 
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
-    {%- endif -%} 
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-
-  function lockMenu() {
-    const menu = document.querySelector('.menu-drawer__menu');
-    if (!menu) return;
-
-    menu.setAttribute('translate', 'no');
-
-    if (!menu.dataset.original) {
-      menu.dataset.original = menu.innerHTML;
-    }
-
-    if (menu.children.length === 0 || menu.innerHTML.trim() === '') {
-      menu.innerHTML = menu.dataset.original;
-    }
-  }
-
-  lockMenu();
-
-  const observer = new MutationObserver(lockMenu);
-
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
-
-});
-</script> 
+    {%- endif -%}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -418,10 +389,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }, 500);
 
-});
-</script> 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
   </body>
