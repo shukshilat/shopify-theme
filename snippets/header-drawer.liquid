@@ -22,6 +22,9 @@
           <nav class="menu-drawer__navigation">
             {%- liquid
               assign menu_links = section.settings.menu.links
+              if menu_links == blank and section.settings.menu != blank
+                assign menu_links = linklists[section.settings.menu].links
+              endif
               if menu_links == blank and linklists['main-menu'] != blank
                 assign menu_links = linklists['main-menu'].links
               endif
