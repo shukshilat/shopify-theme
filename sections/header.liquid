@@ -22,6 +22,11 @@
     margin-left: -1.2rem;
   }
 
+  /* Mobile / narrow: hamburger must sit in the left-icons grid cell (Dawn only sets this for .header--top-center) */
+  .header--has-menu header-drawer {
+    grid-area: left-icons;
+  }
+
   {%- if section.settings.sticky_header_type == 'reduce-logo-size' -%}
     .scrolled-past-header .header__heading-logo-wrapper {
       width: 75%;
