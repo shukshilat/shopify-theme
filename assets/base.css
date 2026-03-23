@@ -4176,3 +4176,28 @@ h1 {
   padding: 10px;
   border: none;
 } 
+
+/* Mobile drawer hardening: keep menu content visible in RTL customizations */
+@media screen and (max-width: 989px) {
+  .js header-drawer details[open] > #menu-drawer {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    right: 0 !important;
+    left: auto !important;
+    min-height: 24rem;
+  }
+
+  .js header-drawer #menu-drawer .menu-drawer__navigation,
+  .js header-drawer #menu-drawer .menu-drawer__menu,
+  .js header-drawer #menu-drawer .menu-drawer__menu > li {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .js header-drawer #menu-drawer .menu-drawer__menu-item,
+  .js header-drawer #menu-drawer .menu-drawer__menu > li {
+    color: rgb(var(--color-foreground)) !important;
+    opacity: 1 !important;
+  }
+}
