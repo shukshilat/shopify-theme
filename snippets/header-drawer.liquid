@@ -21,16 +21,25 @@
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">
             {%- liquid
-              assign menu_links = section.settings.menu.links
-              if menu_links == blank and section.settings.menu != blank
-                assign menu_links = linklists[section.settings.menu].links
+              assign menu_links = menu.links
+              if menu_links == blank and menu != blank
+                assign menu_links = linklists[menu].links
               endif
               if menu_links == blank and linklists['main-menu'] != blank
                 assign menu_links = linklists['main-menu'].links
               endif
+              if menu_links == blank
+                for menu_item in linklists
+                  if menu_item.links != blank
+                    assign menu_links = menu_item.links
+                    break
+                  endif
+                endfor
+              endif
             -%}
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
-              {%- for link in menu_links -%}
+              {%- if menu_links != blank -%}
+                {%- for link in menu_links -%}
                 <li>
                   {%- if link.links != blank -%}
                     <details id="Details-menu-drawer-menu-item-{{ forloop.index }}">
@@ -141,7 +150,10 @@
                     </a>
                   {%- endif -%}
                 </li>
-              {%- endfor -%}
+                {%- endfor -%}
+              {%- else -%}
+                <li class="menu-drawer__menu-item list-menu__item">אין פריטי תפריט להצגה</li>
+              {%- endif -%}
             </ul>
           </nav>
           <div class="menu-drawer__utility-links">
