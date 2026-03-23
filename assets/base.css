@@ -4121,6 +4121,16 @@ h1 {
   background: #fff;
 }
 
+/* Do not clip the floating quick-add control (it sits on the media, outside .card__content) */
+.product-card-wrapper .card {
+  overflow: visible;
+}
+
+.product-card-wrapper .card__inner {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
 .card__media {
   position: relative;
   z-index: 1;
@@ -4131,8 +4141,8 @@ h1 {
   z-index: 2;
 }
 
-
-.card__content form button {
+/* Only style the full-width add-to-cart row — not the round icon button on the image */
+.card__content form button:not(.card__quick-add-button) {
   width: 100%;
   background: #000;
   color: #fff;

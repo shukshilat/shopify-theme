@@ -12,6 +12,12 @@
   z-index: 3;
 }
 
+/* RTL: physical top-right of the card image (Dawn’s inset-inline-end sits on the left in rtl) */
+[dir='rtl'] .card__quick-add-overlay {
+  inset-inline-end: auto;
+  inset-inline-start: 1.2rem;
+}
+
 .card__quick-add-form {
   margin: 0;
 }
@@ -46,6 +52,13 @@
 .card__quick-add-button .icon {
   width: 2rem;
   height: 2rem;
+}
+
+.card__quick-add-button-icon svg,
+.card__quick-add-button > svg {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
 }
 
 .card__quick-add-button .loading__spinner {

@@ -571,6 +571,8 @@ class HeaderDrawer extends MenuDrawer {
     document.documentElement.style.setProperty('--header-bottom-position', `${bottomPx}px`);
     this.header && this.header.classList.add('menu-open');
 
+    /* Show panel immediately; deferred add alone can leave the drawer invisible on some mobile/RTL stacks */
+    this.mainDetailsToggle.classList.add('menu-opening');
     setTimeout(() => {
       this.mainDetailsToggle.classList.add('menu-opening');
     });
