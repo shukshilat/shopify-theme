@@ -168,7 +168,7 @@ class PredictiveSearch extends SearchForm {
   }
 
   getSearchResults(searchTerm) {
-    const queryKey = searchTerm.replace(' ', '-').toLowerCase();
+    const queryKey = searchTerm.replace(/\s+/g, '-').toLowerCase();
     this.setLiveRegionLoadingState();
 
     if (this.cachedResults[queryKey]) {
@@ -176,45 +176,238 @@ class PredictiveSearch extends SearchForm {
       return;
     }
 
-    // Section Rendering API needs GET /search?q=… (routes.search_url), NOT /search/suggest (predictive_search_url JSON API).
-    const sectionSearchBase =
-      typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
+    const suggestBase =
+      typeof routes !== 'undefined' && routes.predictive_search_url ? routes.predictive_search_url : '/search/suggest';
+    const htmlUrl = `${suggestBase}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`;
+    const jsonUrl = `${suggestBase.replace(/\/$/, '')}.json?${new URLSearchParams({
+      q: searchTerm,
+      'resources[type]': 'query,product,collection,page,article',
+      'resources[limit]': '10',
+      'resources[limit_scope]': 'each',
+    }).toString()}`;
 
-    fetch(`${sectionSearchBase}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`, {
-      signal: this.abortController.signal,
-    })
+    const signal = this.abortController.signal;
+
+    fetch(htmlUrl, { signal })
       .then((response) => {
-        if (!response.ok) {
-          var error = new Error(response.status);
-          this.close();
-          throw error;
-        }
-
+        if (!response.ok) throw new Error(`html-${response.status}`);
         return response.text();
       })
       .then((text) => {
         const sectionRoot = new DOMParser()
           .parseFromString(text, 'text/html')
           .querySelector('#shopify-section-predictive-search');
-        if (!sectionRoot) {
-          this.close();
-          return;
+        const inner = sectionRoot?.innerHTML?.trim() ?? '';
+        if (!inner || !inner.includes('id="predictive-search-results"')) {
+          throw new Error('html-empty');
         }
-        const resultsMarkup = sectionRoot.innerHTML;
-        // Save bandwidth keeping the cache in all instances synced
+        return inner;
+      })
+      .catch((error) => {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+        return fetch(jsonUrl, { signal }).then((response) => {
+          if (!response.ok) throw new Error(`json-${response.status}`);
+          return response.json();
+        });
+      })
+      .then((payload) => {
+        if (typeof payload === 'string') return payload;
+        const built = PredictiveSearch.buildMarkupFromSuggestJson(payload, searchTerm);
+        if (!built) throw new Error('json-empty');
+        return built;
+      })
+      .catch((error) => {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+        return PredictiveSearch.buildMinimalFallbackMarkup(searchTerm);
+      })
+      .then((resultsMarkup) => {
         this.allPredictiveSearchInstances.forEach((predictiveSearchInstance) => {
           predictiveSearchInstance.cachedResults[queryKey] = resultsMarkup;
         });
         this.renderSearchResults(resultsMarkup);
       })
       .catch((error) => {
-        if (error?.code === 20) {
-          // Code 20 means the call was aborted
-          return;
-        }
+        if (error?.name === 'AbortError' || error?.code === 20) return;
         this.close();
-        throw error;
       });
+  }
+
+  static escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  static i18nReplace(template, term) {
+    if (!template) return '';
+    return template.replace(/__TERMS__/g, PredictiveSearch.escapeHtml(term));
+  }
+
+  static i18nResultsCount(total) {
+    const t = window.predictiveSearchI18n?.results_with_count;
+    if (t && t.includes('8734212')) return t.replace(/8734212/g, String(total));
+    return total === 1 ? '1 result' : `${total} results`;
+  }
+
+  static buildMarkupFromSuggestJson(data, searchTerm) {
+    const results = data?.resources?.results;
+    if (!results) return '';
+
+    const queries = results.queries || [];
+    const collections = results.collections || [];
+    const products = results.products || [];
+    const pages = results.pages || [];
+    const articles = results.articles || [];
+
+    const i18n = window.predictiveSearchI18n || {};
+    const esc = PredictiveSearch.escapeHtml;
+
+    const firstColumnSize = queries.length + collections.length + pages.length + articles.length;
+    const hasAnyList = firstColumnSize > 0 || products.length > 0;
+    if (!hasAnyList) return '';
+
+    let wrapperMods = 'predictive-search__results-groups-wrapper';
+    if (products.length === 0) wrapperMods += ' predictive-search__results-groups-wrapper--no-products';
+    if (queries.length === 0 && collections.length === 0) {
+      wrapperMods += ' predictive-search__results-groups-wrapper--no-suggestions';
+    }
+
+    let html = `<div id="predictive-search-results" role="listbox"><div id="predictive-search-results-groups-wrapper" class="${wrapperMods}">`;
+
+    if (queries.length > 0 || collections.length > 0) {
+      html += `<div class="predictive-search__result-group"><div><h2 id="predictive-search-queries" class="predictive-search__heading text-body caption-with-letter-spacing">${esc(
+        i18n.suggestions || 'Suggestions'
+      )}</h2><ul id="predictive-search-results-queries-list" class="predictive-search__results-list list-unstyled" role="group" aria-labelledby="predictive-search-queries">`;
+      queries.forEach((q, i) => {
+        const url = esc(q.url || '');
+        const label = q.styled_text || esc(q.text || '');
+        html += `<li id="predictive-search-option-query-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${url}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading predictive-search__item-query-result h5" aria-label="${esc(
+          q.text || ''
+        )}">${label}</p></div></a></li>`;
+      });
+      collections.forEach((c, i) => {
+        html += `<li id="predictive-search-option-collection-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+          c.url
+        )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+          c.title
+        )}</p></div></a></li>`;
+      });
+      html += `</ul></div>`;
+
+      if (pages.length > 0 || articles.length > 0) {
+        html += `<div class="predictive-search__pages-wrapper"><h2 id="predictive-search-pages-desktop" class="predictive-search__heading text-body caption-with-letter-spacing">${esc(
+          i18n.pages || 'Pages'
+        )}</h2><ul id="predictive-search-results-pages-list-desktop" class="predictive-search__results-list list-unstyled" role="group" aria-labelledby="predictive-search-pages-desktop">`;
+        pages.forEach((p, i) => {
+          html += `<li id="predictive-search-option-page-desktop-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+            p.url
+          )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+            p.title
+          )}</p></div></a></li>`;
+        });
+        articles.forEach((a, i) => {
+          html += `<li id="predictive-search-option-article-desktop-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+            a.url
+          )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+            a.title
+          )}</p></div></a></li>`;
+        });
+        html += `</ul></div>`;
+      }
+      html += `</div>`;
+    } else if (pages.length > 0 || articles.length > 0) {
+      html += `<div class="predictive-search__result-group"><div class="predictive-search__pages-wrapper"><h2 id="predictive-search-pages-desktop" class="predictive-search__heading text-body caption-with-letter-spacing">${esc(
+        i18n.pages || 'Pages'
+      )}</h2><ul id="predictive-search-results-pages-list-desktop" class="predictive-search__results-list list-unstyled" role="group" aria-labelledby="predictive-search-pages-desktop">`;
+      pages.forEach((p, i) => {
+        html += `<li id="predictive-search-option-page-desktop-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+          p.url
+        )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+          p.title
+        )}</p></div></a></li>`;
+      });
+      articles.forEach((a, i) => {
+        html += `<li id="predictive-search-option-article-desktop-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+          a.url
+        )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+          a.title
+        )}</p></div></a></li>`;
+      });
+      html += `</ul></div></div>`;
+    }
+
+    if (products.length > 0 || pages.length > 0 || articles.length > 0) {
+      html += `<div class="predictive-search__result-group">`;
+      if (products.length > 0) {
+        html += `<div><h2 id="predictive-search-products" class="predictive-search__heading text-body caption-with-letter-spacing">${esc(
+          i18n.products || 'Products'
+        )}</h2><ul id="predictive-search-results-products-list" class="predictive-search__results-list list-unstyled" role="group" aria-labelledby="predictive-search-products">`;
+        products.forEach((product, i) => {
+          const imgUrl = product.image || product.featured_image?.url || product.featured_image;
+          const thumb = imgUrl
+            ? `<img class="predictive-search__image" src="${esc(imgUrl)}" alt="" width="50" height="50" loading="lazy">`
+            : '';
+          const priceHtml = product.price
+            ? `<div class="predictive-search__item-price caption"><span class="price">${esc(product.price)}</span></div>`
+            : '';
+          html += `<li id="predictive-search-option-product-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+            product.url
+          )}" class="predictive-search__item predictive-search__item--link-with-thumbnail link link--text" tabindex="-1">${thumb}<div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+            product.title
+          )}</p>${priceHtml}</div></a></li>`;
+        });
+        html += `</ul></div>`;
+      }
+      if (pages.length > 0 || articles.length > 0) {
+        html += `<div class="predictive-search__pages-wrapper"><h2 id="predictive-search-pages-mobile" class="predictive-search__heading text-body caption-with-letter-spacing">${esc(
+          i18n.pages || 'Pages'
+        )}</h2><ul id="predictive-search-results-pages-list-mobile" class="predictive-search__results-list list-unstyled" role="group" aria-labelledby="predictive-search-pages-mobile">`;
+        pages.forEach((p, i) => {
+          html += `<li id="predictive-search-option-page-mobile-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+            p.url
+          )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+            p.title
+          )}</p></div></a></li>`;
+        });
+        articles.forEach((a, i) => {
+          html += `<li id="predictive-search-option-article-mobile-${i + 1}" class="predictive-search__list-item" role="option" aria-selected="false"><a href="${esc(
+            a.url
+          )}" class="predictive-search__item link link--text" tabindex="-1"><div class="predictive-search__item-content predictive-search__item-content--centered"><p class="predictive-search__item-heading h5">${esc(
+            a.title
+          )}</p></div></a></li>`;
+        });
+        html += `</ul></div>`;
+      }
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+
+    const total = queries.length + collections.length + products.length + pages.length + articles.length;
+    const searchForText = PredictiveSearch.i18nReplace(i18n.search_for, searchTerm);
+    const liveText =
+      total === 0
+        ? PredictiveSearch.i18nReplace(i18n.no_results, searchTerm)
+        : PredictiveSearch.i18nResultsCount(total);
+
+    html += `<div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button"><button class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow" tabindex="-1" role="option" aria-selected="false"><span data-predictive-search-search-for-text>${searchForText}</span><span class="svg-wrapper"></span></button></div>`;
+    html += `<span class="hidden" data-predictive-search-live-region-count-value>${esc(liveText)}</span>`;
+    html += `</div>`;
+
+    return html;
+  }
+
+  static buildMinimalFallbackMarkup(searchTerm) {
+    const i18n = window.predictiveSearchI18n || {};
+    const esc = PredictiveSearch.escapeHtml;
+    const searchForText = PredictiveSearch.i18nReplace(i18n.search_for, searchTerm);
+    const liveText = PredictiveSearch.i18nReplace(i18n.no_results, searchTerm);
+    return `<div id="predictive-search-results" role="listbox"><div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button"><button class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow" tabindex="-1" role="option" aria-selected="false"><span data-predictive-search-search-for-text>${searchForText}</span><span class="svg-wrapper"></span></button></div><span class="hidden" data-predictive-search-live-region-count-value>${esc(
+      liveText
+    )}</span></div>`;
   }
 
   setLiveRegionLoadingState() {

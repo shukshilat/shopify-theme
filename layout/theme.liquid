@@ -369,6 +369,16 @@
     </script>
 
     {%- if settings.predictive_search_enabled -%}
+      <script>
+        window.predictiveSearchI18n = {
+          suggestions: {{ 'templates.search.suggestions' | t | json }},
+          products: {{ 'templates.search.products' | t | json }},
+          pages: {{ 'templates.search.pages' | t | json }},
+          search_for: {{ 'templates.search.search_for' | t: terms: '__TERMS__' | json }},
+          no_results: {{ 'templates.search.no_results' | t: terms: '__TERMS__' | json }},
+          results_with_count: {{ 'templates.search.results_with_count' | t: count: 8734212 | json }}
+        };
+      </script>
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
