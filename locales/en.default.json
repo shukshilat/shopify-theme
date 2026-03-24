@@ -87,7 +87,25 @@
     "total_reviews": "total reviews",
     "star_reviews_info": "{{ rating_value }} out of {{ rating_max }} stars",
     "collapsible_content_title": "Collapsible content",
-    "complementary_products": "Complementary products"
+    "complementary_products": "Complementary products",
+    "widget": {
+      "open_menu": "Open accessibility menu",
+      "close_menu": "Close accessibility menu",
+      "title": "Accessibility",
+      "font_size": "Text size",
+      "font_smaller": "A−",
+      "font_larger": "A+",
+      "font_reset": "Default",
+      "decrease_font": "Decrease text size",
+      "increase_font": "Increase text size",
+      "reset_font": "Reset text size to default",
+      "adjustments": "Display",
+      "high_contrast": "High contrast",
+      "underline_links": "Underline links",
+      "reduce_motion": "Reduce motion",
+      "readable_font": "Readable system font",
+      "reset_all": "Reset all settings"
+    }
   },
   "blogs": {
     "article": {

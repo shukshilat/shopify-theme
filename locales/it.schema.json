@@ -370,6 +370,23 @@
           }
         }
       }
+    },
+    "accessibility_widget": {
+      "name": "Accessibility widget",
+      "settings": {
+        "show_accessibility_widget": {
+          "label": "Show floating accessibility menu"
+        },
+        "position": {
+          "label": "Horizontal position",
+          "options__start": {
+            "label": "Start (right in RTL, left in LTR)"
+          },
+          "options__end": {
+            "label": "End (left in RTL, right in LTR)"
+          }
+        }
+      }
     }
   },
   "sections": {

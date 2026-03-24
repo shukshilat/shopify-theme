@@ -127,6 +127,8 @@
     "show_cart_note": false,
     "cart_drawer_collection": "",
     "cart_color_scheme": "scheme-1",
+    "show_accessibility_widget": true,
+    "accessibility_widget_position": "start",
     "sections": {
       "main-password-header": {
         "type": "main-password-header",
@@ -376,6 +378,8 @@
       "show_cart_note": false,
       "cart_drawer_collection": "",
       "cart_color_scheme": "scheme-1",
+      "show_accessibility_widget": true,
+      "accessibility_widget_position": "start",
       "sections": {
         "main-password-header": {
           "type": "main-password-header",

@@ -293,6 +293,10 @@
       {{ 'predictive-search-modal-fix.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
+    {%- if settings.show_accessibility_widget -%}
+      {{ 'accessibility-widget.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
     <script>
       if (Shopify.designMode) {
         document.documentElement.classList.add('shopify-design-mode');
@@ -321,6 +325,10 @@
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
       <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
     </ul>
+
+    {%- if settings.show_accessibility_widget -%}
+      {% render 'accessibility-widget' %}
+    {%- endif -%}
 
     <script>
       window.shopUrl = '{{ request.origin }}';

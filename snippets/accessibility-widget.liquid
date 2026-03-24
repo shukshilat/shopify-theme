@@ -1,0 +1,106 @@
+{%- comment -%}
+  Floating accessibility menu (toolbar). CSS loaded from layout when setting is enabled.
+{%- endcomment -%}
+<div
+  id="ShopifyAccessibilityWidget"
+  class="a11y-widget a11y-widget--pos-{{ settings.accessibility_widget_position | default: 'start' }}"
+  data-a11y-widget
+>
+  <button
+    type="button"
+    class="a11y-widget__toggle"
+    data-a11y-toggle
+    aria-expanded="false"
+    aria-controls="a11y-widget-panel"
+    aria-label="{{ 'accessibility.widget.open_menu' | t }}"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+      <circle cx="16" cy="4" r="1" fill="currentColor" stroke="none"/>
+      <path d="m18 19 1-7-6 1"/>
+      <path d="m5 8 3-3 5.5 3-2.36 3.5"/>
+      <path d="M4.24 14.5a5 5 0 0 0 6.88 6"/>
+      <path d="M13.76 17.5a5 5 0 0 0-6.88-6"/>
+    </svg>
+  </button>
+
+  <div
+    id="a11y-widget-panel"
+    class="a11y-widget__panel"
+    data-a11y-panel
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="a11y-widget-title"
+    hidden
+  >
+    <div class="a11y-widget__header">
+      <h2 id="a11y-widget-title" class="a11y-widget__title">{{ 'accessibility.widget.title' | t }}</h2>
+      <button type="button" class="a11y-widget__close" data-a11y-close aria-label="{{ 'accessibility.widget.close_menu' | t }}">
+        {{ 'accessibility.close' | t }}
+      </button>
+    </div>
+
+    <div class="a11y-widget__group">
+      <span class="a11y-widget__label" id="a11y-label-font">{{ 'accessibility.widget.font_size' | t }}</span>
+      <div class="a11y-widget__row" role="group" aria-labelledby="a11y-label-font">
+        <button type="button" class="a11y-widget__btn" data-a11y-action="font-decrease" aria-label="{{ 'accessibility.widget.decrease_font' | t }}">
+          {{ 'accessibility.widget.font_smaller' | t }}
+        </button>
+        <button type="button" class="a11y-widget__btn" data-a11y-action="font-reset" aria-label="{{ 'accessibility.widget.reset_font' | t }}">
+          {{ 'accessibility.widget.font_reset' | t }}
+        </button>
+        <button type="button" class="a11y-widget__btn" data-a11y-action="font-increase" aria-label="{{ 'accessibility.widget.increase_font' | t }}">
+          {{ 'accessibility.widget.font_larger' | t }}
+        </button>
+      </div>
+    </div>
+
+    <div class="a11y-widget__group">
+      <span class="a11y-widget__label">{{ 'accessibility.widget.adjustments' | t }}</span>
+      <div class="a11y-widget__row">
+        <button
+          type="button"
+          class="a11y-widget__btn a11y-widget__btn--wide"
+          data-a11y-action="toggle-high-contrast"
+          data-a11y-pressed="highContrast"
+          aria-pressed="false"
+        >
+          {{ 'accessibility.widget.high_contrast' | t }}
+        </button>
+        <button
+          type="button"
+          class="a11y-widget__btn a11y-widget__btn--wide"
+          data-a11y-action="toggle-underline"
+          data-a11y-pressed="underline"
+          aria-pressed="false"
+        >
+          {{ 'accessibility.widget.underline_links' | t }}
+        </button>
+        <button
+          type="button"
+          class="a11y-widget__btn a11y-widget__btn--wide"
+          data-a11y-action="toggle-reduce-motion"
+          data-a11y-pressed="reduceMotion"
+          aria-pressed="false"
+        >
+          {{ 'accessibility.widget.reduce_motion' | t }}
+        </button>
+        <button
+          type="button"
+          class="a11y-widget__btn a11y-widget__btn--wide"
+          data-a11y-action="toggle-readable-font"
+          data-a11y-pressed="readableFont"
+          aria-pressed="false"
+        >
+          {{ 'accessibility.widget.readable_font' | t }}
+        </button>
+      </div>
+    </div>
+
+    <div class="a11y-widget__group">
+      <button type="button" class="a11y-widget__btn a11y-widget__btn--wide" data-a11y-action="reset-all">
+        {{ 'accessibility.widget.reset_all' | t }}
+      </button>
+    </div>
+  </div>
+</div>
+<script src="{{ 'accessibility-widget.js' | asset_url }}" defer="defer"></script>

@@ -85,7 +85,25 @@
     "total_reviews": "סה״כ ביקורות",
     "star_reviews_info": "{{ rating_value }} מתוך {{ rating_max }} כוכבים",
     "collapsible_content_title": "תוכן מתקפל",
-    "complementary_products": "מוצרים משלימים"
+    "complementary_products": "מוצרים משלימים",
+    "widget": {
+      "open_menu": "פתיחת תפריט נגישות",
+      "close_menu": "סגירת תפריט נגישות",
+      "title": "נגישות",
+      "font_size": "גודל טקסט",
+      "font_smaller": "א−",
+      "font_larger": "א+",
+      "font_reset": "ברירת מחדל",
+      "decrease_font": "הקטנת הטקסט",
+      "increase_font": "הגדלת הטקסט",
+      "reset_font": "איפוס גודל טקסט",
+      "adjustments": "תצוגה",
+      "high_contrast": "ניגודיות גבוהה",
+      "underline_links": "קו תחתון לקישורים",
+      "reduce_motion": "הפחתת תנועה ואנימציה",
+      "readable_font": "גופן מערכת קריא",
+      "reset_all": "איפוס כל ההגדרות"
+    }
   },
   "blogs": {
     "article": {

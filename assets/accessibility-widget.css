@@ -1,0 +1,215 @@
+/* Floating accessibility toolbar — above cart drawer (z-index 1000) */
+.a11y-widget {
+  --a11y-widget-bg: #1a1a1a;
+  --a11y-widget-fg: #ffffff;
+  --a11y-widget-accent: #2563eb;
+  position: fixed;
+  bottom: 1.25rem;
+  z-index: 10001;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  direction: inherit;
+}
+
+.a11y-widget--pos-start {
+  inset-inline-start: 1.25rem;
+  inset-inline-end: auto;
+}
+
+.a11y-widget--pos-end {
+  inset-inline-end: 1.25rem;
+  inset-inline-start: auto;
+}
+
+.a11y-widget__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--a11y-widget-fg);
+  background: var(--a11y-widget-bg);
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.a11y-widget__toggle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0.6rem 1.6rem rgba(0, 0, 0, 0.3);
+}
+
+.a11y-widget__toggle:focus-visible {
+  outline: 0.2rem solid var(--a11y-widget-accent);
+  outline-offset: 0.2rem;
+}
+
+.a11y-widget__toggle svg {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.a11y-widget__panel {
+  position: absolute;
+  bottom: calc(100% + 0.8rem);
+  width: min(32rem, calc(100vw - 2.5rem));
+  max-height: min(70vh, 48rem);
+  overflow: auto;
+  padding: 1.6rem;
+  border-radius: 0.8rem;
+  background: var(--a11y-widget-bg);
+  color: var(--a11y-widget-fg);
+  box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.35);
+}
+
+.a11y-widget--pos-start .a11y-widget__panel {
+  inset-inline-start: 0;
+}
+
+.a11y-widget--pos-end .a11y-widget__panel {
+  inset-inline-end: 0;
+}
+
+.a11y-widget__panel[hidden] {
+  display: none !important;
+}
+
+.a11y-widget__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.a11y-widget__title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.a11y-widget__close {
+  flex-shrink: 0;
+  min-width: 4rem;
+  min-height: 4rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.4rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.a11y-widget__close:focus-visible {
+  outline: 0.2rem solid var(--a11y-widget-accent);
+  outline-offset: 0.2rem;
+}
+
+.a11y-widget__group {
+  margin-bottom: 1.4rem;
+}
+
+.a11y-widget__group:last-child {
+  margin-bottom: 0;
+}
+
+.a11y-widget__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  font-size: 1.3rem;
+  opacity: 0.95;
+}
+
+.a11y-widget__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.a11y-widget__btn {
+  min-height: 4rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.a11y-widget__btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.a11y-widget__btn:focus-visible {
+  outline: 0.2rem solid var(--a11y-widget-accent);
+  outline-offset: 0.2rem;
+}
+
+.a11y-widget__btn[aria-pressed="true"] {
+  background: var(--a11y-widget-accent);
+  border-color: var(--a11y-widget-accent);
+}
+
+.a11y-widget__btn--wide {
+  width: 100%;
+  text-align: center;
+}
+
+/* Font scale steps — overrides theme html font-size */
+html.a11y-font-step--2 {
+  font-size: calc(var(--font-body-scale) * 50%) !important;
+}
+
+html.a11y-font-step--1 {
+  font-size: calc(var(--font-body-scale) * 56.25%) !important;
+}
+
+html.a11y-font-step-1 {
+  font-size: calc(var(--font-body-scale) * 68.75%) !important;
+}
+
+html.a11y-font-step-2 {
+  font-size: calc(var(--font-body-scale) * 75%) !important;
+}
+
+html.a11y-high-contrast body {
+  filter: contrast(1.25) saturate(1.1);
+}
+
+html.a11y-underline-links a {
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em;
+}
+
+html.a11y-reduce-motion *,
+html.a11y-reduce-motion *::before,
+html.a11y-reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-readable-font body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans Hebrew", "Noto Sans", sans-serif !important;
+}
+
+html.a11y-readable-font body :is(h1, h2, h3, h4, h5, h6, .h0, .h1, .h2, .h3, .h4, .h5) {
+  font-family: inherit !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a11y-widget__toggle {
+    transition: none;
+  }
+}

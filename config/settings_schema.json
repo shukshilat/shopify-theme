@@ -1451,5 +1451,32 @@
         "default": "scheme-1"
       }
     ]
+  },
+  {
+    "name": "t:settings_schema.accessibility_widget.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_accessibility_widget",
+        "label": "t:settings_schema.accessibility_widget.settings.show_accessibility_widget.label",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "accessibility_widget_position",
+        "label": "t:settings_schema.accessibility_widget.settings.position.label",
+        "options": [
+          {
+            "value": "start",
+            "label": "t:settings_schema.accessibility_widget.settings.position.options__start.label"
+          },
+          {
+            "value": "end",
+            "label": "t:settings_schema.accessibility_widget.settings.position.options__end.label"
+          }
+        ],
+        "default": "start"
+      }
+    ]
   }
 ]
