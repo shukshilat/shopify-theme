@@ -2959,6 +2959,14 @@ main#MainContent,
   background-color: transparent !important;
 }
 
+/* Keep header/logo area always white */
+.section-header,
+.shopify-section-header,
+.header-wrapper,
+.header {
+  background-color: #ffffff !important;
+}
+
 @media screen and (forced-colors: active) {
   .icon {
     color: CanvasText;
