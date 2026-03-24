@@ -4132,7 +4132,7 @@ h1 {
   position: relative;
   border-radius: 18px;
   overflow: hidden;
-  background: #fff;
+  background: transparent;
 }
 
 /* Do not clip the floating quick-add control (it sits on the media, outside .card__content) */
@@ -4143,16 +4143,28 @@ h1 {
 .product-card-wrapper .card__inner {
   overflow: hidden;
   border-radius: inherit;
+  background: transparent;
 }
 
 .card__media {
   position: relative;
   z-index: 1;
+  background: transparent;
 }
 
 .card__content {
   position: relative;
   z-index: 2;
+  background: transparent;
+}
+
+/* Global image/media wrappers should blend with site background */
+.media,
+.card .media,
+.card__inner,
+.collection-card .media,
+.article-card .media {
+  background-color: transparent !important;
 }
 
 /* Only style the full-width add-to-cart row — not the round icon button on the image */
