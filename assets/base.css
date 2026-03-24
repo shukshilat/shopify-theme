@@ -2937,8 +2937,10 @@ details-disclosure > details {
 }
 
 .gradient {
-  background: rgb(var(--color-background));
-  background: var(--gradient-background);
+  background:
+    radial-gradient(circle at 85% 15%, rgba(var(--color-button), 0.16), transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(var(--color-foreground), 0.08), transparent 40%),
+    var(--gradient-background);
   background-attachment: fixed;
 }
 
