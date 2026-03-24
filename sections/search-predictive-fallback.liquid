@@ -1,0 +1,123 @@
+{% comment %}
+  Predictive Search API does not support Hebrew and similar locales — the storefront still has full search.
+  This section renders dropdown markup from search.results for Section Rendering:
+  GET /search?q=...&type=product&options[prefix]=last&section_id=search-predictive-fallback
+{% endcomment %}
+{%- if search.performed -%}
+  {%- liquid
+    assign fallback_count = 0
+    for item in search.results
+      if item.object_type == 'product'
+        assign fallback_count = fallback_count | plus: 1
+      endif
+    endfor
+    if fallback_count > 10
+      assign fallback_count = 10
+    endif
+  -%}
+  <div id="predictive-search-results" role="listbox">
+    {%- if fallback_count > 0 -%}
+      <div
+        id="predictive-search-results-groups-wrapper"
+        class="predictive-search__results-groups-wrapper predictive-search__results-groups-wrapper--no-suggestions"
+      >
+        <div class="predictive-search__result-group">
+          <div>
+            <h2
+              id="predictive-search-products"
+              class="predictive-search__heading text-body caption-with-letter-spacing"
+            >
+              {{- 'templates.search.products' | t -}}
+            </h2>
+            <ul
+              id="predictive-search-results-products-list"
+              class="predictive-search__results-list list-unstyled"
+              role="group"
+              aria-labelledby="predictive-search-products"
+            >
+              {%- assign shown = 0 -%}
+              {%- for item in search.results -%}
+                {%- if item.object_type == 'product' -%}
+                  {%- assign shown = shown | plus: 1 -%}
+                  {%- if shown > 10 -%}
+                    {%- break -%}
+                  {%- endif -%}
+                  {%- assign product = item -%}
+                <li
+                  id="predictive-search-option-product-{{ shown }}"
+                  class="predictive-search__list-item"
+                  role="option"
+                  aria-selected="false"
+                >
+                  <a
+                    href="{{ product.url }}"
+                    class="predictive-search__item predictive-search__item--link-with-thumbnail link link--text"
+                    tabindex="-1"
+                  >
+                    {%- if product.featured_media != blank -%}
+                      <img
+                        class="predictive-search__image"
+                        src="{{ product.featured_media | image_url: width: 150 }}"
+                        alt="{{ product.featured_media.alt | escape }}"
+                        width="50"
+                        height="{{ 50 | divided_by: product.featured_media.preview_image.aspect_ratio }}"
+                      >
+                    {%- endif -%}
+                    <div class="predictive-search__item-content{% unless settings.predictive_search_show_vendor or settings.predictive_search_show_price %} predictive-search__item-content--centered{% endunless %}">
+                      {%- if settings.predictive_search_show_vendor -%}
+                        <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+                        <div class="predictive-search__item-vendor caption-with-letter-spacing">
+                          {{ product.vendor }}
+                        </div>
+                      {%- endif -%}
+                      <p class="predictive-search__item-heading h5">{{ product.title | escape }}</p>
+                      {%- if settings.predictive_search_show_price -%}
+                        {% render 'price', product: product, use_variant: true, show_badges: false %}
+                      {%- endif -%}
+                    </div>
+                  </a>
+                </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+
+    <div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button">
+      <button
+        class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow"
+        tabindex="-1"
+        role="option"
+        aria-selected="false"
+      >
+        <span data-predictive-search-search-for-text>
+          {{- 'templates.search.search_for' | t: terms: search.terms -}}
+        </span>
+        <span class="svg-wrapper">
+          {{- 'icon-arrow.svg' | inline_asset_content -}}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <span class="hidden" data-predictive-search-live-region-count-value>
+    {%- if fallback_count > 0 -%}
+      {{- 'templates.search.results_with_count' | t: count: fallback_count -}}
+    {%- else -%}
+      {{- 'templates.search.no_results' | t: terms: search.terms -}}
+    {%- endif -%}
+  </span>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Search predictive fallback",
+  "tag": "section",
+  "class": "section",
+  "settings": []
+}
+{% endschema %}

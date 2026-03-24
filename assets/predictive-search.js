@@ -185,41 +185,61 @@ class PredictiveSearch extends SearchForm {
       'resources[limit]': '10',
       'resources[limit_scope]': 'each',
     }).toString()}`;
+    const searchBase =
+      typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
+    const storefrontUrl = `${searchBase}?${new URLSearchParams({
+      q: searchTerm,
+      type: 'product',
+      'options[prefix]': 'last',
+      section_id: 'search-predictive-fallback',
+    }).toString()}`;
 
     const signal = this.abortController.signal;
 
-    fetch(htmlUrl, { signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`html-${response.status}`);
-        return response.text();
-      })
-      .then((text) => {
-        const sectionRoot = new DOMParser()
-          .parseFromString(text, 'text/html')
-          .querySelector('#shopify-section-predictive-search');
+    const loadMarkup = async () => {
+      try {
+        const response = await fetch(htmlUrl, { signal });
+        if (!response.ok) throw new Error('html');
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
         const inner = sectionRoot?.innerHTML?.trim() ?? '';
-        if (!inner || !inner.includes('id="predictive-search-results"')) {
-          throw new Error('html-empty');
+        if (inner.includes('id="predictive-search-results"')) {
+          const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
+          if (hasSuggestions) return inner;
         }
-        return inner;
-      })
-      .catch((error) => {
+      } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
-        return fetch(jsonUrl, { signal }).then((response) => {
-          if (!response.ok) throw new Error(`json-${response.status}`);
-          return response.json();
-        });
-      })
-      .then((payload) => {
-        if (typeof payload === 'string') return payload;
-        const built = PredictiveSearch.buildMarkupFromSuggestJson(payload, searchTerm);
-        if (!built) throw new Error('json-empty');
-        return built;
-      })
-      .catch((error) => {
+      }
+
+      try {
+        const response = await fetch(jsonUrl, { signal });
+        if (!response.ok) throw new Error('json');
+        const data = await response.json();
+        const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
+        if (built) return built;
+      } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
-        return PredictiveSearch.buildMinimalFallbackMarkup(searchTerm);
-      })
+      }
+
+      try {
+        const response = await fetch(storefrontUrl, { signal });
+        if (!response.ok) throw new Error('storefront');
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        const sectionRoot =
+          doc.querySelector('#shopify-section-search-predictive-fallback') ||
+          doc.querySelector('[id*="search-predictive-fallback"]');
+        const inner = sectionRoot?.innerHTML?.trim() ?? '';
+        if (inner.includes('id="predictive-search-results"')) return inner;
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
+      return PredictiveSearch.buildMinimalFallbackMarkup(searchTerm);
+    };
+
+    loadMarkup()
       .then((resultsMarkup) => {
         this.allPredictiveSearchInstances.forEach((predictiveSearchInstance) => {
           predictiveSearchInstance.cachedResults[queryKey] = resultsMarkup;
