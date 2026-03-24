@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }}（已选择 {{ count }} 个筛选条件）",
       "show_more": "显示更多内容",
       "show_less": "隐藏部分内容",
-      "filter_and_operator_subtitle": "匹配全部"
+      "filter_and_operator_subtitle": "匹配全部",
+      "filter_label_price": "价格",
+      "filter_label_availability": "库存"
     }
   },
   "templates": {

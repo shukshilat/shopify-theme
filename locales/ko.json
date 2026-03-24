@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }}({{ count }}개 필터 선택됨)",
       "show_more": "자세히 표시",
       "show_less": "간단히 표시",
-      "filter_and_operator_subtitle": "모두 일치"
+      "filter_and_operator_subtitle": "모두 일치",
+      "filter_label_price": "가격",
+      "filter_label_availability": "재고 여부"
     }
   },
   "templates": {

@@ -230,7 +230,9 @@
       "filter_selected_accessibility": "{{ type }} (pasirinkta filtrų: {{ count }})",
       "show_more": "Rodyti daugiau",
       "show_less": "Rodyti mažiau",
-      "filter_and_operator_subtitle": "Atitikti visas"
+      "filter_and_operator_subtitle": "Atitikti visas",
+      "filter_label_price": "Kaina",
+      "filter_label_availability": "Prieinamumas"
     }
   },
   "templates": {

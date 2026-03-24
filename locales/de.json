@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} Filter ausgewählt)",
       "show_more": "Mehr anzeigen",
       "show_less": "Weniger anzeigen",
-      "filter_and_operator_subtitle": "Allen entsprechen"
+      "filter_and_operator_subtitle": "Allen entsprechen",
+      "filter_label_price": "Preis",
+      "filter_label_availability": "Verfügbarkeit"
     }
   },
   "templates": {

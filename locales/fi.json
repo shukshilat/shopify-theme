@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} suodatinta valittu)",
       "show_more": "Näytä enemmän",
       "show_less": "Näytä vähemmän",
-      "filter_and_operator_subtitle": "Sovella kaikkia"
+      "filter_and_operator_subtitle": "Sovella kaikkia",
+      "filter_label_price": "Hinta",
+      "filter_label_availability": "Saatavuus"
     }
   },
   "templates": {

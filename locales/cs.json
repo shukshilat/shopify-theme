@@ -230,7 +230,9 @@
       "filter_selected_accessibility": "{{ type }} (počet vybraných filtrů: {{ count }})",
       "show_more": "Zobrazit více",
       "show_less": "Zobrazit méně",
-      "filter_and_operator_subtitle": "Shoda se všemi kritérii"
+      "filter_and_operator_subtitle": "Shoda se všemi kritérii",
+      "filter_label_price": "Cena",
+      "filter_label_availability": "Dostupnost"
     }
   },
   "templates": {

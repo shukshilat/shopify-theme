@@ -249,7 +249,9 @@
         "relevance": "רלוונטיות"
       },
       "to": "עד",
-      "clear_filter": "הסר סינון"
+      "clear_filter": "הסר סינון",
+      "filter_label_price": "מחיר",
+      "filter_label_availability": "זמינות"
     }
   },
   "templates": {

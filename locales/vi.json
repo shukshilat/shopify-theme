@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} (Đã chọn {{ count }} bộ lọc)",
       "show_more": "Hiển thị thêm",
       "show_less": "Rút gọn",
-      "filter_and_operator_subtitle": "Phù hợp với tất cả"
+      "filter_and_operator_subtitle": "Phù hợp với tất cả",
+      "filter_label_price": "Giá",
+      "filter_label_availability": "Tình trạng có hàng"
     }
   },
   "templates": {

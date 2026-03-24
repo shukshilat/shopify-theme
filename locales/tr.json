@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} filtre seçildi)",
       "show_more": "Daha fazla göster",
       "show_less": "Daha az göster",
-      "filter_and_operator_subtitle": "Tümünü eşleştir"
+      "filter_and_operator_subtitle": "Tümünü eşleştir",
+      "filter_label_price": "Fiyat",
+      "filter_label_availability": "Stok durumu"
     }
   },
   "templates": {

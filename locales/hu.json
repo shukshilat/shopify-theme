@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} szűrő kiválasztva)",
       "show_more": "Több részlet",
       "show_less": "Kevesebb részlet",
-      "filter_and_operator_subtitle": "Az összesnek megfelelő"
+      "filter_and_operator_subtitle": "Az összesnek megfelelő",
+      "filter_label_price": "Ár",
+      "filter_label_availability": "Elérhetőség"
     }
   },
   "templates": {

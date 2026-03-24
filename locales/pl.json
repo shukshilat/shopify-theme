@@ -230,7 +230,9 @@
       "filter_selected_accessibility": "{{ type }} (wybrano {{ count }} fitry(-ów))",
       "show_more": "Pokaż więcej",
       "show_less": "Pokaż mniej",
-      "filter_and_operator_subtitle": "Dopasuj wszystko"
+      "filter_and_operator_subtitle": "Dopasuj wszystko",
+      "filter_label_price": "Cena",
+      "filter_label_availability": "Dostępność"
     }
   },
   "templates": {

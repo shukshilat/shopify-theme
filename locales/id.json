@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} filter dipilih)",
       "show_more": "Selengkapnya",
       "show_less": "Sembunyikan lainnya",
-      "filter_and_operator_subtitle": "Cocokkan semua"
+      "filter_and_operator_subtitle": "Cocokkan semua",
+      "filter_label_price": "Harga",
+      "filter_label_availability": "Ketersediaan"
     }
   },
   "templates": {

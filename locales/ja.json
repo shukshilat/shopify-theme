@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }}件のフィルターを選択済み)",
       "show_more": "さらに表示する",
       "show_less": "表示を減らす",
-      "filter_and_operator_subtitle": "すべて一致"
+      "filter_and_operator_subtitle": "すべて一致",
+      "filter_label_price": "価格",
+      "filter_label_availability": "在庫状況"
     }
   },
   "templates": {

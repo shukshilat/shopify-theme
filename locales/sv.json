@@ -222,7 +222,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }}) filter valda",
       "show_more": "Visa mer",
       "show_less": "Visa mindre",
-      "filter_and_operator_subtitle": "Matcha alla"
+      "filter_and_operator_subtitle": "Matcha alla",
+      "filter_label_price": "Pris",
+      "filter_label_availability": "Tillgänglighet"
     }
   },
   "templates": {

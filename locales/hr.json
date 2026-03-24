@@ -226,7 +226,9 @@
       "filter_selected_accessibility": "{{ type }} (broj odabranih filtra: {{ count }})",
       "show_more": "Prikaži više",
       "show_less": "Prikaži manje",
-      "filter_and_operator_subtitle": "Uskladi sve"
+      "filter_and_operator_subtitle": "Uskladi sve",
+      "filter_label_price": "Cijena",
+      "filter_label_availability": "Dostupnost"
     }
   },
   "templates": {

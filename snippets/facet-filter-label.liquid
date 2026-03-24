@@ -1,0 +1,19 @@
+{% comment %}
+  Storefront label for a collection/search filter (handles English labels from admin).
+  @param {object} filter - Shopify filter object
+{% endcomment %}
+{%- liquid
+  assign pn = filter.param_name | downcase
+  assign fl = filter.label | downcase | strip
+  assign facet_heading_key = ''
+  if filter.type == 'price_range' or pn contains 'filter.v.price'
+    assign facet_heading_key = 'products.facets.filter_label_price'
+  elsif pn contains 'availability' or fl contains 'availability'
+    assign facet_heading_key = 'products.facets.filter_label_availability'
+  endif
+-%}
+{%- if facet_heading_key != '' -%}
+  {{- facet_heading_key | t -}}
+{%- else -%}
+  {{- filter.label | escape -}}
+{%- endif -%}

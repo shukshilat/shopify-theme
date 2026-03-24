@@ -226,7 +226,9 @@
       "filter_selected_accessibility": "{{ type }} ({{ count }} filtros selecionados)",
       "show_more": "Exibir mais",
       "show_less": "Exibir menos",
-      "filter_and_operator_subtitle": "Corresponder todos"
+      "filter_and_operator_subtitle": "Corresponder todos",
+      "filter_label_price": "Preço",
+      "filter_label_availability": "Disponibilidade"
     }
   },
   "templates": {

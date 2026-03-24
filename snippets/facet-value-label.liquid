@@ -1,0 +1,27 @@
+{% comment %}
+  Storefront label for a single filter value (e.g. availability in English).
+  @param {object} filter - Shopify filter object
+  @param {object} value - Shopify filter value object
+{% endcomment %}
+{%- liquid
+  assign pn = filter.param_name | downcase
+  assign fl = filter.label | downcase | strip
+  assign is_availability = false
+  if pn contains 'availability' or fl contains 'availability'
+    assign is_availability = true
+  endif
+  assign vl = value.label | downcase | strip
+  assign out_key = ''
+  if is_availability
+    if vl contains 'out of stock'
+      assign out_key = 'products.product.inventory_out_of_stock'
+    elsif vl contains 'in stock'
+      assign out_key = 'products.product.inventory_in_stock'
+    endif
+  endif
+-%}
+{%- if out_key != '' -%}
+  {{- out_key | t -}}
+{%- else -%}
+  {{- value.label | escape -}}
+{%- endif -%}
