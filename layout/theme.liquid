@@ -370,6 +370,7 @@
 
     {%- if settings.predictive_search_enabled -%}
       <script>
+        window.themeLocale = {{ request.locale.iso_code | json }};
         window.predictiveSearchI18n = {
           suggestions: {{ 'templates.search.suggestions' | t | json }},
           products: {{ 'templates.search.products' | t | json }},

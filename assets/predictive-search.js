@@ -189,19 +189,32 @@ class PredictiveSearch extends SearchForm {
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
 
     const signal = this.abortController.signal;
+    const isHebrewLocale =
+      (typeof document !== 'undefined' && /^he/i.test(document.documentElement.lang || '')) ||
+      (typeof window.Shopify !== 'undefined' && window.Shopify.locale && /^he/i.test(String(window.Shopify.locale))) ||
+      (typeof window.themeLocale === 'string' && /^he/i.test(window.themeLocale));
 
     const loadMarkup = async () => {
-      try {
-        const response = await fetch(htmlUrl, { signal });
-        if (!response.ok) throw new Error('html');
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-        const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
-        const inner = sectionRoot?.innerHTML?.trim() ?? '';
-        if (inner.includes('id="predictive-search-results"')) {
-          const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
-          if (hasSuggestions) return inner;
+      if (!isHebrewLocale) {
+        try {
+          const response = await fetch(htmlUrl, { signal });
+          if (!response.ok) throw new Error('html');
+          const text = await response.text();
+          const doc = new DOMParser().parseFromString(text, 'text/html');
+          const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
+          const inner = sectionRoot?.innerHTML?.trim() ?? '';
+          if (inner.includes('id="predictive-search-results"')) {
+            const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
+            if (hasSuggestions) return inner;
+          }
+        } catch (error) {
+          if (error?.name === 'AbortError' || error?.code === 20) throw error;
         }
+      }
+
+      try {
+        const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
+        if (fromPage.includes('id="predictive-search-results"')) return fromPage;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -213,14 +226,16 @@ class PredictiveSearch extends SearchForm {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
-      try {
-        const response = await fetch(jsonUrl, { signal });
-        if (!response.ok) throw new Error('json');
-        const data = await response.json();
-        const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
-        if (built) return built;
-      } catch (error) {
-        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      if (!isHebrewLocale) {
+        try {
+          const response = await fetch(jsonUrl, { signal });
+          if (!response.ok) throw new Error('json');
+          const data = await response.json();
+          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
+          if (built) return built;
+        } catch (error) {
+          if (error?.name === 'AbortError' || error?.code === 20) throw error;
+        }
       }
 
       return PredictiveSearch.buildMinimalFallbackMarkup(searchTerm);
@@ -237,6 +252,69 @@ class PredictiveSearch extends SearchForm {
         if (error?.name === 'AbortError' || error?.code === 20) return;
         this.close();
       });
+  }
+
+  /**
+   * Full /search page HTML (no section_id) — works when Section Rendering 404s; parses main-search product grid.
+   */
+  static async fetchFullSearchPageMarkup(searchBase, searchTerm, signal) {
+    const url = `${searchBase}?${new URLSearchParams({
+      q: searchTerm,
+      type: 'product',
+      'options[prefix]': 'last',
+    }).toString()}`;
+    const response = await fetch(url, { signal, credentials: 'same-origin' });
+    if (!response.ok) return '';
+    const text = await response.text();
+    return PredictiveSearch.buildMarkupFromSearchPageHtml(text, searchTerm);
+  }
+
+  static buildMarkupFromSearchPageHtml(htmlText, searchTerm) {
+    try {
+      const doc = new DOMParser().parseFromString(htmlText, 'text/html');
+      const grid = doc.getElementById('product-grid') || doc.querySelector('ul.product-grid');
+      if (!grid) return '';
+
+      const items = grid.querySelectorAll(':scope > li.grid__item');
+      const products = [];
+      const seen = new Set();
+
+      items.forEach((li) => {
+        const link =
+          li.querySelector('.card__heading a.full-unstyled-link[href*="/products/"]') ||
+          li.querySelector('a.full-unstyled-link[href*="/products/"]') ||
+          li.querySelector('a[href*="/products/"]');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || seen.has(href)) return;
+        seen.add(href);
+
+        const title = (link.textContent || '').trim();
+        const imgEl = li.querySelector('.card__media img[src], .card__inner img[src], img[src]');
+        const image = imgEl ? imgEl.getAttribute('src') || '' : '';
+        const priceEl = li.querySelector('.price');
+        const price = priceEl ? priceEl.textContent.replace(/\s+/g, ' ').trim() : '';
+
+        products.push({ title, url: href, image, price });
+      });
+
+      if (products.length === 0) return '';
+
+      const payload = {
+        resources: {
+          results: {
+            queries: [],
+            collections: [],
+            products: products.slice(0, 10),
+            pages: [],
+            articles: [],
+          },
+        },
+      };
+      return PredictiveSearch.buildMarkupFromSuggestJson(payload, searchTerm);
+    } catch (e) {
+      return '';
+    }
   }
 
   static async fetchSearchSectionMarkup(searchBase, searchTerm, signal) {
