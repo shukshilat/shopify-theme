@@ -1,10 +1,5 @@
 {%- style -%}
   .home-bottom-footer-{{ section.id }} {
-    --footer-card-bg: linear-gradient(
-      135deg,
-      rgba(var(--color-background), 0.96) 0%,
-      rgba(var(--color-background), 0.86) 100%
-    );
     --footer-accent: rgba(var(--color-button), 1);
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
@@ -118,7 +113,7 @@
       <div class="home-bottom-footer__about-wrap">
         <a
           class="home-bottom-footer__btn"
-          href="{{ section.settings.about_link }}"
+          href="{{ section.settings.about_link | default: '/pages/about' }}"
         >
           {{ section.settings.about_label | escape }}
         </a>
