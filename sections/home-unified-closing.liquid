@@ -4,7 +4,7 @@
   .home-unified-{{ section.id }} {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-    background: transparent;
+    background: rgb(var(--color-background));
   }
 
   .home-unified-{{ section.id }} .home-unified__heading {
@@ -25,7 +25,7 @@
     padding: 0;
     border: none;
     box-shadow: none;
-    background: transparent;
+    background: rgb(var(--color-background));
     text-align: center;
   }
 
@@ -152,7 +152,7 @@
   }
 {%- endstyle -%}
 
-<section class="home-unified-{{ section.id }}">
+<section class="home-unified-{{ section.id }} color-{{ section.settings.color_scheme }} gradient">
   <div class="page-width">
     {%- if section.settings.bonuses_heading != blank -%}
       <h2 class="home-unified__heading inline-richtext {{ section.settings.heading_size }}">
@@ -418,5 +418,7 @@
   ]
 }
 {% endschema %}
+
+
 
 
