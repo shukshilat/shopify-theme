@@ -1329,6 +1329,25 @@ a.product__text {
     /* allow media img element to scale relative to modal-opener/product-media-container */
     position: initial;
   }
+
+  /* Keep hero image from dominating the viewport; leave room for title, price, ATC */
+  .product-media-container.constrain-height {
+    --constrained-min-height: 20rem;
+    --constrained-height: min(
+      max(var(--constrained-min-height), calc(100svh - clamp(14rem, 40vh, 24rem))),
+      52vh
+    );
+  }
+
+  .product-media-container:not(.constrain-height) .media {
+    padding-top: min(var(--ratio-percent), 52vh);
+  }
+
+  /* Respect "Fit to image" — default .media > img uses cover and crops heavily */
+  .product-media-container.media-fit-contain .media > img,
+  .product-media-container.media-fit-contain .deferred-media__poster img {
+    object-fit: contain;
+  }
 }
 
 @media screen and (min-width: 750px) {
