@@ -261,6 +261,11 @@ slider-component.slider-component-full-width {
   .slider-counter__link {
     padding: 0.7rem;
   }
+
+  /* Hide mobile slider pagination row (prev/current/next). */
+  .slider-buttons {
+    display: none !important;
+  }
 }
 
 .slider-counter__link--dots .dot {
