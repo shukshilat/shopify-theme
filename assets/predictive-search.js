@@ -272,16 +272,19 @@ class PredictiveSearch extends SearchForm {
   static buildMarkupFromSearchPageHtml(htmlText, searchTerm) {
     try {
       const doc = new DOMParser().parseFromString(htmlText, 'text/html');
-      const grid = doc.getElementById('product-grid') || doc.querySelector('ul.product-grid');
-      if (!grid) return '';
+      const root =
+        doc.getElementById('product-grid') ||
+        doc.querySelector('.template-search__results.collection') ||
+        doc.querySelector('#ProductGridContainer');
+      if (!root) return '';
 
-      const items = grid.querySelectorAll(':scope > li.grid__item');
+      const items = root.querySelectorAll('li.grid__item');
       const products = [];
       const seen = new Set();
 
       items.forEach((li) => {
         const link =
-          li.querySelector('.card__heading a.full-unstyled-link[href*="/products/"]') ||
+          li.querySelector('.card__heading a[href*="/products/"]') ||
           li.querySelector('a.full-unstyled-link[href*="/products/"]') ||
           li.querySelector('a[href*="/products/"]');
         if (!link) return;
