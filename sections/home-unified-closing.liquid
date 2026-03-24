@@ -1,10 +1,10 @@
-{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
+﻿{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
   .home-unified-{{ section.id }} {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
     padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-    background: rgb(var(--color-background));
+    background: transparent;
   }
 
   .home-unified-{{ section.id }} .home-unified__heading {
@@ -152,7 +152,7 @@
   }
 {%- endstyle -%}
 
-<section class="home-unified-{{ section.id }} color-{{ section.settings.color_scheme }}">
+<section class="home-unified-{{ section.id }}">
   <div class="page-width">
     {%- if section.settings.bonuses_heading != blank -%}
       <h2 class="home-unified__heading inline-richtext {{ section.settings.heading_size }}">
@@ -288,7 +288,7 @@
       "type": "inline_richtext",
       "id": "bonuses_heading",
       "label": "Bonuses section title",
-      "default": "הבונוסים שלנו"
+      "default": "×”×‘×•× ×•×¡×™× ×©×œ× ×•"
     },
     {
       "type": "select",
@@ -309,7 +309,7 @@
       "type": "text",
       "id": "about_label",
       "label": "About button label",
-      "default": "אודות האתר"
+      "default": "××•×“×•×ª ×”××ª×¨"
     },
     {
       "type": "url",
@@ -320,7 +320,7 @@
       "type": "text",
       "id": "branches_title",
       "label": "Branches title",
-      "default": "הסניפים שלנו ושעות פתיחה"
+      "default": "סניפים"
     },
     {
       "type": "richtext",
@@ -341,7 +341,7 @@
       "type": "inline_richtext",
       "id": "newsletter_heading",
       "label": "Newsletter heading",
-      "default": "הצטרפות לחברים של שילת"
+      "default": "×”×¦×˜×¨×¤×•×ª ×œ×—×‘×¨×™× ×©×œ ×©×™×œ×ª"
     },
     {
       "type": "header",
@@ -377,13 +377,13 @@
           "type": "text",
           "id": "title",
           "label": "Title",
-          "default": "כותרת"
+          "default": "×›×•×ª×¨×ª"
         },
         {
           "type": "richtext",
           "id": "text",
           "label": "Text",
-          "default": "<p>תיאור קצר.</p>"
+          "default": "<p>×ª×™××•×¨ ×§×¦×¨.</p>"
         }
       ]
     }
@@ -395,22 +395,22 @@
         {
           "type": "bonus",
           "settings": {
-            "title": "משלוחים בחינם",
-            "text": "<p>משלוחים בחינם באזור מודיעין והסביבה.</p>"
+            "title": "×ž×©×œ×•×—×™× ×‘×—×™× ×",
+            "text": "<p>×ž×©×œ×•×—×™× ×‘×—×™× × ×‘××–×•×¨ ×ž×•×“×™×¢×™×Ÿ ×•×”×¡×‘×™×‘×”.</p>"
           }
         },
         {
           "type": "bonus",
           "settings": {
-            "title": "איכות",
-            "text": "<p>סחורה טרייה ואיכותית כל השבוע.</p>"
+            "title": "××™×›×•×ª",
+            "text": "<p>×¡×—×•×¨×” ×˜×¨×™×™×” ×•××™×›×•×ª×™×ª ×›×œ ×”×©×‘×•×¢.</p>"
           }
         },
         {
           "type": "bonus",
           "settings": {
-            "title": "כחול לבן",
-            "text": "<p>תומכים בחקלאות ישראלית.</p>"
+            "title": "×›×—×•×œ ×œ×‘×Ÿ",
+            "text": "<p>×ª×•×ž×›×™× ×‘×—×§×œ××•×ª ×™×©×¨××œ×™×ª.</p>"
           }
         }
       ]
@@ -418,3 +418,5 @@
   ]
 }
 {% endschema %}
+
+

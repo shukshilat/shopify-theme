@@ -15,21 +15,21 @@
         "heading": {
           "type": "heading",
           "settings": {
-            "heading": "שוק שילת",
+            "heading": "×©×•×§ ×©×™×œ×ª",
             "heading_size": "h0"
           }
         },
         "text_BxMxeF": {
           "type": "text",
           "settings": {
-            "text": "ירקות ופירות טריים ישירות מהשדה",
+            "text": "×™×¨×§×•×ª ×•×¤×™×¨×•×ª ×˜×¨×™×™× ×™×©×™×¨×•×ª ×ž×”×©×“×”",
             "text_style": "body"
           }
         },
         "button": {
           "type": "buttons",
           "settings": {
-            "button_label_1": "קנה עכשיו",
+            "button_label_1": "×§× ×” ×¢×›×©×™×•",
             "button_link_1": "shopify://collections/all",
             "button_style_secondary_1": true,
             "button_label_2": "",
@@ -62,7 +62,7 @@
       "settings": {
         "collection": "all",
         "products_to_show": 6,
-        "title": "המלצות השבוע",
+        "title": "×”×ž×œ×¦×•×ª ×”×©×‘×•×¢",
         "heading_size": "h2",
         "description": "",
         "show_description": false,
@@ -88,8 +88,8 @@
     "instagram_feed_home": {
       "type": "main-instagram-feed",
       "settings": {
-        "title": "האינסטגרם שלנו",
-        "subtitle": "תמונות וסרטונים ישירות מהעמוד sohkshilat",
+        "title": "×”××™× ×¡×˜×’×¨× ×©×œ× ×•",
+        "subtitle": "×ª×ž×•× ×•×ª ×•×¡×¨×˜×•× ×™× ×™×©×™×¨×•×ª ×ž×”×¢×ž×•×“ sohkshilat",
         "username": "sohkshilat",
         "instagram_access_token": "",
         "posts_limit": 9,
@@ -103,19 +103,19 @@
         "featured_collection_b3xXkj": {
           "type": "featured_collection",
           "settings": {
-            "collection": "פירות"
+            "collection": "×¤×™×¨×•×ª"
           }
         },
         "featured_collection_DwDdbc": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ירקות"
+            "collection": "×™×¨×§×•×ª"
           }
         },
         "featured_collection_fF3p6V": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ביצים-שמן-זית-ועוד"
+            "collection": "×‘×™×¦×™×-×©×ž×Ÿ-×–×™×ª-×•×¢×•×“"
           }
         }
       },
@@ -126,7 +126,7 @@
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
-        "title": "המוצרים שלנו",
+        "title": "×”×ž×•×¦×¨×™× ×©×œ× ×•",
         "heading_size": "h1",
         "image_ratio": "square",
         "columns_desktop": 3,
@@ -144,7 +144,7 @@
         "button_Bi4iGU": {
           "type": "button",
           "settings": {
-            "button_label": "קנה עכשיו",
+            "button_label": "×§× ×” ×¢×›×©×™×•",
             "button_link": "shopify://collections",
             "button_style_secondary": false,
             "button_label_2": "",
@@ -172,22 +172,22 @@
         "bonus_cFFkmA": {
           "type": "bonus",
           "settings": {
-            "title": "משלוחים בחינם מהיום להיום באזור מודיעין והסביבה",
-            "text": "<p><br/>משלוחים בחינם מהיום להיום באזור מודיעין והסביבה (בהזמנה של 150 ש\"ח למעלה)<br/><br/></p>"
+            "title": "×ž×©×œ×•×—×™× ×‘×—×™× × ×ž×”×™×•× ×œ×”×™×•× ×‘××–×•×¨ ×ž×•×“×™×¢×™×Ÿ ×•×”×¡×‘×™×‘×”",
+            "text": "<p><br/>×ž×©×œ×•×—×™× ×‘×—×™× × ×ž×”×™×•× ×œ×”×™×•× ×‘××–×•×¨ ×ž×•×“×™×¢×™×Ÿ ×•×”×¡×‘×™×‘×” (×‘×”×–×ž× ×” ×©×œ 150 ×©\"×— ×œ×ž×¢×œ×”)<br/><br/></p>"
           }
         },
         "bonus_Cxx3n4": {
           "type": "bonus",
           "settings": {
-            "title": "אנחנו בוחרים את הסחורה הטובה ביותר",
-            "text": "<p>אנחנו דואגים לספק לכם סחורה טרייה,יפה,ואיכותית (או כמו שאומרים אצלנו בשוק סחורה א א(; ) יום יום במשך כל השבוע </p>"
+            "title": "×× ×—× ×• ×‘×•×—×¨×™× ××ª ×”×¡×—×•×¨×” ×”×˜×•×‘×” ×‘×™×•×ª×¨",
+            "text": "<p>×× ×—× ×• ×“×•××’×™× ×œ×¡×¤×§ ×œ×›× ×¡×—×•×¨×” ×˜×¨×™×™×”,×™×¤×”,×•××™×›×•×ª×™×ª (××• ×›×ž×• ×©××•×ž×¨×™× ××¦×œ× ×• ×‘×©×•×§ ×¡×—×•×¨×” × ×(; ) ×™×•× ×™×•× ×‘×ž×©×š ×›×œ ×”×©×‘×•×¢ </p>"
           }
         },
         "bonus_dWzXq6": {
           "type": "bonus",
           "settings": {
-            "title": "תוצרת כחול לבן",
-            "text": "<p>תומכים בחקלאות ובחקלאים ישראלים אשר דואגים לנו במשך כל השנה לפירות וירקות תצורת כחול לבן</p>"
+            "title": "×ª×•×¦×¨×ª ×›×—×•×œ ×œ×‘×Ÿ",
+            "text": "<p>×ª×•×ž×›×™× ×‘×—×§×œ××•×ª ×•×‘×—×§×œ××™× ×™×©×¨××œ×™× ××©×¨ ×“×•××’×™× ×œ× ×• ×‘×ž×©×š ×›×œ ×”×©× ×” ×œ×¤×™×¨×•×ª ×•×™×¨×§×•×ª ×ª×¦×•×¨×ª ×›×—×•×œ ×œ×‘×Ÿ</p>"
           }
         }
       },
@@ -199,14 +199,14 @@
       "name": "Home closing (unified)",
       "settings": {
         "color_scheme": "scheme-1",
-        "bonuses_heading": "הבונוסים שלנו",
+        "bonuses_heading": "×”×‘×•× ×•×¡×™× ×©×œ× ×•",
         "heading_size": "h1",
-        "about_label": "אודות האתר",
+        "about_label": "××•×“×•×ª ×”××ª×¨",
         "about_link": "/pages/about",
-        "branches_title": "הסניפים שלנו ושעות פתיחה",
-        "branches_text": "<p>עמק דותן 66- מודיעין</p><p>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </p><p>משתלת הארזים- כפר רות</p><p>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</p>",
+        "branches_title": "סניפים",
+        "branches_text": "<p>×¢×ž×§ ×“×•×ª×Ÿ 66- ×ž×•×“×™×¢×™×Ÿ</p><p>×©×¢×•×ª ×¤×ª×™×—×” ×'-×”' 7:00-20:30 ×™×ž×™ ×•' 7:00-×©×¢×” ×œ×¤× ×™ ×›× ×™×¡×ª ×”×©×‘×ª </p><p>×ž×©×ª×œ×ª ×”××¨×–×™×- ×›×¤×¨ ×¨×•×ª</p><p>×©×¢×•×ª ×¤×ª×™×—×”- ×“'-×”' 7:00-18:00 ×•'- 7:00- ×©×¢×” ×œ×¤× ×™ ×›× ×™×¡×ª ×”×©×‘×ª</p>",
         "show_newsletter": true,
-        "newsletter_heading": "הצטרפות לחברים של שילת",
+        "newsletter_heading": "×”×¦×˜×¨×¤×•×ª ×œ×—×‘×¨×™× ×©×œ ×©×™×œ×ª",
         "padding_top": 40,
         "padding_bottom": 28
       }
