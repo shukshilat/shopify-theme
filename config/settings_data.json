@@ -397,8 +397,6 @@
     }
   },
   "platform_customizations": {
-    "custom_css": [
-      ".header {border-bottom:3px solid #2E7D32;}"
-    ]
+    "custom_css": []
   }
 }

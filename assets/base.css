@@ -2366,6 +2366,15 @@ input[type='checkbox'] {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
+/* Full-width green rule under header (was on .header.page-width and looked “cut off”) */
+.section-header .header-wrapper {
+  border-bottom: 3px solid #2e7d32 !important;
+}
+
+.section-header .header.page-width {
+  border-bottom: none !important;
+}
+
 .header {
   display: grid;
   grid-template-areas: 'left-icons heading icons';
