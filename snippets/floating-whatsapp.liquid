@@ -1,0 +1,21 @@
+{%- liquid
+  assign whatsapp_phone = '972502688041'
+  assign whatsapp_text = 'היי, אשמח לדבר עם נציג'
+-%}
+<a
+  class="floating-whatsapp focus-inset"
+  href="https://wa.me/{{ whatsapp_phone }}?text={{ whatsapp_text | url_encode }}"
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="פתיחת צ׳אט וואטסאפ מהיר עם נציג"
+>
+  <span class="floating-whatsapp__icon">
+    <img
+      src="{{ 'icon-whatsapp.svg' | asset_url }}"
+      alt=""
+      width="56"
+      height="56"
+      loading="lazy"
+    >
+  </span>
+</a>

@@ -1,7 +1,7 @@
-/* Waze shortcut — circular FAB, vertically centered on inline end */
-.floating-waze {
+/* Floating shortcuts (Waze + WhatsApp) */
+.floating-waze,
+.floating-whatsapp {
   position: fixed;
-  top: 50%;
   transform: translateY(-50%);
   inset-inline-end: 1.25rem;
   inset-inline-start: auto;
@@ -22,24 +22,36 @@
   overflow: hidden;
 }
 
-.floating-waze:hover {
+.floating-waze {
+  top: 50%;
+}
+
+.floating-whatsapp {
+  top: calc(50% + 7rem);
+}
+
+.floating-waze:hover,
+.floating-whatsapp:hover {
   transform: translateY(-50%) scale(1.06);
   box-shadow: 0 0.6rem 1.8rem rgba(0, 0, 0, 0.28);
 }
 
-.floating-waze:focus-visible {
+.floating-waze:focus-visible,
+.floating-whatsapp:focus-visible {
   outline: 0.2rem solid #33ccff;
   outline-offset: 0.2rem;
 }
 
-.floating-waze__icon {
+.floating-waze__icon,
+.floating-whatsapp__icon {
   display: flex;
   width: 100%;
   height: 100%;
   line-height: 0;
 }
 
-.floating-waze__icon img {
+.floating-waze__icon img,
+.floating-whatsapp__icon img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -49,19 +61,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .floating-waze {
+  .floating-waze,
+  .floating-whatsapp {
     transition: none;
   }
 
-  .floating-waze:hover {
+  .floating-waze:hover,
+  .floating-whatsapp:hover {
     transform: translateY(-50%);
   }
 }
 
 @media screen and (max-width: 749px) {
-  .floating-waze {
+  .floating-waze,
+  .floating-whatsapp {
     width: 5.2rem;
     height: 5.2rem;
     inset-inline-end: 1rem;
+  }
+
+  .floating-whatsapp {
+    top: calc(50% + 6.4rem);
   }
 }
