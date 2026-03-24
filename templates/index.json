@@ -126,18 +126,6 @@
         "padding_bottom": 36
       }
     },
-    "instagram_feed_home": {
-      "type": "main-instagram-feed",
-      "settings": {
-        "title": "האינסטגרם שלנו",
-        "subtitle": "תמונות וסרטונים ישירות מהעמוד sohkshilat",
-        "username": "sohkshilat",
-        "instagram_access_token": "",
-        "posts_limit": 9,
-        "padding_top": 24,
-        "padding_bottom": 24
-      }
-    },
     "rich_text_EKmEdi": {
       "type": "rich-text",
       "blocks": {
@@ -164,6 +152,18 @@
         "full_width": true,
         "padding_top": 40,
         "padding_bottom": 52
+      }
+    },
+    "instagram_feed_home": {
+      "type": "main-instagram-feed",
+      "settings": {
+        "title": "האינסטגרם שלנו",
+        "subtitle": "תמונות וסרטונים ישירות מהעמוד sohkshilat",
+        "username": "sohkshilat",
+        "instagram_access_token": "",
+        "posts_limit": 9,
+        "padding_top": 24,
+        "padding_bottom": 24
       }
     },
     "home_unified_closing": {
@@ -204,7 +204,7 @@
         "about_label": "אודות האתר",
         "about_link": "/pages/about",
         "branches_title": "הסניפים שלנו ושעות פתיחה",
-        "branches_text": "<p>עמק דותן 66- מודיעין</p><p>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </p><p>משתלת הארזים- כפר רות</p><p>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</p>",
+        "branches_text": "<p><em><strong>עמק דותן 66- מודיעין</strong></em></p><p><em><strong>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </strong></em></p><p><em><strong>משתלת הארזים- כפר רות</strong></em></p><p><em><strong>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</strong></em></p>",
         "show_newsletter": true,
         "newsletter_heading": "הצטרפות לחברים של שילת",
         "padding_top": 40,
