@@ -70,7 +70,7 @@
         "columns_desktop": 4,
         "enable_desktop_slider": false,
         "full_width": false,
-        "show_view_all": true,
+        "show_view_all": false,
         "view_all_style": "solid",
         "color_scheme": "scheme-1",
         "image_ratio": "adapt",
@@ -80,7 +80,7 @@
         "show_rating": false,
         "quick_add": "none",
         "columns_mobile": "2",
-        "swipe_on_mobile": false,
+        "swipe_on_mobile": true,
         "padding_top": 44,
         "padding_bottom": 36
       }
@@ -121,7 +121,7 @@
         "color_scheme": "",
         "show_view_all": false,
         "columns_mobile": "1",
-        "swipe_on_mobile": false,
+        "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 36
       }
