@@ -219,18 +219,6 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
-    },
-    "home_bottom_footer_custom": {
-      "type": "home-bottom-footer",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "about_label": "אודות האתר",
-        "about_link": "/pages/about",
-        "branches_title": "הסניפים שלנו ושעות פתיחה",
-        "branches_text": "<p>עמק דותן 66- מודיעין</p><p>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </p><p>משתלת הארזים- כפר רות</p><p>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</p>",
-        "padding_top": 28,
-        "padding_bottom": 28
-      }
     }
   },
   "order": [
@@ -239,7 +227,6 @@
     "instagram_feed_home",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
-    "multicolumn_EgthwK",
-    "home_bottom_footer_custom"
+    "multicolumn_EgthwK"
   ]
 }
