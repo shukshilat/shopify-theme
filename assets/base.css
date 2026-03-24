@@ -2959,12 +2959,21 @@ main#MainContent,
   background-color: transparent !important;
 }
 
-/* Keep header/logo area always white */
+/* Keep header/logo area always white (full width, not body gradient bleeding through) */
 .section-header,
 .shopify-section-header,
 .header-wrapper,
 .header {
   background-color: #ffffff !important;
+}
+
+/* header-wrapper uses .gradient — override global luxury background so sides stay white */
+.section-header .header-wrapper.gradient,
+.header-wrapper.gradient {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  background-attachment: scroll !important;
 }
 
 @media screen and (forced-colors: active) {
