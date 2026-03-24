@@ -1336,7 +1336,7 @@ a.product__text {
   */
   product-info .product__media-wrapper .product-media-container.constrain-height .media,
   product-info .product__media-wrapper .product-media-container:not(.constrain-height) .media {
-    padding-top: min(var(--ratio-percent), 45vh) !important;
+    padding-top: min(var(--ratio-percent), 34vh) !important;
   }
 
   product-info .product__media-wrapper .product-media-container .media > img,
