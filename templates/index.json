@@ -85,6 +85,7 @@
         "padding_bottom": 36
       }
     },
+<<<<<<< HEAD
     "instagram_feed_home": {
       "type": "main-instagram-feed",
       "settings": {
@@ -97,6 +98,8 @@
         "padding_bottom": 24
       }
     },
+=======
+>>>>>>> 8a16d4dd76364d39bade88f1de568a75249b1e15
     "collection_list_ek6WUC": {
       "type": "collection-list",
       "blocks": {
@@ -166,6 +169,18 @@
         "padding_bottom": 52
       }
     },
+    "instagram_feed_home": {
+      "type": "main-instagram-feed",
+      "settings": {
+        "title": "האינסטגרם שלנו",
+        "subtitle": "תמונות וסרטונים ישירות מהעמוד sohkshilat",
+        "username": "sohkshilat",
+        "instagram_access_token": "",
+        "posts_limit": 9,
+        "padding_top": 24,
+        "padding_bottom": 24
+      }
+    },
     "home_unified_closing": {
       "type": "home-unified-closing",
       "blocks": {
@@ -179,15 +194,25 @@
         "bonus_Cxx3n4": {
           "type": "bonus",
           "settings": {
+<<<<<<< HEAD
             "title": "×× ×—× ×• ×‘×•×—×¨×™× ××ª ×”×¡×—×•×¨×” ×”×˜×•×‘×” ×‘×™×•×ª×¨",
             "text": "<p>×× ×—× ×• ×“×•××’×™× ×œ×¡×¤×§ ×œ×›× ×¡×—×•×¨×” ×˜×¨×™×™×”,×™×¤×”,×•××™×›×•×ª×™×ª (××• ×›×ž×• ×©××•×ž×¨×™× ××¦×œ× ×• ×‘×©×•×§ ×¡×—×•×¨×” × ×(; ) ×™×•× ×™×•× ×‘×ž×©×š ×›×œ ×”×©×‘×•×¢ </p>"
+=======
+            "title": "אנחנו בוחרים את הסחורה הטובה ביותר",
+            "text": "<p><em><strong>אנחנו דואגים לספק לכם סחורה טרייה,יפה,ואיכותית (או כמו שאומרים אצלנו בשוק סחורה א א(; ) יום יום במשך כל השבוע </strong></em></p>"
+>>>>>>> 8a16d4dd76364d39bade88f1de568a75249b1e15
           }
         },
         "bonus_dWzXq6": {
           "type": "bonus",
           "settings": {
+<<<<<<< HEAD
             "title": "×ª×•×¦×¨×ª ×›×—×•×œ ×œ×‘×Ÿ",
             "text": "<p>×ª×•×ž×›×™× ×‘×—×§×œ××•×ª ×•×‘×—×§×œ××™× ×™×©×¨××œ×™× ××©×¨ ×“×•××’×™× ×œ× ×• ×‘×ž×©×š ×›×œ ×”×©× ×” ×œ×¤×™×¨×•×ª ×•×™×¨×§×•×ª ×ª×¦×•×¨×ª ×›×—×•×œ ×œ×‘×Ÿ</p>"
+=======
+            "title": "תוצרת כחול לבן",
+            "text": "<p><em><strong>תומכים בחקלאות ובחקלאים ישראלים אשר דואגים לנו במשך כל השנה לפירות וירקות תצורת כחול לבן</strong></em></p>"
+>>>>>>> 8a16d4dd76364d39bade88f1de568a75249b1e15
           }
         }
       },
@@ -203,8 +228,13 @@
         "heading_size": "h1",
         "about_label": "××•×“×•×ª ×”××ª×¨",
         "about_link": "/pages/about",
+<<<<<<< HEAD
         "branches_title": "סניפים",
         "branches_text": "<p>×¢×ž×§ ×“×•×ª×Ÿ 66- ×ž×•×“×™×¢×™×Ÿ</p><p>×©×¢×•×ª ×¤×ª×™×—×” ×'-×”' 7:00-20:30 ×™×ž×™ ×•' 7:00-×©×¢×” ×œ×¤× ×™ ×›× ×™×¡×ª ×”×©×‘×ª </p><p>×ž×©×ª×œ×ª ×”××¨×–×™×- ×›×¤×¨ ×¨×•×ª</p><p>×©×¢×•×ª ×¤×ª×™×—×”- ×“'-×”' 7:00-18:00 ×•'- 7:00- ×©×¢×” ×œ×¤× ×™ ×›× ×™×¡×ª ×”×©×‘×ª</p>",
+=======
+        "branches_title": "הסניפים שלנו ושעות פתיחה",
+        "branches_text": "<p><strong>עמק דותן 66- מודיעין</strong></p><p><strong>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </strong></p><p><strong>משתלת הארזים- כפר רות</strong></p><p><strong>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</strong></p>",
+>>>>>>> 8a16d4dd76364d39bade88f1de568a75249b1e15
         "show_newsletter": true,
         "newsletter_heading": "×”×¦×˜×¨×¤×•×ª ×œ×—×‘×¨×™× ×©×œ ×©×™×œ×ª",
         "padding_top": 40,
@@ -215,9 +245,9 @@
   "order": [
     "image_banner",
     "featured_collection",
-    "instagram_feed_home",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
+    "instagram_feed_home",
     "home_unified_closing"
   ]
 }
