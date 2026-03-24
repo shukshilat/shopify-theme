@@ -166,69 +166,48 @@
         "padding_bottom": 52
       }
     },
-    "multicolumn_EgthwK": {
-      "type": "multicolumn",
+    "home_unified_closing": {
+      "type": "home-unified-closing",
       "blocks": {
-        "column_cFFkmA": {
-          "type": "column",
+        "bonus_cFFkmA": {
+          "type": "bonus",
           "settings": {
             "title": "משלוחים בחינם מהיום להיום באזור מודיעין והסביבה",
-            "text": "<p><br/>משלוחים בחינם מהיום להיום באזור מודיעין והסביבה (בהזמנה של 150 ש\"ח למעלה)<br/><br/></p>",
-            "link_label": "",
-            "link": ""
+            "text": "<p><br/>משלוחים בחינם מהיום להיום באזור מודיעין והסביבה (בהזמנה של 150 ש\"ח למעלה)<br/><br/></p>"
           }
         },
-        "column_Cxx3n4": {
-          "type": "column",
+        "bonus_Cxx3n4": {
+          "type": "bonus",
           "settings": {
             "title": "אנחנו בוחרים את הסחורה הטובה ביותר",
-            "text": "<p>אנחנו דואגים לספק לכם סחורה טרייה,יפה,ואיכותית (או כמו שאומרים אצלנו בשוק סחורה א א(; ) יום יום במשך כל השבוע </p>",
-            "link_label": "",
-            "link": ""
+            "text": "<p>אנחנו דואגים לספק לכם סחורה טרייה,יפה,ואיכותית (או כמו שאומרים אצלנו בשוק סחורה א א(; ) יום יום במשך כל השבוע </p>"
           }
         },
-        "column_dWzXq6": {
-          "type": "column",
+        "bonus_dWzXq6": {
+          "type": "bonus",
           "settings": {
             "title": "תוצרת כחול לבן",
-            "text": "<p>תומכים בחקלאות ובחקלאים ישראלים אשר דואגים לנו במשך כל השנה לפירות וירקות תצורת כחול לבן</p>",
-            "link_label": "",
-            "link": ""
+            "text": "<p>תומכים בחקלאות ובחקלאים ישראלים אשר דואגים לנו במשך כל השנה לפירות וירקות תצורת כחול לבן</p>"
           }
         }
       },
       "block_order": [
-        "column_cFFkmA",
-        "column_Cxx3n4",
-        "column_dWzXq6"
+        "bonus_cFFkmA",
+        "bonus_Cxx3n4",
+        "bonus_dWzXq6"
       ],
-      "name": "t:sections.multicolumn.presets.name",
-      "settings": {
-        "title": "הבונוסים שלנו",
-        "heading_size": "h1",
-        "image_width": "full",
-        "image_ratio": "adapt",
-        "button_label": "",
-        "button_link": "",
-        "columns_desktop": 3,
-        "column_alignment": "left",
-        "background_style": "primary",
-        "color_scheme": "",
-        "columns_mobile": "1",
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
-    "home_bottom_footer_custom": {
-      "type": "home-bottom-footer",
+      "name": "Home closing (unified)",
       "settings": {
         "color_scheme": "scheme-1",
+        "bonuses_heading": "הבונוסים שלנו",
+        "heading_size": "h1",
         "about_label": "אודות האתר",
         "about_link": "/pages/about",
         "branches_title": "הסניפים שלנו ושעות פתיחה",
         "branches_text": "<p>עמק דותן 66- מודיעין</p><p>שעות פתיחה א'-ה' 7:00-20:30 ימי ו' 7:00-שעה לפני כניסת השבת </p><p>משתלת הארזים- כפר רות</p><p>שעות פתיחה- ד'-ה' 7:00-18:00 ו'- 7:00- שעה לפני כניסת השבת</p>",
-        "padding_top": 28,
+        "show_newsletter": true,
+        "newsletter_heading": "הצטרפו לחברים שלנו",
+        "padding_top": 40,
         "padding_bottom": 28
       }
     }
@@ -239,7 +218,6 @@
     "instagram_feed_home",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
-    "multicolumn_EgthwK",
-    "home_bottom_footer_custom"
+    "home_unified_closing"
   ]
 }

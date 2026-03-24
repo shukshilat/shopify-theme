@@ -1,0 +1,417 @@
+{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .home-unified-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    background: rgb(var(--color-background));
+  }
+
+  .home-unified-{{ section.id }} .home-unified__heading {
+    margin: 0 0 2.4rem;
+    text-align: center;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__bonuses {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__bonus {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    text-align: center;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__bonus h3 {
+    margin: 0 0 0.8rem;
+    font-size: calc(var(--font-heading-scale) * 1.6rem);
+    line-height: 1.25;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__bonus .rte {
+    margin: 0;
+    line-height: 1.75;
+    color: rgba(var(--color-foreground), 0.85);
+    font-size: 1.45rem;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__bonus .rte p {
+    margin: 0;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__split {
+    margin-top: 3.6rem;
+    padding-top: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+    align-items: start;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__about {
+    display: flex;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .home-unified-{{ section.id }} .home-unified__about {
+      justify-content: flex-start;
+    }
+  }
+
+  .home-unified-{{ section.id }} .home-unified__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 4.8rem;
+    min-width: 17rem;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(var(--color-button-text), 0.12);
+    background: rgb(var(--color-button));
+    color: rgb(var(--color-button-text));
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.6rem 1.4rem rgba(var(--color-button), 0.28);
+  }
+
+  .home-unified-{{ section.id }} .home-unified__branches {
+    text-align: center;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__branches-title {
+    margin: 0 0 0.8rem;
+    font-size: 2rem;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__branches-text {
+    margin: 0;
+    line-height: 1.8;
+    font-size: 1.45rem;
+    color: rgba(var(--color-foreground), 0.88);
+  }
+
+  .home-unified-{{ section.id }} .home-unified__branches-text p {
+    margin: 0 0 0.6rem;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__branches-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__newsletter {
+    margin-top: 3.6rem;
+    padding-top: 0;
+    text-align: center;
+    max-width: 52rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-unified-{{ section.id }} .home-unified__newsletter .footer-block__heading {
+    margin: 0 0 1.6rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .home-unified-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+
+    .home-unified-{{ section.id }} .home-unified__bonuses {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.4rem 2rem;
+      align-items: start;
+    }
+
+    .home-unified-{{ section.id }} .home-unified__bonus {
+      text-align: right;
+    }
+
+    .home-unified-{{ section.id }} .home-unified__split {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 3rem;
+    }
+
+    .home-unified-{{ section.id }} .home-unified__branches {
+      text-align: end;
+    }
+  }
+{%- endstyle -%}
+
+<section class="home-unified-{{ section.id }} color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    {%- if section.settings.bonuses_heading != blank -%}
+      <h2 class="home-unified__heading inline-richtext {{ section.settings.heading_size }}">
+        {{ section.settings.bonuses_heading }}
+      </h2>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <ul class="home-unified__bonuses" role="list">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'bonus' -%}
+            <li class="home-unified__bonus" {{ block.shopify_attributes }}>
+              {%- if block.settings.title != blank -%}
+                <h3>{{ block.settings.title | escape }}</h3>
+              {%- endif -%}
+              {%- if block.settings.text != blank -%}
+                <div class="rte">{{ block.settings.text }}</div>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    <div class="home-unified__split">
+      <div class="home-unified__about">
+        {%- if section.settings.about_label != blank -%}
+          <a class="home-unified__btn" href="{{ section.settings.about_link | default: '/pages/about' }}">
+            {{ section.settings.about_label | escape }}
+          </a>
+        {%- endif -%}
+      </div>
+      <div class="home-unified__branches">
+        {%- if section.settings.branches_title != blank -%}
+          <h2 class="home-unified__branches-title">{{ section.settings.branches_title | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.branches_text != blank -%}
+          <div class="home-unified__branches-text rte">{{ section.settings.branches_text }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_newsletter -%}
+      <div class="home-unified__newsletter">
+        {%- if section.settings.newsletter_heading != blank -%}
+          <h2 class="footer-block__heading inline-richtext">{{ section.settings.newsletter_heading }}</h2>
+        {%- endif -%}
+        {%- form 'customer', id: 'ContactHomeUnified-' | append: section.id, class: 'footer__newsletter newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="newsletter-form__field-wrapper">
+            <div class="field">
+              <input
+                id="NewsletterHome-{{ section.id }}"
+                type="email"
+                name="contact[email]"
+                class="field__input"
+                value="{{ form.email }}"
+                aria-required="true"
+                autocorrect="off"
+                autocapitalize="off"
+                autocomplete="email"
+                {% if form.errors %}
+                  autofocus
+                  aria-invalid="true"
+                  aria-describedby="ContactHomeUnified-error-{{ section.id }}"
+                {% elsif form.posted_successfully? %}
+                  aria-describedby="ContactHomeUnified-success-{{ section.id }}"
+                {% endif %}
+                placeholder="{{ 'newsletter.label' | t }}"
+                required
+              >
+              <label class="field__label" for="NewsletterHome-{{ section.id }}">
+                {{ 'newsletter.label' | t }}
+              </label>
+              <button
+                type="submit"
+                class="newsletter-form__button field__button"
+                name="commit"
+                id="Subscribe-home-{{ section.id }}"
+                aria-label="{{ 'newsletter.button_label' | t }}"
+              >
+                <span class="svg-wrapper">
+                  {{- 'icon-arrow.svg' | inline_asset_content -}}
+                </span>
+              </button>
+            </div>
+            {%- if form.errors -%}
+              <small class="newsletter-form__message form__message" id="ContactHomeUnified-error-{{ section.id }}">
+                <span class="svg-wrapper">
+                  {{- 'icon-error.svg' | inline_asset_content -}}
+                </span>
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </small>
+            {%- endif -%}
+          </div>
+          {%- if form.posted_successfully? -%}
+            <h3
+              class="newsletter-form__message newsletter-form__message--success form__message"
+              id="ContactHomeUnified-success-{{ section.id }}"
+              tabindex="-1"
+              autofocus
+            >
+              <span class="svg-wrapper">
+                {{- 'icon-success.svg' | inline_asset_content -}}
+              </span>
+              {{- 'newsletter.success' | t }}
+            </h3>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home closing (unified)",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "bonuses_heading",
+      "label": "Bonuses section title",
+      "default": "הבונוסים שלנו"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "About & branches"
+    },
+    {
+      "type": "text",
+      "id": "about_label",
+      "label": "About button label",
+      "default": "אודות האתר"
+    },
+    {
+      "type": "url",
+      "id": "about_link",
+      "label": "About button link"
+    },
+    {
+      "type": "text",
+      "id": "branches_title",
+      "label": "Branches title",
+      "default": "הסניפים שלנו ושעות פתיחה"
+    },
+    {
+      "type": "richtext",
+      "id": "branches_text",
+      "label": "Branches and hours"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "inline_richtext",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "הצטרפו לחברים שלנו"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "bonus",
+      "name": "Bonus column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "כותרת"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>תיאור קצר.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home closing (unified)",
+      "blocks": [
+        {
+          "type": "bonus",
+          "settings": {
+            "title": "משלוחים בחינם",
+            "text": "<p>משלוחים בחינם באזור מודיעין והסביבה.</p>"
+          }
+        },
+        {
+          "type": "bonus",
+          "settings": {
+            "title": "איכות",
+            "text": "<p>סחורה טרייה ואיכותית כל השבוע.</p>"
+          }
+        },
+        {
+          "type": "bonus",
+          "settings": {
+            "title": "כחול לבן",
+            "text": "<p>תומכים בחקלאות ישראלית.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
