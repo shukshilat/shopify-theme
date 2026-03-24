@@ -28,8 +28,9 @@
   async function loadFeed(root) {
     var accessToken = root.dataset.accessToken || '';
     var limit = Number(root.dataset.limit || '9');
-    var statusEl = root.querySelector('[data-instagram-status]');
-    var gridEl = root.querySelector('[data-instagram-grid]');
+    var section = root.closest('.instagram-feed');
+    var statusEl = section ? section.querySelector('[data-instagram-status]') : null;
+    var gridEl = root;
 
     if (!accessToken) {
       if (statusEl) statusEl.hidden = false;
@@ -55,7 +56,6 @@
       }
 
       if (statusEl) statusEl.hidden = true;
-      if (!gridEl) return;
       gridEl.innerHTML = '';
 
       items.forEach(function (item) {
