@@ -284,6 +284,7 @@
     "header": {
       "announcement": "הודעה",
       "menu": "תפריט",
+      "customer_service_phone": "שירות לקוחות — התקשרו ל-08-6160126",
       "cart_count": {
         "one": "{{ count }} פריט",
         "other": "{{ count }} פריטים"

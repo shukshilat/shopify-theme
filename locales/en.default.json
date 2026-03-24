@@ -298,6 +298,7 @@
     "header": {
       "announcement": "Announcement",
       "menu": "Menu",
+      "customer_service_phone": "Customer service — call 08-6160126",
       "cart_count": {
         "one": "{{ count }} item",
         "other": "{{ count }} items"

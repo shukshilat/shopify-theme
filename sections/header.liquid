@@ -286,6 +286,14 @@
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       {%- endunless %}
 
+      <a
+        href="tel:+97286160126"
+        class="header__icon header__icon--phone link focus-inset"
+      >
+        <span class="svg-wrapper">{{ 'icon-phone.svg' | inline_asset_content }}</span>
+        <span class="visually-hidden">{{ 'sections.header.customer_service_phone' | t }}</span>
+      </a>
+
       {%- if shop.customer_accounts_enabled -%}
         <a
           href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
