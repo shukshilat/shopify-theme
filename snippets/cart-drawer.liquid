@@ -57,12 +57,12 @@
                       </button>
                     </div>
 
-                    <div class="cart-item__price">
+                    <div class="cart-item__price" data-unit-price>
                       {% if item.original_price != item.final_price %}
-                        <s>{{ item.original_price | money }}</s>
-                        <strong>{{ item.final_price | money }}</strong>
+                        <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
+                        <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
                       {% else %}
-                        <strong>{{ item.original_price | money }}</strong>
+                        <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
                       {% endif %}
                       {% if item.variant.unit_price %}
                         <div class="unit-price">
@@ -83,7 +83,7 @@
                     </div>
                   </div>
 
-                  <div>
+                  <div class="cart-item__line-total" data-line-price>
                     {{ item.final_line_price | money }}
                   </div>
                 </div>
@@ -117,57 +117,165 @@
 </cart-drawer>
 
 <script>
-  function updateCartUI(cart) {
-    const totalEl = document.querySelector('#CartDrawer .totals strong');
-    if (totalEl) {
-      totalEl.innerText = (cart.total_price / 100).toLocaleString('he-IL') + ' ₪';
+  (function () {
+    const FREE_SHIPPING_THRESHOLD = 15000;
+
+    function cents(v) {
+      var n = Number(v);
+      return isNaN(n) ? null : n;
     }
 
-    const el = document.querySelector('#CartDrawer .free-shipping-text');
-    if (!el) return;
-
-    const remain = 15000 - cart.total_price;
-    if (remain > 0) {
-      el.innerText = '🚚 נשאר לך ' + (remain / 100).toFixed(2) + ' ₪ למשלוח חינם';
-    } else {
-      el.innerText = '🎉 יש לך משלוח חינם!';
+    function formatCartMoney(centsVal) {
+      var c = cents(centsVal);
+      if (c === null) return '';
+      try {
+        return new Intl.NumberFormat('he-IL', {
+          style: 'currency',
+          currency: 'ILS',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(c / 100);
+      } catch (e) {
+        return (c / 100).toFixed(2) + ' ₪';
+      }
     }
-  }
 
-  function removeItem(el, line) {
-    const itemEl = el.closest('.cart-item');
-    itemEl.style.opacity = '0';
+    function updateLinePricesFromCart(cart) {
+      if (!cart || !Array.isArray(cart.items)) return;
 
-    setTimeout(() => {
+      cart.items.forEach(function (item, index) {
+        var line = index + 1;
+        var row = document.getElementById('CartDrawer-Item-' + line);
+        if (!row) return;
+
+        var lineTotalEl = row.querySelector('[data-line-price]');
+        var lineCents = cents(item.final_line_price);
+        if (lineTotalEl && lineCents !== null) {
+          lineTotalEl.textContent = formatCartMoney(lineCents);
+        }
+
+        var priceWrap = row.querySelector('[data-unit-price]');
+        if (!priceWrap) return;
+
+        var orig = cents(item.original_price);
+        var fin = cents(item.final_price);
+        if (orig !== null && fin !== null && orig !== fin) {
+          priceWrap.innerHTML =
+            '<s class="cart-item__unit-original">' +
+            formatCartMoney(orig) +
+            '</s> <strong class="cart-item__unit-final">' +
+            formatCartMoney(fin) +
+            '</strong>';
+        } else {
+          var unit = fin !== null ? fin : orig;
+          priceWrap.innerHTML = '<strong class="cart-item__unit-final">' + formatCartMoney(unit) + '</strong>';
+        }
+      });
+    }
+
+    function updateCartUI(cart) {
+      var tp = cart && cents(cart.total_price);
+      var totalEl = document.querySelector('#CartDrawer .totals strong');
+      if (totalEl && tp !== null) {
+        totalEl.textContent = formatCartMoney(tp);
+      }
+
+      var el = document.querySelector('#CartDrawer .free-shipping-text');
+      if (el && tp !== null) {
+        var remain = FREE_SHIPPING_THRESHOLD - tp;
+        if (remain > 0) {
+          el.textContent = '🚚 נשאר לך ' + formatCartMoney(remain) + ' למשלוח חינם';
+        } else {
+          el.textContent = '🎉 יש לך משלוח חינם!';
+        }
+      }
+
+      updateLinePricesFromCart(cart);
+    }
+
+    window.removeItem = function (el, line) {
+      var itemEl = el.closest('.cart-item');
+      if (itemEl) itemEl.style.opacity = '0';
+
+      setTimeout(function () {
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line: line, quantity: 0 }),
+        })
+          .then(function () {
+            return reloadCartDrawerMarkup();
+          })
+          .catch(function () {});
+      }, 200);
+    };
+
+    window.changeQty = function (line, change) {
+      var input = document.getElementById('qty-' + line);
+      if (!input) return;
+
+      var qty = parseInt(input.value, 10) + change;
+      if (qty < 1) return;
+
+      input.disabled = true;
+
       fetch('/cart/change.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line, quantity: 0 }),
+        body: JSON.stringify({ line: line, quantity: qty }),
       })
-        .then(() => fetch('/cart.js'))
-        .then((r) => r.json())
-        .then((cart) => {
-          itemEl.remove();
+        .then(function (res) {
+          if (!res.ok) throw new Error('cart change failed');
+          return fetch('/cart.js');
+        })
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (cart) {
+          input.value = qty;
           updateCartUI(cart);
+        })
+        .catch(function () {
+          fetch('/cart.js')
+            .then(function (r) {
+              return r.json();
+            })
+            .then(updateCartUI);
+        })
+        .finally(function () {
+          input.disabled = false;
         });
-    }, 200);
-  }
+    };
 
-  function changeQty(line, change) {
-    const input = document.getElementById('qty-' + line);
-    let qty = parseInt(input.value, 10) + change;
-    if (qty < 1) return;
+    window.updateCartUIFromCart = updateCartUI;
 
-    fetch('/cart/change.js', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ line: line, quantity: qty }),
-    })
-      .then(() => fetch('/cart.js'))
-      .then((r) => r.json())
-      .then((cart) => {
-        input.value = qty;
-        updateCartUI(cart);
-      });
-  }
+    function reloadCartDrawerMarkup() {
+      var base = (window.routes && window.routes.cart_url) || '/cart';
+      return fetch(base + '?section_id=cart-drawer')
+        .then(function (r) {
+          return r.text();
+        })
+        .then(function (html) {
+          var doc = new DOMParser().parseFromString(html, 'text/html');
+          var next = doc.getElementById('CartDrawer');
+          var cur = document.getElementById('CartDrawer');
+          if (!next || !cur) return fetch('/cart.js').then(function (r) { return r.json(); });
+          cur.innerHTML = next.innerHTML;
+          var overlay = document.getElementById('CartDrawer-Overlay');
+          var drawer = document.querySelector('cart-drawer');
+          if (overlay && drawer && typeof drawer.close === 'function') {
+            overlay.onclick = function () {
+              drawer.close();
+            };
+          }
+          return fetch('/cart.js').then(function (r) {
+            return r.json();
+          });
+        })
+        .then(function (cart) {
+          if (cart) updateCartUI(cart);
+        })
+        .catch(function () {});
+    }
+  })();
 </script>
