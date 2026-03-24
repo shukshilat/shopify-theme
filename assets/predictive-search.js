@@ -187,12 +187,6 @@ class PredictiveSearch extends SearchForm {
     }).toString()}`;
     const searchBase =
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
-    const storefrontUrl = `${searchBase}?${new URLSearchParams({
-      q: searchTerm,
-      type: 'product',
-      'options[prefix]': 'last',
-      section_id: 'search-predictive-fallback',
-    }).toString()}`;
 
     const signal = this.abortController.signal;
 
@@ -213,11 +207,7 @@ class PredictiveSearch extends SearchForm {
       }
 
       try {
-        const response = await fetch(storefrontUrl, { signal });
-        if (!response.ok) throw new Error('storefront');
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-        const extracted = PredictiveSearch.extractStorefrontPredictiveMarkup(doc);
+        const extracted = await PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal);
         if (extracted.includes('id="predictive-search-results"')) return extracted;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
@@ -247,6 +237,47 @@ class PredictiveSearch extends SearchForm {
         if (error?.name === 'AbortError' || error?.code === 20) return;
         this.close();
       });
+  }
+
+  static async fetchSearchSectionMarkup(searchBase, searchTerm, signal) {
+    const params = {
+      q: searchTerm,
+      type: 'product',
+      'options[prefix]': 'last',
+    };
+    const urlSectionId = `${searchBase}?${new URLSearchParams({
+      ...params,
+      section_id: 'search-predictive-fallback',
+    }).toString()}`;
+    let response = await fetch(urlSectionId, { signal });
+    if (response.ok) {
+      const text = await response.text();
+      const doc = new DOMParser().parseFromString(text, 'text/html');
+      const extracted = PredictiveSearch.extractStorefrontPredictiveMarkup(doc);
+      if (extracted.includes('id="predictive-search-results"')) return extracted;
+    }
+    const urlSections = `${searchBase}?${new URLSearchParams({
+      ...params,
+      sections: 'search-predictive-fallback',
+    }).toString()}`;
+    response = await fetch(urlSections, { signal });
+    if (!response.ok) throw new Error('storefront');
+    const text = await response.text();
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error('storefront-json');
+      }
+      const html = data['search-predictive-fallback'];
+      if (!html || typeof html !== 'string') throw new Error('storefront-json');
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return PredictiveSearch.extractStorefrontPredictiveMarkup(doc);
+    }
+    const doc = new DOMParser().parseFromString(text, 'text/html');
+    return PredictiveSearch.extractStorefrontPredictiveMarkup(doc);
   }
 
   /**
