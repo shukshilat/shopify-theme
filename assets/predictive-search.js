@@ -176,7 +176,11 @@ class PredictiveSearch extends SearchForm {
       return;
     }
 
-    fetch(`${routes.predictive_search_url}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`, {
+    // Section Rendering API needs GET /search?q=… (routes.search_url), NOT /search/suggest (predictive_search_url JSON API).
+    const sectionSearchBase =
+      typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
+
+    fetch(`${sectionSearchBase}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`, {
       signal: this.abortController.signal,
     })
       .then((response) => {
@@ -189,9 +193,14 @@ class PredictiveSearch extends SearchForm {
         return response.text();
       })
       .then((text) => {
-        const resultsMarkup = new DOMParser()
+        const sectionRoot = new DOMParser()
           .parseFromString(text, 'text/html')
-          .querySelector('#shopify-section-predictive-search').innerHTML;
+          .querySelector('#shopify-section-predictive-search');
+        if (!sectionRoot) {
+          this.close();
+          return;
+        }
+        const resultsMarkup = sectionRoot.innerHTML;
         // Save bandwidth keeping the cache in all instances synced
         this.allPredictiveSearchInstances.forEach((predictiveSearchInstance) => {
           predictiveSearchInstance.cachedResults[queryKey] = resultsMarkup;
@@ -235,7 +244,8 @@ class PredictiveSearch extends SearchForm {
 
   setLiveRegionResults() {
     this.removeAttribute('loading');
-    this.setLiveRegionText(this.querySelector('[data-predictive-search-live-region-count-value]').textContent);
+    const live = this.querySelector('[data-predictive-search-live-region-count-value]');
+    if (live) this.setLiveRegionText(live.textContent);
   }
 
   getResultsMaxHeight() {
