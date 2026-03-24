@@ -1330,23 +1330,24 @@ a.product__text {
     position: initial;
   }
 
-  /* Keep hero image from dominating the viewport; leave room for title, price, ATC */
-  .product-media-container.constrain-height {
-    --constrained-min-height: 20rem;
-    --constrained-height: min(
-      max(var(--constrained-min-height), calc(100svh - clamp(14rem, 40vh, 24rem))),
-      52vh
-    );
+  /*
+    Mobile: cap media box height and show full image (base.css uses object-fit: cover on .media > img).
+    Use product-info + !important so this wins over earlier .constrain-height math and cached CSS.
+  */
+  product-info .product__media-wrapper .product-media-container.constrain-height .media,
+  product-info .product__media-wrapper .product-media-container:not(.constrain-height) .media {
+    padding-top: min(var(--ratio-percent), 45vh) !important;
   }
 
-  .product-media-container:not(.constrain-height) .media {
-    padding-top: min(var(--ratio-percent), 52vh);
+  product-info .product__media-wrapper .product-media-container .media > img,
+  product-info .product__media-wrapper .product-media-container .deferred-media__poster img {
+    object-fit: contain !important;
+    object-position: center center;
   }
 
-  /* Respect "Fit to image" — default .media > img uses cover and crops heavily */
-  .product-media-container.media-fit-contain .media > img,
-  .product-media-container.media-fit-contain .deferred-media__poster img {
-    object-fit: contain;
+  product-info .product__media-wrapper .product-media-container.media-fit-cover .media > img,
+  product-info .product__media-wrapper .product-media-container.media-fit-cover .deferred-media__poster img {
+    object-fit: cover !important;
   }
 }
 
