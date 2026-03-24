@@ -23,40 +23,21 @@
   }
 
   .home-bottom-footer-{{ section.id }} .home-bottom-footer__card {
-    position: relative;
-    border-radius: 1.6rem;
-    padding: 2rem 1.8rem;
-    background: var(--footer-card-bg);
-    border: 1px solid rgba(var(--color-foreground), 0.1);
-    box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(3px);
-  }
-
-  .home-bottom-footer-{{ section.id }} .home-bottom-footer__card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    padding: 0.4rem 0.2rem;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
   .home-bottom-footer-{{ section.id }} .home-bottom-footer__about-wrap {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 100%;
-  }
-
-  .home-bottom-footer-{{ section.id }} .home-bottom-footer__label {
-    margin: 0;
-    font-size: 1.3rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(var(--color-foreground), 0.65);
+    min-height: auto;
   }
 
   .home-bottom-footer-{{ section.id }} .home-bottom-footer__btn {
@@ -91,21 +72,6 @@
     text-align: center;
   }
 
-  .home-bottom-footer-{{ section.id }} .home-bottom-footer__pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.8rem;
-    padding: 0.45rem 1.1rem;
-    border-radius: 999px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgb(var(--color-button));
-    background: rgba(var(--color-button), 0.12);
-  }
-
   .home-bottom-footer-{{ section.id }} .home-bottom-footer__title {
     margin: 0 0 0.7rem;
     font-size: 2rem;
@@ -131,11 +97,13 @@
     .home-bottom-footer-{{ section.id }} .home-bottom-footer__inner {
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
+      align-items: start;
     }
 
     .home-bottom-footer-{{ section.id }} .home-bottom-footer__about-wrap {
       align-items: flex-start;
       text-align: right;
+      justify-content: flex-start;
     }
 
     .home-bottom-footer-{{ section.id }} .home-bottom-footer__branches {
@@ -148,7 +116,6 @@
   <div class="page-width home-bottom-footer__inner">
     <div class="home-bottom-footer__card home-bottom-footer__about">
       <div class="home-bottom-footer__about-wrap">
-        <p class="home-bottom-footer__label">about</p>
         <a
           class="home-bottom-footer__btn"
           href="{{ section.settings.about_link }}"
@@ -159,7 +126,6 @@
     </div>
 
     <div class="home-bottom-footer__card home-bottom-footer__branches">
-      <span class="home-bottom-footer__pill">branches</span>
       <h2 class="home-bottom-footer__title">{{ section.settings.branches_title | escape }}</h2>
       <div class="home-bottom-footer__text rte">
         {{ section.settings.branches_text }}
