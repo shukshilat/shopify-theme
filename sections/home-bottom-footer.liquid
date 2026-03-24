@@ -17,14 +17,6 @@
     align-items: stretch;
   }
 
-  .home-bottom-footer-{{ section.id }} .home-bottom-footer__card {
-    padding: 0.4rem 0.2rem;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    backdrop-filter: none;
-  }
-
   .home-bottom-footer-{{ section.id }} .home-bottom-footer__about-wrap {
     display: flex;
     flex-direction: column;
@@ -109,7 +101,7 @@
 
 <section class="home-bottom-footer-{{ section.id }} color-{{ section.settings.color_scheme }}">
   <div class="page-width home-bottom-footer__inner">
-    <div class="home-bottom-footer__card home-bottom-footer__about">
+    <div class="home-bottom-footer__about">
       <div class="home-bottom-footer__about-wrap">
         <a
           class="home-bottom-footer__btn"
@@ -120,7 +112,7 @@
       </div>
     </div>
 
-    <div class="home-bottom-footer__card home-bottom-footer__branches">
+    <div class="home-bottom-footer__branches">
       <h2 class="home-bottom-footer__title">{{ section.settings.branches_title | escape }}</h2>
       <div class="home-bottom-footer__text rte">
         {{ section.settings.branches_text }}
