@@ -1,4 +1,4 @@
-/* Waze shortcut — official app-style icon, vertically centered on inline end */
+/* Waze shortcut — circular FAB, vertically centered on inline end */
 .floating-waze {
   position: fixed;
   top: 50%;
@@ -12,7 +12,7 @@
   width: 5.6rem;
   height: 5.6rem;
   padding: 0;
-  border-radius: 1.35rem;
+  border-radius: 50%;
   background: transparent;
   box-shadow: 0 0.4rem 1.4rem rgba(0, 0, 0, 0.22);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -43,6 +43,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
   display: block;
 }
 
@@ -61,6 +63,5 @@
     width: 5.2rem;
     height: 5.2rem;
     inset-inline-end: 1rem;
-    border-radius: 1.2rem;
   }
 }
