@@ -297,6 +297,8 @@
       {{ 'accessibility-widget.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
 
+    {{ 'floating-waze.css' | asset_url | stylesheet_tag }}
+
     <script>
       if (Shopify.designMode) {
         document.documentElement.classList.add('shopify-design-mode');
@@ -329,6 +331,8 @@
     {%- if settings.show_accessibility_widget -%}
       {% render 'accessibility-widget' %}
     {%- endif -%}
+
+    {% render 'floating-waze' %}
 
     <script>
       window.shopUrl = '{{ request.origin }}';

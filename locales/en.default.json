@@ -38,6 +38,9 @@
       }
     },
     "continue_shopping": "Continue shopping",
+    "waze": {
+      "open_navigation": "Open Waze directions to Emek Dotan 66, Modi'in"
+    },
     "pagination": {
       "label": "Pagination",
       "page": "Page {{ number }}",

@@ -34,6 +34,9 @@
       }
     },
     "continue_shopping": "המשך בקניות",
+    "waze": {
+      "open_navigation": "ניווט בוויז לעמק דותן 66, מודיעין"
+    },
     "pagination": {
       "label": "עימוד",
       "page": "עמוד {{ number }}",
