@@ -1,0 +1,49 @@
+/**
+ * Predictive search in full-screen header modal: keep dropdown visible and anchored.
+ * Loads after component-predictive-search.css
+ */
+
+/* !important: base component loads async (media=print); this must win */
+.search-modal,
+.search-modal.gradient {
+  overflow: visible !important;
+}
+
+.search-modal__content {
+  overflow: visible !important;
+}
+
+/* Anchor for absolute .predictive-search dropdown (all breakpoints) */
+.search-modal__content predictive-search.search-modal__form {
+  position: relative;
+  z-index: 5;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 74.2rem;
+  align-self: center;
+}
+
+.search-modal__content .search {
+  position: relative;
+}
+
+/* Dropdown below the input row, full width of the search field */
+.search-modal__content .predictive-search.predictive-search--header {
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+predictive-search[open] .predictive-search.predictive-search--header,
+predictive-search[loading] .predictive-search.predictive-search--header {
+  z-index: 10;
+}
+
+@media screen and (max-width: 749px) {
+  .search-modal__content predictive-search.search-modal__form {
+    max-width: 100%;
+  }
+}
