@@ -213,25 +213,22 @@ class PredictiveSearch extends SearchForm {
       }
 
       try {
-        const response = await fetch(jsonUrl, { signal });
-        if (!response.ok) throw new Error('json');
-        const data = await response.json();
-        const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
-        if (built) return built;
+        const response = await fetch(storefrontUrl, { signal });
+        if (!response.ok) throw new Error('storefront');
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        const extracted = PredictiveSearch.extractStorefrontPredictiveMarkup(doc);
+        if (extracted.includes('id="predictive-search-results"')) return extracted;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
       try {
-        const response = await fetch(storefrontUrl, { signal });
-        if (!response.ok) throw new Error('storefront');
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-        const sectionRoot =
-          doc.querySelector('#shopify-section-search-predictive-fallback') ||
-          doc.querySelector('[id*="search-predictive-fallback"]');
-        const inner = sectionRoot?.innerHTML?.trim() ?? '';
-        if (inner.includes('id="predictive-search-results"')) return inner;
+        const response = await fetch(jsonUrl, { signal });
+        if (!response.ok) throw new Error('json');
+        const data = await response.json();
+        const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
+        if (built) return built;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -250,6 +247,27 @@ class PredictiveSearch extends SearchForm {
         if (error?.name === 'AbortError' || error?.code === 20) return;
         this.close();
       });
+  }
+
+  /**
+   * Section Rendering returns id="shopify-section-…" (filename or template hash).
+   * Fallback: grab #predictive-search-results + live region span from full HTML.
+   */
+  static extractStorefrontPredictiveMarkup(doc) {
+    const sectionRoot =
+      doc.querySelector('#shopify-section-search-predictive-fallback') ||
+      doc.querySelector('[id*="search-predictive-fallback"]') ||
+      [...doc.querySelectorAll('.shopify-section')].find((el) => el.querySelector('#predictive-search-results'));
+    if (sectionRoot) {
+      const inner = sectionRoot.innerHTML?.trim() ?? '';
+      if (inner.includes('id="predictive-search-results"')) return inner;
+    }
+    const results = doc.getElementById('predictive-search-results');
+    if (!results) return '';
+    const live = doc.querySelector('[data-predictive-search-live-region-count-value]');
+    let html = results.outerHTML;
+    if (live && !results.contains(live)) html += live.outerHTML;
+    return html;
   }
 
   static escapeHtml(str) {
