@@ -219,6 +219,18 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "home_bottom_footer_custom": {
+      "type": "home-bottom-footer",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "about_label": "אודות האתר",
+        "about_link": "/pages/about",
+        "branches_title": "הסניפים שלנו ושעות פתיחה",
+        "branches_text": "<p>מודיעין - עמק דותן 66<br/>א'-ה' 08:00-20:00<br/>ו' 08:00-14:30</p>",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
     }
   },
   "order": [
@@ -227,6 +239,7 @@
     "instagram_feed_home",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
-    "multicolumn_EgthwK"
+    "multicolumn_EgthwK",
+    "home_bottom_footer_custom"
   ]
 }
