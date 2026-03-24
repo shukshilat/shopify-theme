@@ -322,6 +322,12 @@ slider-component.slider-component-full-width {
   justify-content: center;
 }
 
+/* Project customization: hide slider pagination/counter UI everywhere */
+.slider-counter,
+.slider-buttons {
+  display: none !important;
+}
+
 @media screen and (min-width: 990px) {
   .slider:not(.slider--everywhere):not(.slider--desktop) + .slider-buttons {
     display: none;
