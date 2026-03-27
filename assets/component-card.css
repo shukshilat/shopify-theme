@@ -593,3 +593,17 @@
     clip-path: polygon(var(--shape--blob-5));
   }
 }
+
+/*
+  Uniform product card thumbnails site-wide:
+  theme "adapt" uses each image's aspect ratio → uneven row heights.
+  Force a square media frame and contain images so titles/prices align per row.
+*/
+.product-card-wrapper .card--media:not(.card--horizontal) > .card__inner.ratio {
+  --ratio-percent: 100% !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__media .media img {
+  object-fit: contain;
+  object-position: center center;
+}
