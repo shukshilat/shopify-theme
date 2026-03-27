@@ -3927,7 +3927,8 @@ select {
 /* ===================== */
 /* תמונות קטנות יותר */
 /* ===================== */
-.card__media img {
+/* Exclude product cards: fixed height breaks Dawn ratio + uniform product thumbnails */
+.card-wrapper:not(.product-card-wrapper) .card__media img {
   height: 180px;
   object-fit: contain;
 }
@@ -3988,7 +3989,7 @@ details {
   transform: translateY(-6px);
   box-shadow: 0 8px 25px rgba(0,0,0,0.08);
 } 
-.card__media img {
+.card-wrapper:not(.product-card-wrapper) .card__media img {
   height: 240px;
   object-fit: contain;
   transition: 0.3s;
@@ -4028,7 +4029,7 @@ details {
   overflow: hidden;
 }
 
-.card__media img {
+.card-wrapper:not(.product-card-wrapper) .card__media img {
   height: 240px;
   object-fit: contain;
   transition: transform 0.4s ease;
