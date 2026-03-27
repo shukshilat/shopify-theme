@@ -1,0 +1,80 @@
+/* Bottom quantity row on product cards */
+.card-product-qty {
+  margin-top: 0.8rem;
+  width: 100%;
+}
+
+.card-product-qty__mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.8rem;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+}
+
+.card-product-qty__mode-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.card-product-qty__mode-input {
+  accent-color: rgba(var(--color-foreground), 0.85);
+}
+
+.card-product-qty__panels {
+  margin-bottom: 0.6rem;
+}
+
+.card-product-qty__panel .field__input {
+  width: 100%;
+  text-align: center;
+  min-height: 4rem;
+}
+
+.card-product-qty__weight-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-product-qty__weight-row .field__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-product-qty__suffix {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.card-product-qty__hint {
+  margin: 0.4rem 0 0;
+  text-align: center;
+  line-height: 1.35;
+  color: rgba(var(--color-foreground), 0.65);
+}
+
+.card-product-qty__submit {
+  margin-top: 0.2rem;
+}
+
+.card-product-qty--variants {
+  margin-top: 0.8rem;
+}
+
+.card-product-qty--variants .button {
+  font-size: 1.3rem;
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
+
+/* Hide floating quick-add when bottom form is present */
+.product-card-wrapper--card-bottom-qty .card__quick-add-overlay {
+  display: none !important;
+}

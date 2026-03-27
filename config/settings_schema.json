@@ -541,6 +541,26 @@
       },
       {
         "type": "header",
+        "content": "t:settings_schema.cards.settings.card_quantity.header.content"
+      },
+      {
+        "type": "select",
+        "id": "card_weight_cart_behavior",
+        "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.label",
+        "options": [
+          {
+            "value": "grams",
+            "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.options__1.label"
+          },
+          {
+            "value": "property",
+            "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.options__2.label"
+          }
+        ],
+        "default": "grams"
+      },
+      {
+        "type": "header",
         "content": "t:settings_schema.global.settings.header__border.content"
       },
       {

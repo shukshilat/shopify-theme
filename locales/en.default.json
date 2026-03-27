@@ -209,7 +209,16 @@
       "taxes_included": "Taxes included.",
       "duties_included": "Duties included.",
       "duties_and_taxes_included": "Duties and taxes included.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout."
+      "shipping_policy_html": "<a href=\"{{ link }}\">Shipping</a> calculated at checkout.",
+      "card_quantity": {
+        "by_units": "By units",
+        "by_weight": "By weight",
+        "units_label": "Number of units",
+        "weight_label": "Weight in kilograms",
+        "kg_suffix": "kg",
+        "weight_hint": "Default: cart quantity is set in grams (kg × 1000). Change theme settings if your pricing uses a different unit.",
+        "mode_group": "How to choose quantity"
+      }
     },
     "modal": {
       "label": "Media gallery"

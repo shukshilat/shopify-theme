@@ -17,11 +17,78 @@ if (!customElements.get('product-form')) {
         this.hideErrors = this.dataset.hideErrors === 'true';
       }
 
+      applyCardQuantityMode() {
+        const form = this.form;
+        if (!form || !form.classList.contains('card-product-qty__form')) return;
+
+        const behavior = form.dataset.weightBehavior || 'grams';
+        const mode =
+          form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+          form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+          'unit';
+
+        const qtyHidden = form.querySelector('.card-product-qty__quantity-hidden');
+        if (!qtyHidden) return;
+
+        const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+        const max =
+          form.dataset.qtyMax && form.dataset.qtyMax !== ''
+            ? parseInt(form.dataset.qtyMax, 10)
+            : null;
+        const increment = parseInt(form.dataset.qtyIncrement || '1', 10) || 1;
+
+        form.querySelectorAll('input[name^="properties["][data-card-weight-prop="true"]').forEach((el) =>
+          el.remove()
+        );
+
+        const snapUnitQuantity = (raw) => {
+          let q = parseInt(raw, 10);
+          if (Number.isNaN(q)) q = min;
+          q = Math.max(min, q);
+          if (increment > 1) {
+            const k = Math.ceil((q - min) / increment);
+            q = min + k * increment;
+          }
+          if (max != null && !Number.isNaN(max)) q = Math.min(q, max);
+          return Math.max(1, q);
+        };
+
+        if (mode === 'unit') {
+          const raw = form.querySelector('.js-card-qty-unit')?.value;
+          qtyHidden.value = String(snapUnitQuantity(raw));
+          return;
+        }
+
+        const kg = parseFloat(form.querySelector('.js-card-qty-kg')?.value) || 0.1;
+        const grams = Math.round(kg * 1000);
+
+        if (behavior === 'property') {
+          qtyHidden.value = '1';
+          const inp = document.createElement('input');
+          inp.type = 'hidden';
+          inp.name = 'properties[משקל]';
+          inp.setAttribute('data-card-weight-prop', 'true');
+          inp.value = `${String(kg).replace(/\.?0+$/, '')} ק״ג`;
+          form.appendChild(inp);
+          return;
+        }
+
+        let g = Math.max(1, grams);
+        if (increment > 1) {
+          g = Math.round(g / increment) * increment;
+          if (g < min) g = min;
+        }
+        if (max != null && !Number.isNaN(max)) g = Math.min(g, max);
+        qtyHidden.value = String(Math.max(1, g));
+      }
+
       onSubmitHandler(evt) {
         evt.preventDefault();
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
 
         this.handleErrorMessage();
+
+        this.applyCardQuantityMode();
 
         this.submitButton.setAttribute('aria-disabled', true);
         this.submitButton.classList.add('loading');
@@ -32,6 +99,7 @@ if (!customElements.get('product-form')) {
         delete config.headers['Content-Type'];
 
         const formData = new FormData(this.form);
+        formData.delete('purchase_mode');
         if (this.cart) {
           formData.append(
             'sections',

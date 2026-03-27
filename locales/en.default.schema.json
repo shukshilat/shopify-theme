@@ -63,6 +63,20 @@
             "label": "Card"
           },
           "label": "Style"
+        },
+        "card_quantity": {
+          "header": {
+            "content": "Cart quantity on product cards"
+          },
+          "weight_behavior": {
+            "label": "When customers buy by weight (kg)",
+            "options__1": {
+              "label": "Set cart quantity to grams (kg × 1000)"
+            },
+            "options__2": {
+              "label": "Keep quantity 1 and add weight as a line item property"
+            }
+          }
         }
       }
     },

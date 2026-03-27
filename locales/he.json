@@ -204,7 +204,16 @@
       "taxes_included": "מסים כלולים.",
       "duties_included": "מכס כלול.",
       "duties_and_taxes_included": "מכס ומסים כלולים.",
-      "shipping_policy_html": "<a href=\"{{ link }}\">משלוח</a> מחושב בקופה."
+      "shipping_policy_html": "<a href=\"{{ link }}\">משלוח</a> מחושב בקופה.",
+      "card_quantity": {
+        "by_units": "לפי יחידות",
+        "by_weight": "לפי משקל",
+        "units_label": "מספר יחידות",
+        "weight_label": "משקל בקילוגרם",
+        "kg_suffix": "ק״ג",
+        "weight_hint": "ברירת המחדל: הכמות בעגלה מחושבת בגרמים (קילוגרם × 1000). אם המחיר אצלכם מבוסס יחידה אחרת, שנה בהגדרות ערכת הנושא.",
+        "mode_group": "אופן בחירת כמות"
+      }
     },
     "modal": {
       "label": "גלריית מדיה"
