@@ -597,11 +597,15 @@
 /*
   Uniform product card thumbnails site-wide:
   theme "adapt" uses each image's aspect ratio → uneven row heights.
-  Force a square media frame and contain images so titles/prices align per row.
+  Force a square media frame so titles/prices align per row.
 
   base.css sets `.card__media img { height: 180px/240px }` which overrides Dawn's
   `.media > img { height: 100%; width: 100% }` and breaks the ratio box — restore
   full fill so every product image uses the same frame.
+
+  Use object-fit: cover (same as Dawn's `.card__media .media img`): contain leaves
+  letterboxing so the product graphic still looks different sizes; cover fills the
+  frame so every thumbnail reads at the same visual scale (edges may crop).
 */
 .product-card-wrapper .card--media:not(.card--horizontal) > .card__inner.ratio {
   --ratio-percent: 100% !important;
@@ -610,6 +614,6 @@
 .product-card-wrapper .card--media:not(.card--horizontal) .card__media .media > img {
   width: 100% !important;
   height: 100% !important;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
 }
