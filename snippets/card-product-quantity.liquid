@@ -36,7 +36,6 @@
       class: 'form card-product-qty__form',
       novalidate: 'novalidate',
       data-type: 'add-to-cart-form',
-      data-card-quantity-form: 'true',
       data-weight-behavior: weight_behavior,
       data-qty-min: min_q,
       data-qty-increment: inc_q,
@@ -71,18 +70,38 @@
       <div class="card-product-qty__panels">
         {%- if show_unit -%}
           <div class="card-product-qty__panel card-product-qty__panel--unit" data-card-panel="unit">
-            <label class="visually-hidden" for="CardQtyUnit-{{ section_id }}-{{ product.id }}">
+            <span class="visually-hidden" id="CardQtyUnitLabel-{{ section_id }}-{{ product.id }}">
               {{- 'products.product.card_quantity.units_label' | t -}}
-            </label>
-            <input
-              id="CardQtyUnit-{{ section_id }}-{{ product.id }}"
-              type="number"
-              class="field__input js-card-qty-unit"
-              min="{{ min_q }}"
-              {% if max_q != null %}max="{{ max_q }}"{% endif %}
-              step="{{ inc_q }}"
-              value="{{ min_q }}"
-            >
+            </span>
+            <quantity-input class="quantity card-product-qty__quantity">
+              <button
+                class="quantity__button"
+                name="minus"
+                type="button"
+                aria-label="{{ 'products.product.card_quantity.decrease_units' | t }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
+              </button>
+              <input
+                id="CardQtyUnit-{{ section_id }}-{{ product.id }}"
+                type="number"
+                class="quantity__input js-card-qty-unit"
+                aria-labelledby="CardQtyUnitLabel-{{ section_id }}-{{ product.id }}"
+                min="{{ min_q }}"
+                {% if max_q != null %}max="{{ max_q }}"{% endif %}
+                step="{{ inc_q }}"
+                value="{{ min_q }}"
+                data-min="{{ min_q }}"
+              >
+              <button
+                class="quantity__button"
+                name="plus"
+                type="button"
+                aria-label="{{ 'products.product.card_quantity.increase_units' | t }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+              </button>
+            </quantity-input>
           </div>
         {%- endif -%}
         {%- if show_weight -%}
@@ -91,20 +110,36 @@
             data-card-panel="weight"
             {% if show_unit %}hidden{% endif %}
           >
-            <label class="visually-hidden" for="CardQtyKg-{{ section_id }}-{{ product.id }}">
+            <span class="visually-hidden" id="CardQtyKgLabel-{{ section_id }}-{{ product.id }}">
               {{- 'products.product.card_quantity.weight_label' | t -}}
-            </label>
-            <div class="card-product-qty__weight-row">
+            </span>
+            <div class="quantity card-product-qty__quantity" data-card-kg-stepper>
+              <button
+                class="quantity__button"
+                type="button"
+                name="kg-minus"
+                aria-label="{{ 'products.product.card_quantity.decrease_kg' | t }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
+              </button>
               <input
                 id="CardQtyKg-{{ section_id }}-{{ product.id }}"
                 type="number"
-                class="field__input js-card-qty-kg"
+                class="quantity__input js-card-qty-kg"
+                aria-labelledby="CardQtyKgLabel-{{ section_id }}-{{ product.id }}"
                 min="0.1"
                 step="0.1"
                 value="1"
                 inputmode="decimal"
               >
-              <span class="card-product-qty__suffix" aria-hidden="true">{{ 'products.product.card_quantity.kg_suffix' | t }}</span>
+              <button
+                class="quantity__button"
+                type="button"
+                name="kg-plus"
+                aria-label="{{ 'products.product.card_quantity.increase_kg' | t }}"
+              >
+                <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
+              </button>
             </div>
             <p class="card-product-qty__hint caption">{{ 'products.product.card_quantity.weight_hint' | t }}</p>
           </div>

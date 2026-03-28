@@ -2,6 +2,9 @@
 .card-product-qty {
   margin-top: 0.8rem;
   width: 100%;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
 }
 
 .card-product-qty__mode {

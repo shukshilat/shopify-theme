@@ -23,6 +23,38 @@
     }
   }
 
+  function initKgStepper(root) {
+    root.querySelectorAll('[data-card-kg-stepper]').forEach((wrap) => {
+      const input = wrap.querySelector('.js-card-qty-kg');
+      if (!input) return;
+      const step = parseFloat(input.getAttribute('step')) || 0.1;
+      const min = parseFloat(input.getAttribute('min')) || 0.1;
+
+      const setValue = (next) => {
+        const v = Math.round(next * 1000) / 1000;
+        input.value = String(v);
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      };
+
+      wrap.querySelector('[name="kg-minus"]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let v = parseFloat(input.value);
+        if (Number.isNaN(v)) v = min;
+        const next = Math.max(min, Math.round((v - step) * 1000) / 1000);
+        setValue(next);
+      });
+
+      wrap.querySelector('[name="kg-plus"]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        let v = parseFloat(input.value);
+        if (Number.isNaN(v)) v = min;
+        setValue(Math.round((v + step) * 1000) / 1000);
+      });
+    });
+  }
+
   function init(root) {
     const form = root.querySelector('form');
     if (!form) return;
@@ -30,6 +62,7 @@
       input.addEventListener('change', () => syncPanels(root));
     });
     syncPanels(root);
+    initKgStepper(root);
   }
 
   document.addEventListener('DOMContentLoaded', () => {

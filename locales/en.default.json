@@ -217,7 +217,11 @@
         "weight_label": "Weight in kilograms",
         "kg_suffix": "kg",
         "weight_hint": "Default: cart quantity is set in grams (kg × 1000). Change theme settings if your pricing uses a different unit.",
-        "mode_group": "How to choose quantity"
+        "mode_group": "How to choose quantity",
+        "decrease_units": "Decrease unit quantity",
+        "increase_units": "Increase unit quantity",
+        "decrease_kg": "Decrease weight in kg",
+        "increase_kg": "Increase weight in kg"
       }
     },
     "modal": {
