@@ -23,7 +23,7 @@
   data-hero-asset-carousel
 >
   <div
-    class="hero-asset-carousel__viewport{% unless section.settings.full_width %} page-width{% endunless %}"
+    class="hero-asset-carousel__viewport page-width"
     data-hero-asset-viewport
     data-interval-ms="{{ interval_ms }}"
     role="region"
@@ -57,7 +57,7 @@
     {%- endfor -%}
   </div>
 
-  <div class="hero-asset-carousel__dots{% unless section.settings.full_width %} page-width{% endunless %}" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
+  <div class="hero-asset-carousel__dots page-width" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
     {%- for file in slides -%}
       <button
         type="button"
@@ -98,8 +98,9 @@
     {
       "type": "checkbox",
       "id": "full_width",
-      "label": "Full width",
-      "default": true
+      "label": "Full width background",
+      "default": true,
+      "info": "Images stay within the theme content width (page width); this mainly affects the section background strip."
     },
     {
       "type": "color_scheme",
