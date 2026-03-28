@@ -82,10 +82,9 @@
         {% assign product_form_id = 'quick-add-' | append: section_id | append: card_product.id %}
         {%- if card_product.featured_media -%}
           <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
-            <div class="card__media-fill">
-              <div class="media media--transparent media--hover-effect">
-                {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
-                <img
+            <div class="media media--transparent media--hover-effect">
+              {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
+              <img
                 srcset="
                   {%- if card_product.featured_media.width >= 165 -%}{{ card_product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
                   {%- if card_product.featured_media.width >= 360 -%}{{ card_product.featured_media | image_url: width: 360 }} 360w,{%- endif -%}
@@ -127,12 +126,6 @@
                   height="{{ card_product.media[1].height }}"
                 >
               {%- endif -%}
-            </div>
-            {%- if show_card_bottom_qty -%}
-              <div class="card__media-qty-layer">
-                {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
-              </div>
-            {%- endif -%}
             </div>
           </div>
         {%- endif -%}
@@ -395,9 +388,7 @@
               {% endif %}
             {%- endif -%}
             {%- if show_card_bottom_qty -%}
-              {%- unless card_product.featured_media -%}
-                {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
-              {%- endunless -%}
+              {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
             {%- elsif card_product.available and card_product.variants_count > 1 and card_quick_add_mode == 'standard' -%}
               <div class="card-product-qty card-product-qty--variants no-js-hidden">
                 <modal-opener data-modal="#QuickAdd-{{ card_product.id }}">
