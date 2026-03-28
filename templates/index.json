@@ -154,18 +154,6 @@
         "padding_bottom": 52
       }
     },
-    "instagram_feed_home": {
-      "type": "main-instagram-feed",
-      "settings": {
-        "title": "האינסטגרם שלנו",
-        "subtitle": "תמונות וסרטונים ישירות מהעמוד sohkshilat",
-        "username": "sohkshilat",
-        "instagram_access_token": "",
-        "posts_limit": 9,
-        "padding_top": 24,
-        "padding_bottom": 24
-      }
-    },
     "home_unified_closing": {
       "type": "home-unified-closing",
       "blocks": {
@@ -210,6 +198,35 @@
         "padding_top": 40,
         "padding_bottom": 28
       }
+    },
+    "17746565030139c1a2": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_Mfk3my": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_Mfk3my"
+      ],
+      "settings": {
+        "include_margins": true
+      }
     }
   },
   "order": [
@@ -217,7 +234,7 @@
     "featured_collection",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
-    "instagram_feed_home",
+    "17746565030139c1a2",
     "home_unified_closing"
   ]
 }
