@@ -2,7 +2,7 @@
 
 {%- liquid
   assign interval_ms = section.settings.slide_seconds | times: 1000
-  assign slides = 'hero-slide-1.png|hero-slide-2.png|hero-slide-3.png|hero-slide-4.png' | split: '|'
+  assign slides = 'hero-slide-1.png' | split: '|'
 -%}
 
 {%- style -%}
@@ -30,15 +30,19 @@
         data-hero-asset-viewport
         data-interval-ms="{{ interval_ms }}"
         role="region"
-        aria-roledescription="carousel"
+        {% if slides.size > 1 %}
+          aria-roledescription="carousel"
+        {% endif %}
         aria-label="{{ section.settings.accessibility_label | escape }}"
       >
         {%- for file in slides -%}
           <div
             class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
             role="group"
-            aria-roledescription="slide"
-            aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            {% if slides.size > 1 %}
+              aria-roledescription="slide"
+              aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            {% endif %}
             {% unless forloop.first %}
               aria-hidden="true"
             {% else %}
@@ -60,19 +64,21 @@
       </div>
     </div>
 
-    <div class="hero-asset-carousel__dots" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
-    {%- for file in slides -%}
-      <button
-        type="button"
-        class="hero-asset-carousel__dot{% if forloop.first %} is-active{% endif %}"
-        role="tab"
-        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-        aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
-      >
-        <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
-      </button>
-    {%- endfor -%}
-    </div>
+    {%- if slides.size > 1 -%}
+      <div class="hero-asset-carousel__dots" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
+        {%- for file in slides -%}
+          <button
+            type="button"
+            class="hero-asset-carousel__dot{% if forloop.first %} is-active{% endif %}"
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+          >
+            <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 </div>
 
@@ -87,7 +93,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Uses theme files hero-slide-1.png … hero-slide-4.png in Assets. Replace those files to change banners."
+      "content": "Banner image: replace assets/hero-slide-1.png in the theme to change the hero."
     },
     {
       "type": "range",

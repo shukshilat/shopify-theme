@@ -1,5 +1,5 @@
 /**
- * Auto-rotating hero (hero-slide-1…4). מחליף שקופיות אוטומטית.
+ * Auto-rotating hero when multiple slides exist in hero-asset-carousel.liquid.
  */
 (function () {
   function clearTimer(root) {
