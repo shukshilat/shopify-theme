@@ -11,41 +11,11 @@
   "sections": {
     "image_banner": {
       "type": "image-banner",
-      "blocks": {
-        "heading": {
-          "type": "heading",
-          "settings": {
-            "heading": "שוק שילת",
-            "heading_size": "h0"
-          }
-        },
-        "text_BxMxeF": {
-          "type": "text",
-          "settings": {
-            "text": "ירקות ופירות טריים ישירות מהשדה",
-            "text_style": "body"
-          }
-        },
-        "button": {
-          "type": "buttons",
-          "settings": {
-            "button_label_1": "קנה עכשיו",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading",
-        "text_BxMxeF",
-        "button"
-      ],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "image": "shopify://shop_images/WhatsApp_Image_2026-03-14_at_18.44.35_24c21062-8cbd-4e6c-8abb-531ac6860032.jpg",
-        "image_overlay_opacity": 60,
+        "image_overlay_opacity": 0,
         "image_height": "large",
         "image_behavior": "none",
         "desktop_content_position": "middle-center",
