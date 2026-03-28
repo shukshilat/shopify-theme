@@ -278,13 +278,27 @@
 /* Quantity UI as a strip over the product image (clean card; hover to reveal on desktop) */
 .product-card-wrapper--premium-card-qty .card__media {
   overflow: hidden;
+  /* Stacking: image + overlay above transparent inner .card__content (badges) */
+  z-index: 1;
+}
+
+/* Let hover reach the media through Dawn’s inner overlay row (title/badge) */
+.product-card-wrapper--premium-card-qty .card__inner > .card__content {
+  pointer-events: none;
+}
+
+.product-card-wrapper--premium-card-qty .card__inner > .card__content .badge,
+.product-card-wrapper--premium-card-qty .card__inner > .card__content a,
+.product-card-wrapper--premium-card-qty .card__inner > .card__content button {
+  pointer-events: auto;
 }
 
 .product-card-wrapper--premium-card-qty .card__media-qty-layer {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  z-index: 3;
+  z-index: 2;
+  pointer-events: auto;
 }
 
 .product-card-wrapper--premium-card-qty .card__media-qty-layer .card-product-qty {
@@ -345,7 +359,7 @@
   height: 1.75rem;
 }
 
-/* Fine pointer: slide strip up on hover / keyboard focus inside card */
+/* Fine pointer: strip slides up over the image (hover / focus on image area only) */
 @media (hover: hover) and (pointer: fine) {
   .product-card-wrapper--premium-card-qty .card__media-qty-layer {
     transition:
@@ -354,7 +368,7 @@
       visibility 0s linear 0s;
   }
 
-  .product-card-wrapper--premium-card-qty:not(:hover):not(:focus-within) .card__media-qty-layer {
+  .product-card-wrapper--premium-card-qty .card__media:not(:hover):not(:focus-within) .card__media-qty-layer {
     transform: translateY(100%);
     opacity: 0;
     visibility: hidden;

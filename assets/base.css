@@ -4147,13 +4147,18 @@ h1 {
   background: transparent;
 }
 
-.card__media {
+/*
+  Do not set position: relative on product card media — Dawn uses position: absolute
+  (top/bottom) so the media fills the ratio box. With only absolute children, a relative
+  box collapses to 0 height and product images disappear.
+*/
+.card-wrapper:not(.product-card-wrapper) .card__media {
   position: relative;
   z-index: 1;
   background: transparent;
 }
 
-.card__content {
+.card-wrapper:not(.product-card-wrapper) .card__content {
   position: relative;
   z-index: 2;
   background: transparent;
