@@ -216,7 +216,8 @@
         "decrease_units": "הפחת כמות יחידות",
         "increase_units": "הגדל כמות יחידות",
         "decrease_kg": "הפחת משקל בקילוגרם",
-        "increase_kg": "הגדל משקל בקילוגרם"
+        "increase_kg": "הגדל משקל בקילוגרם",
+        "line_total": "סה״כ"
       }
     },
     "modal": {

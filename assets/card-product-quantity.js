@@ -1,29 +1,152 @@
 /**
- * Toggle unit vs weight panels on product cards (single-variant).
+ * Product card quantity: unit/weight panels, kg stepper, live line totals, main price sync.
  */
 (function () {
+  function getMoneyConfig() {
+    const m = window.ShopifyCardQtyMoney || {};
+    return {
+      format: m.format || '{{amount}}',
+      formatWithCurrency: m.formatWithCurrency || m.format || '{{amount}}',
+    };
+  }
+
+  function formatMoney(cents, useCurrency) {
+    const cfg = getMoneyConfig();
+    const fmt = useCurrency ? cfg.formatWithCurrency : cfg.format;
+    const n = Math.max(0, Math.round(Number(cents) || 0));
+    const amount = (n / 100).toFixed(2);
+    const amountNoDecimals = String(Math.round(n / 100));
+    const amountWithCommaSeparator = amount.replace('.', ',');
+    const amountNoDecimalsWithCommaSeparator = amountNoDecimals.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return fmt
+      .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/g, amountWithCommaSeparator)
+      .replace(/\{\{\s*amount_no_decimals_with_comma_separator\s*\}\}/g, amountNoDecimalsWithCommaSeparator)
+      .replace(/\{\{\s*amount_no_decimals\s*\}\}/g, amountNoDecimals)
+      .replace(/\{\{\s*amount\s*\}\}/g, amount);
+  }
+
+  function readPricing(form) {
+    const d = form.dataset;
+    return {
+      variantCents: parseInt(d.variantCents || '0', 10) || 0,
+      compareAtCents: parseInt(d.compareAtCents || '0', 10) || 0,
+      comparePerKg: parseInt(d.comparePerKg || '0', 10) || 0,
+      centsPerKg: parseInt(d.centsPerKg || '0', 10) || 0,
+      currencyWithCode: d.currencyWithCode === 'true',
+    };
+  }
+
+  function getMode(form) {
+    return (
+      form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+      form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+      'unit'
+    );
+  }
+
+  function getUnitQty(form) {
+    const inp = form.querySelector('.js-card-qty-unit');
+    if (!inp) return 1;
+    let q = parseInt(inp.value, 10);
+    if (Number.isNaN(q)) q = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+    return Math.max(1, q);
+  }
+
+  function getKg(form) {
+    const inp = form.querySelector('.js-card-qty-kg');
+    if (!inp) return 1;
+    let kg = parseFloat(inp.value);
+    if (Number.isNaN(kg)) kg = 0.1;
+    return Math.max(0.1, Math.round(kg * 1000) / 1000);
+  }
+
+  function lineCents(mode, form, p) {
+    if (mode === 'weight') {
+      const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
+      return Math.round(perKg * getKg(form));
+    }
+    return Math.round(p.variantCents * getUnitQty(form));
+  }
+
+  function compareCents(mode, form, line, p) {
+    if (p.compareAtCents <= p.variantCents) return 0;
+    if (mode === 'weight') {
+      if (p.comparePerKg > 0) return Math.round(p.comparePerKg * getKg(form));
+      if (p.variantCents > 0) return Math.round(line * (p.compareAtCents / p.variantCents));
+      return 0;
+    }
+    return Math.round(p.compareAtCents * getUnitQty(form));
+  }
+
+  function pickMainPriceEl(cardInformation) {
+    if (!cardInformation) return null;
+    const saleBlock = cardInformation.querySelector('.price__sale');
+    const saleItem = cardInformation.querySelector('.price__sale .price-item--last');
+    if (saleBlock && saleItem) {
+      const hidden = saleBlock.hasAttribute('hidden') || saleBlock.getAttribute('aria-hidden') === 'true';
+      const style = window.getComputedStyle(saleBlock);
+      if (!hidden && style.display !== 'none' && style.visibility !== 'hidden') return saleItem;
+    }
+    return (
+      cardInformation.querySelector('.price__regular .price-item--regular') ||
+      cardInformation.querySelector('.price-item--regular')
+    );
+  }
+
+  function updatePricing(root) {
+    const form = root.querySelector('form.card-product-qty__form');
+    if (!form) return;
+
+    const mode = getMode(form);
+    const p = readPricing(form);
+    const line = lineCents(mode, form, p);
+    const cmp = compareCents(mode, form, line, p);
+    const useCur = p.currencyWithCode;
+    const lineStr = formatMoney(line, useCur);
+    const cmpStr = cmp > 0 ? formatMoney(cmp, useCur) : '';
+
+    const totalEl = root.querySelector('[data-card-line-total]');
+    if (totalEl) totalEl.textContent = lineStr;
+
+    const cmpEl = root.querySelector('[data-card-line-compare]');
+    if (cmpEl) {
+      if (cmpStr) {
+        cmpEl.textContent = cmpStr;
+        cmpEl.hidden = false;
+      } else {
+        cmpEl.textContent = '';
+        cmpEl.hidden = true;
+      }
+    }
+
+    const cardInfo = root.closest('.card-information');
+    const mainPrice = pickMainPriceEl(cardInfo);
+    if (mainPrice) mainPrice.textContent = lineStr;
+  }
+
   function syncPanels(root) {
     const form = root.querySelector('form.card-product-qty__form');
     if (!form) return;
     const unitPanel = root.querySelector('[data-card-panel="unit"]');
     const weightPanel = root.querySelector('[data-card-panel="weight"]');
-    if (!unitPanel || !weightPanel) return;
-
-    const mode = form.querySelector('input[name="purchase_mode"]:checked')?.value;
-    if (mode === 'weight') {
-      unitPanel.classList.add('hidden');
-      unitPanel.setAttribute('hidden', '');
-      weightPanel.classList.remove('hidden');
-      weightPanel.removeAttribute('hidden');
-    } else {
-      weightPanel.classList.add('hidden');
-      weightPanel.setAttribute('hidden', '');
-      unitPanel.classList.remove('hidden');
-      unitPanel.removeAttribute('hidden');
+    if (unitPanel && weightPanel) {
+      const mode = form.querySelector('input[name="purchase_mode"]:checked')?.value;
+      if (mode === 'weight') {
+        unitPanel.classList.add('hidden');
+        unitPanel.setAttribute('hidden', '');
+        weightPanel.classList.remove('hidden');
+        weightPanel.removeAttribute('hidden');
+      } else {
+        weightPanel.classList.add('hidden');
+        weightPanel.setAttribute('hidden', '');
+        unitPanel.classList.remove('hidden');
+        unitPanel.removeAttribute('hidden');
+      }
     }
+    updatePricing(root);
   }
 
-  function initKgStepper(root) {
+  function initKgStepper(root, onChange) {
     root.querySelectorAll('[data-card-kg-stepper]').forEach((wrap) => {
       const input = wrap.querySelector('.js-card-qty-kg');
       if (!input) return;
@@ -34,6 +157,7 @@
         const v = Math.round(next * 1000) / 1000;
         input.value = String(v);
         input.dispatchEvent(new Event('change', { bubbles: true }));
+        onChange();
       };
 
       wrap.querySelector('[name="kg-minus"]')?.addEventListener('click', (e) => {
@@ -58,11 +182,25 @@
   function init(root) {
     const form = root.querySelector('form');
     if (!form) return;
+
+    const refresh = () => updatePricing(root);
+
     form.querySelectorAll('input[name="purchase_mode"]').forEach((input) => {
       input.addEventListener('change', () => syncPanels(root));
     });
+
+    form.querySelector('.js-card-qty-unit')?.addEventListener('change', refresh);
+    form.querySelector('.js-card-qty-unit')?.addEventListener('input', refresh);
+    form.querySelector('.js-card-qty-kg')?.addEventListener('change', refresh);
+    form.querySelector('.js-card-qty-kg')?.addEventListener('input', refresh);
+
+    form.querySelectorAll('quantity-input').forEach((qi) => {
+      qi.addEventListener('change', refresh);
+    });
+
     syncPanels(root);
-    initKgStepper(root);
+    initKgStepper(root, refresh);
+    refresh();
   }
 
   document.addEventListener('DOMContentLoaded', () => {

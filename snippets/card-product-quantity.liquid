@@ -27,8 +27,73 @@
   assign form_id = 'CardQtyForm-' | append: section_id | append: '-' | append: product.id
   assign weight_behavior = settings.card_weight_cart_behavior | default: 'grams'
   assign max_q_str = max_q | default: ''
+
+  assign cents_per_kg = 0
+  if v.unit_price_measurement != blank and v.unit_price != blank
+    assign ref_v = v.unit_price_measurement.reference_value | default: 1
+    assign ref_u = v.unit_price_measurement.reference_unit
+    assign ref_grams = 0
+    if ref_u == 'kg'
+      assign ref_grams = ref_v | times: 1000
+    elsif ref_u == 'g'
+      assign ref_grams = ref_v
+    endif
+    if ref_grams > 0
+      assign cents_per_kg = v.unit_price | times: 1000 | divided_by: ref_grams
+    endif
+  endif
+
+  assign line_unit_cents = v.price | times: min_q
+  assign line_weight_cents = cents_per_kg
+  if line_weight_cents == 0
+    assign line_weight_cents = v.price
+  endif
+
+  assign initial_line_cents = line_unit_cents
+  unless show_unit
+    if show_weight
+      assign initial_line_cents = line_weight_cents
+    endif
+  endunless
+
+  assign compare_per_kg = 0
+  if v.compare_at_price > v.price and v.unit_price_measurement != blank
+    assign ref_cv = v.unit_price_measurement.reference_value | default: 1
+    assign ref_cu = v.unit_price_measurement.reference_unit
+    assign ref_cg = 0
+    if ref_cu == 'kg'
+      assign ref_cg = ref_cv | times: 1000
+    elsif ref_cu == 'g'
+      assign ref_cg = ref_cv
+    endif
+    if ref_cg > 0
+      assign compare_per_kg = v.compare_at_price | times: 1000 | divided_by: ref_cg
+    endif
+  endif
+
+  assign initial_compare_cents = 0
+  if v.compare_at_price > v.price
+    if show_weight and show_unit == false
+      assign initial_compare_cents = compare_per_kg
+    else
+      assign initial_compare_cents = v.compare_at_price | times: min_q
+    endif
+  endif
+
+  if settings.currency_code_enabled
+    assign money_fmt_initial = initial_line_cents | money_with_currency
+    assign money_fmt_compare = initial_compare_cents | money_with_currency
+  else
+    assign money_fmt_initial = initial_line_cents | money
+    assign money_fmt_compare = initial_compare_cents | money
+  endif
 -%}
-<div class="card-product-qty" data-card-quantity-root>
+<div
+  class="card-product-qty card-product-qty--premium"
+  data-card-quantity-root
+  data-show-unit="{{ show_unit }}"
+  data-show-weight="{{ show_weight }}"
+>
   <product-form class="card-product-qty__product-form" data-section-id="{{ section.id }}">
     {%- form 'product',
       product,
@@ -39,7 +104,14 @@
       data-weight-behavior: weight_behavior,
       data-qty-min: min_q,
       data-qty-increment: inc_q,
-      data-qty-max: max_q_str
+      data-qty-max: max_q_str,
+      data-variant-cents: v.price,
+      data-compare-at-cents: v.compare_at_price,
+      data-compare-per-kg: compare_per_kg,
+      data-cents-per-kg: cents_per_kg,
+      data-currency-with-code: settings.currency_code_enabled,
+      data-line-unit-cents: line_unit_cents,
+      data-line-weight-cents: line_weight_cents
     -%}
       <input type="hidden" name="id" value="{{ v.id }}" class="product-variant-id" {% if v.available == false %}disabled{% endif %}>
       <input
@@ -49,6 +121,16 @@
         class="card-product-qty__quantity-hidden"
         autocomplete="off"
       >
+
+      <div class="card-product-qty__line-wrap" aria-live="polite">
+        <span class="card-product-qty__line-label">{{ 'products.product.card_quantity.line_total' | t }}</span>
+        <span class="card-product-qty__line-value-wrap">
+          {%- if v.compare_at_price > v.price and initial_compare_cents > 0 -%}
+            <s class="card-product-qty__line-compare" data-card-line-compare>{{ money_fmt_compare }}</s>
+          {%- endif -%}
+          <span class="card-product-qty__line-total" data-card-line-total>{{ money_fmt_initial }}</span>
+        </span>
+      </div>
 
       {%- if show_unit and show_weight -%}
         <div class="card-product-qty__mode" role="group" aria-label="{{ 'products.product.card_quantity.mode_group' | t }}">
@@ -154,12 +236,17 @@
           disabled
         {% endif %}
       >
-        <span id="CardQtySubmit-{{ section_id }}-{{ product.id }}">
-          {%- if v.available -%}
-            {{ 'products.product.add_to_cart' | t }}
-          {%- else -%}
-            {{ 'products.product.sold_out' | t }}
-          {%- endif -%}
+        <span class="card-product-qty__submit-visual">
+          <span class="svg-wrapper card-product-qty__cart-icon" aria-hidden="true">
+            {{- 'icon-cart.svg' | inline_asset_content -}}
+          </span>
+          <span id="CardQtySubmit-{{ section_id }}-{{ product.id }}" data-product-form-submit-label>
+            {%- if v.available -%}
+              {{ 'products.product.add_to_cart' | t }}
+            {%- else -%}
+              {{ 'products.product.sold_out' | t }}
+            {%- endif -%}
+          </span>
         </span>
         {%- render 'loading-spinner' -%}
       </button>

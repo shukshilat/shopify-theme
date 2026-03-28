@@ -398,6 +398,12 @@
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
 
+    <script>
+      window.ShopifyCardQtyMoney = {
+        format: {{ shop.money_format | json }},
+        formatWithCurrency: {{ shop.money_with_currency_format | json }}
+      };
+    </script>
     <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'card-product-quantity.js' | asset_url }}" defer="defer"></script>
 

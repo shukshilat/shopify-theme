@@ -48,7 +48,7 @@
       assign show_card_bottom_qty = true
     endif
   -%}
-  <div class="card-wrapper product-card-wrapper underline-links-hover{% if show_card_bottom_qty %} product-card-wrapper--card-bottom-qty{% endif %}">
+  <div class="card-wrapper product-card-wrapper underline-links-hover{% if show_card_bottom_qty %} product-card-wrapper--card-bottom-qty product-card-wrapper--premium-card-qty{% endif %}">
     <div
       class="
         card card--{{ settings.card_style }}

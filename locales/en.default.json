@@ -221,7 +221,8 @@
         "decrease_units": "Decrease unit quantity",
         "increase_units": "Increase unit quantity",
         "decrease_kg": "Decrease weight in kg",
-        "increase_kg": "Increase weight in kg"
+        "increase_kg": "Increase weight in kg",
+        "line_total": "Total"
       }
     },
     "modal": {
