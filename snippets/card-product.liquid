@@ -127,6 +127,11 @@
                 >
               {%- endif -%}
             </div>
+            {%- if show_card_bottom_qty -%}
+              <div class="card__media-qty-layer">
+                {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
+              </div>
+            {%- endif -%}
           </div>
         {%- endif -%}
         {% if card_quick_add_mode == 'standard' %}
@@ -388,7 +393,9 @@
               {% endif %}
             {%- endif -%}
             {%- if show_card_bottom_qty -%}
-              {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
+              {%- unless card_product.featured_media -%}
+                {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
+              {%- endunless -%}
             {%- elsif card_product.available and card_product.variants_count > 1 and card_quick_add_mode == 'standard' -%}
               <div class="card-product-qty card-product-qty--variants no-js-hidden">
                 <modal-opener data-modal="#QuickAdd-{{ card_product.id }}">

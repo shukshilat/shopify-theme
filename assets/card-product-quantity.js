@@ -119,7 +119,9 @@
       }
     }
 
-    const cardInfo = root.closest('.card-information');
+    const cardInfo =
+      root.closest('.card-information') ||
+      root.closest('.product-card-wrapper')?.querySelector('.card-information');
     const mainPrice = pickMainPriceEl(cardInfo);
     if (mainPrice) mainPrice.textContent = lineStr;
   }

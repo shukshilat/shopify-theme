@@ -230,8 +230,8 @@
       <button
         type="submit"
         name="add"
-        class="button button--full-width button--secondary card-product-qty__submit"
-        aria-labelledby="CardQtySubmit-{{ section_id }}-{{ product.id }} title-{{ section_id }}-{{ product.id }}"
+        class="button button--full-width button--secondary card-product-qty__submit card-product-qty__submit--icon-only"
+        aria-label="{% if v.available %}{{ 'products.product.add_to_cart' | t | escape }}{% else %}{{ 'products.product.sold_out' | t | escape }}{% endif %}"
         {% if v.available == false %}
           disabled
         {% endif %}
@@ -240,7 +240,7 @@
           <span class="svg-wrapper card-product-qty__cart-icon" aria-hidden="true">
             {{- 'icon-cart.svg' | inline_asset_content -}}
           </span>
-          <span id="CardQtySubmit-{{ section_id }}-{{ product.id }}" data-product-form-submit-label>
+          <span id="CardQtySubmit-{{ section_id }}-{{ product.id }}" class="visually-hidden" data-product-form-submit-label>
             {%- if v.available -%}
               {{ 'products.product.add_to_cart' | t }}
             {%- else -%}
