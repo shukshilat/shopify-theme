@@ -1,0 +1,147 @@
+{{ 'hero-asset-carousel.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign interval_ms = section.settings.slide_seconds | times: 1000
+  assign slides = 'hero-slide-1.png|hero-slide-2.png|hero-slide-3.png|hero-slide-4.png' | split: '|'
+-%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div
+  class="hero-asset-carousel color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding{% if section.settings.full_width %} hero-asset-carousel--full{% endif %}"
+  data-hero-asset-carousel
+>
+  <div
+    class="hero-asset-carousel__viewport{% unless section.settings.full_width %} page-width{% endunless %}"
+    data-hero-asset-viewport
+    data-interval-ms="{{ interval_ms }}"
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="{{ section.settings.accessibility_label | escape }}"
+  >
+    {%- for file in slides -%}
+      <div
+        class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+        {% unless forloop.first %}
+          aria-hidden="true"
+        {% else %}
+          aria-hidden="false"
+        {% endunless %}
+      >
+        <img
+          src="{{ file | asset_url }}"
+          alt=""
+          width="1200"
+          height="1200"
+          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+          {% if forloop.first and section.index == 1 %}
+            fetchpriority="high"
+          {% endif %}
+          decoding="async"
+        >
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <div class="hero-asset-carousel__dots{% unless section.settings.full_width %} page-width{% endunless %}" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
+    {%- for file in slides -%}
+      <button
+        type="button"
+        class="hero-asset-carousel__dot{% if forloop.first %} is-active{% endif %}"
+        role="tab"
+        aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+        aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+      >
+        <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
+      </button>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero carousel (banners)",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Uses theme files hero-slide-1.png … hero-slide-4.png in Assets. Replace those files to change banners."
+    },
+    {
+      "type": "range",
+      "id": "slide_seconds",
+      "min": 3,
+      "max": 9,
+      "step": 1,
+      "unit": "s",
+      "label": "Time per slide",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "Carousel description (screen readers)",
+      "default": "Promotional banners"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero carousel (banners)"
+    }
+  ]
+}
+{% endschema %}

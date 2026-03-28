@@ -9,22 +9,15 @@
  */
 {
   "sections": {
-    "image_banner": {
-      "type": "image-banner",
-      "blocks": {},
-      "block_order": [],
+    "hero_asset_carousel": {
+      "type": "hero-asset-carousel",
       "settings": {
-        "image": "shopify://shop_images/WhatsApp_Image_2026-03-14_at_18.44.35_24c21062-8cbd-4e6c-8abb-531ac6860032.jpg",
-        "image_overlay_opacity": 0,
-        "image_height": "large",
-        "image_behavior": "none",
-        "desktop_content_position": "middle-center",
-        "desktop_content_alignment": "center",
-        "show_text_box": false,
-        "color_scheme": "scheme-3",
-        "stack_images_on_mobile": false,
-        "mobile_content_alignment": "center",
-        "show_text_below": false
+        "slide_seconds": 5,
+        "full_width": true,
+        "color_scheme": "scheme-1",
+        "accessibility_label": "באנרים שיווקיים",
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     },
     "collection_list_ek6WUC": {
@@ -200,7 +193,7 @@
     }
   },
   "order": [
-    "image_banner",
+    "hero_asset_carousel",
     "collection_list_ek6WUC",
     "rich_text_EKmEdi",
     "17746565030139c1a2",

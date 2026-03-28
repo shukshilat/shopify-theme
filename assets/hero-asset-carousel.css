@@ -1,0 +1,83 @@
+.hero-asset-carousel {
+  position: relative;
+  width: 100%;
+}
+
+.hero-asset-carousel--full .hero-asset-carousel__viewport {
+  width: 100%;
+  max-width: none;
+}
+
+.hero-asset-carousel__viewport {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0;
+  background: rgb(var(--color-background));
+  aspect-ratio: 4 / 5;
+  max-height: 720px;
+}
+
+@media screen and (min-width: 750px) {
+  .hero-asset-carousel__viewport {
+    aspect-ratio: 16 / 9;
+    max-height: 640px;
+  }
+}
+
+.hero-asset-carousel__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.85s ease-in-out;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-asset-carousel__slide.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.hero-asset-carousel__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.hero-asset-carousel__dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 1rem 1.5rem 0.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-asset-carousel__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(var(--color-foreground), 0.28);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.hero-asset-carousel__dot:hover,
+.hero-asset-carousel__dot:focus-visible {
+  background: rgba(var(--color-foreground), 0.5);
+  transform: scale(1.15);
+}
+
+.hero-asset-carousel__dot.is-active {
+  background: rgb(var(--color-foreground));
+  transform: scale(1.25);
+}

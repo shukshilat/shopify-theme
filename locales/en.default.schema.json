@@ -1286,6 +1286,10 @@
         },
         "show_text_below": {
           "label": "Container"
+        },
+        "hide_banner_content": {
+          "label": "Hide heading, text and buttons",
+          "info": "When enabled, overlay content is not shown on the store—even if blocks still appear in the theme editor. Turn off to show blocks again."
         }
       },
       "blocks": {

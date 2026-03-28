@@ -6,6 +6,19 @@
   isolation: isolate;
 }
 
+/* Setting: hide_banner_content — backup if storefront still outputs .banner__content (e.g. cached / merged JSON) */
+.banner--hide-banner-content > .banner__content {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+}
+
 .banner__box {
   text-align: center;
 }
