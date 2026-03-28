@@ -607,13 +607,37 @@
   letterboxing so the product graphic still looks different sizes; cover fills the
   frame so every thumbnail reads at the same visual scale (edges may crop).
 */
-.product-card-wrapper .card--media:not(.card--horizontal) > .card__inner.ratio {
+/* Product grid: lock layout here (this file loads with collection/search sections). base.css must not style these cards. */
+.product-card-wrapper .card--media:not(.card--horizontal) > .card__inner {
   --ratio-percent: 100% !important;
 }
 
-.product-card-wrapper .card--media:not(.card--horizontal) .card__media .media > img {
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media {
+  position: absolute !important;
+  inset: var(--image-padding, 0.8rem) !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  max-height: none !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media > .card__media-fill {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover;
-  object-position: center center;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media .media {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media .media > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
 }
