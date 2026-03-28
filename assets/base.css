@@ -4168,8 +4168,8 @@ h1 {
   background-color: transparent !important;
 }
 
-/* Only style the full-width add-to-cart row — not the round icon button on the image */
-.card__content form button:not(.card__quick-add-button) {
+/* Only style the full-width add-to-cart row — not the round icon on the image or quantity +/- */
+.card__content form button:not(.card__quick-add-button):not(.quantity__button) {
   width: 100%;
   background: #000;
   color: #fff;
