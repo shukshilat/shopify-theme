@@ -1,6 +1,6 @@
 /*
-  מראה של תמונה רגילה במרכז — לא באנר ענק full-width:
-  מסגרת צרה, גובה מוגבל, פינות מעוגלות, צל עדין.
+  באנר ברוחב התוכן — מסגרת עם יחס גובה קבוע; התמונות ממלאות את המסגרת (cover)
+  בלי פסים בצדדים. נקודות ניווט מתחת.
 */
 
 .hero-asset-carousel {
@@ -15,95 +15,59 @@
 .hero-asset-carousel__outer {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  width: 100%;
 }
 
-/* "כרטיס תמונה" — רוחב מקסימלי סביר, ממורכז */
+/* רוחב מלא כמו שאר הסקשנים — בלי צר של כרטיס */
 .hero-asset-carousel__frame {
   width: 100%;
-  max-width: min(100%, 36rem);
-  margin-inline: auto;
-  border-radius: 1rem;
+  max-width: 100%;
+  margin-inline: 0;
+  border-radius: 0.6rem;
   overflow: hidden;
-  background: rgba(var(--color-foreground), 0.04);
-  box-shadow:
-    0 0.1rem 0.4rem rgba(var(--color-shadow), 0.06),
-    0 0.4rem 1.2rem rgba(var(--color-shadow), 0.08);
+  background: rgba(var(--color-foreground), 0.03);
+  box-shadow: 0 0.15rem 0.6rem rgba(var(--color-shadow), 0.07);
 }
 
 @media screen and (min-width: 750px) {
   .hero-asset-carousel__frame {
-    max-width: min(100%, 40rem);
-    border-radius: 1.2rem;
-  }
-}
-
-@media screen and (min-width: 990px) {
-  .hero-asset-carousel__frame {
-    max-width: min(100%, 44rem);
+    border-radius: 0.8rem;
   }
 }
 
 .hero-asset-carousel__viewport {
   position: relative;
   width: 100%;
+  aspect-ratio: var(--hero-aspect, 16 / 9);
   overflow: hidden;
   background: rgb(var(--color-background));
 }
 
 .hero-asset-carousel__slide {
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   transition: opacity 0.75s ease-in-out;
-}
-
-.hero-asset-carousel__slide.is-active {
-  position: relative;
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.hero-asset-carousel__slide:not(.is-active) {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
   z-index: 1;
   opacity: 0;
   pointer-events: none;
 }
 
-/* תמונה קומפקטית — כל השקופית נכנסת בלי לאכלס את המסך */
-.hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  max-height: 220px;
-  height: auto;
-  object-fit: contain;
-  margin: 0 auto;
+.hero-asset-carousel__slide.is-active {
+  z-index: 2;
+  opacity: 1;
+  pointer-events: auto;
 }
 
-@media screen and (min-width: 750px) {
-  .hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
-    max-height: 260px;
-  }
-}
-
-@media screen and (min-width: 990px) {
-  .hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
-    max-height: 280px;
-  }
-}
-
-.hero-asset-carousel__slide:not(.is-active) .hero-asset-carousel__img {
+.hero-asset-carousel__img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
 }
 
@@ -111,19 +75,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0 0;
+  gap: 0.5rem;
+  padding: 0.65rem 0 0.1rem;
   width: 100%;
-  max-width: min(100%, 44rem);
 }
 
 .hero-asset-carousel__dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.55rem;
+  height: 0.55rem;
   padding: 0;
   border: none;
   border-radius: 50%;
-  background: rgba(var(--color-foreground), 0.28);
+  background: rgba(var(--color-foreground), 0.3);
   cursor: pointer;
   transition:
     transform 0.2s ease,
@@ -132,7 +95,7 @@
 
 .hero-asset-carousel__dot:hover,
 .hero-asset-carousel__dot:focus-visible {
-  background: rgba(var(--color-foreground), 0.5);
+  background: rgba(var(--color-foreground), 0.55);
   transform: scale(1.15);
 }
 

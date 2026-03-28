@@ -1,7 +1,14 @@
 /**
- * Auto-rotating hero from theme assets (hero-slide-1.png …).
+ * Auto-rotating hero (hero-slide-1…4). מחליף שקופיות אוטומטית.
  */
 (function () {
+  function clearTimer(root) {
+    if (root._heroAssetTimer) {
+      clearInterval(root._heroAssetTimer);
+      root._heroAssetTimer = null;
+    }
+  }
+
   function init(root) {
     const viewport = root.querySelector('[data-hero-asset-viewport]');
     if (!viewport) return;
@@ -10,9 +17,14 @@
     const dots = [...root.querySelectorAll('.hero-asset-carousel__dot')];
     if (slides.length < 2) return;
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    clearTimer(root);
+
     let intervalMs = parseInt(viewport.getAttribute('data-interval-ms') || '5000', 10);
-    if (Number.isNaN(intervalMs) || intervalMs < 2000) intervalMs = 5000;
+    if (Number.isNaN(intervalMs) || intervalMs < 2500) intervalMs = 5000;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      intervalMs = Math.max(intervalMs, 8000);
+    }
 
     let index = slides.findIndex((el) => el.classList.contains('is-active'));
     if (index < 0) index = 0;
@@ -34,20 +46,34 @@
       dot.addEventListener('click', () => goTo(i));
     });
 
-    if (reduceMotion) return;
+    const inDesignMode = typeof Shopify !== 'undefined' && Shopify.designMode;
 
-    let timer = setInterval(() => goTo(index + 1), intervalMs);
+    if (!inDesignMode) {
+      root._heroAssetTimer = setInterval(() => goTo(index + 1), intervalMs);
 
-    root.addEventListener('mouseenter', () => {
-      clearInterval(timer);
-      timer = null;
-    });
-    root.addEventListener('mouseleave', () => {
-      if (!timer) timer = setInterval(() => goTo(index + 1), intervalMs);
-    });
+      viewport.addEventListener('mouseenter', () => clearTimer(root));
+      viewport.addEventListener('mouseleave', () => {
+        if (!root._heroAssetTimer) {
+          root._heroAssetTimer = setInterval(() => goTo(index + 1), intervalMs);
+        }
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          clearTimer(root);
+        } else if (!root._heroAssetTimer && !inDesignMode) {
+          root._heroAssetTimer = setInterval(() => goTo(index + 1), intervalMs);
+        }
+      });
+    }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function boot() {
     document.querySelectorAll('[data-hero-asset-carousel]').forEach(init);
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+  document.addEventListener('shopify:section:load', (event) => {
+    event.target.querySelectorAll('[data-hero-asset-carousel]').forEach(init);
   });
 })();

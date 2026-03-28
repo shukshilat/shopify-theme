@@ -26,6 +26,7 @@
     <div class="hero-asset-carousel__frame">
       <div
         class="hero-asset-carousel__viewport"
+        style="--hero-aspect: {{ section.settings.aspect_ratio }};"
         data-hero-asset-viewport
         data-interval-ms="{{ interval_ms }}"
         role="region"
@@ -97,6 +98,18 @@
       "unit": "s",
       "label": "Time per slide",
       "default": 5
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Banner proportions (fills width; edges may crop)",
+      "options": [
+        { "value": "2.4 / 1", "label": "Wide strip" },
+        { "value": "16 / 9", "label": "Standard wide" },
+        { "value": "4 / 3", "label": "Classic" },
+        { "value": "1 / 1", "label": "Square" }
+      ],
+      "default": "16 / 9"
     },
     {
       "type": "checkbox",
