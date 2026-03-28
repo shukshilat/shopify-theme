@@ -1,6 +1,6 @@
 /*
-  Hero carousel — גובה לפי התמונה הפעילה (פרופורציה מקורית), בלי חיתוך מ־max-height קטן.
-  רק השקופית עם .is-active בזרימת המסמך; השאר absolute בתוך אותו מלבן.
+  מראה של תמונה רגילה במרכז — לא באנר ענק full-width:
+  מסגרת צרה, גובה מוגבל, פינות מעוגלות, צל עדין.
 */
 
 .hero-asset-carousel {
@@ -10,6 +10,38 @@
 
 .hero-asset-carousel--full {
   width: 100%;
+}
+
+.hero-asset-carousel__outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* "כרטיס תמונה" — רוחב מקסימלי סביר, ממורכז */
+.hero-asset-carousel__frame {
+  width: 100%;
+  max-width: min(100%, 36rem);
+  margin-inline: auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(var(--color-foreground), 0.04);
+  box-shadow:
+    0 0.1rem 0.4rem rgba(var(--color-shadow), 0.06),
+    0 0.4rem 1.2rem rgba(var(--color-shadow), 0.08);
+}
+
+@media screen and (min-width: 750px) {
+  .hero-asset-carousel__frame {
+    max-width: min(100%, 40rem);
+    border-radius: 1.2rem;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .hero-asset-carousel__frame {
+    max-width: min(100%, 44rem);
+  }
 }
 
 .hero-asset-carousel__viewport {
@@ -23,10 +55,9 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  transition: opacity 0.85s ease-in-out;
+  transition: opacity 0.75s ease-in-out;
 }
 
-/* גובה האזור נקבע רק כאן — רוחב מלא של עמודת התוכן, גובה לפי יחס התמונה */
 .hero-asset-carousel__slide.is-active {
   position: relative;
   z-index: 2;
@@ -45,14 +76,29 @@
   pointer-events: none;
 }
 
+/* תמונה קומפקטית — כל השקופית נכנסת בלי לאכלס את המסך */
 .hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
   display: block;
   width: 100%;
   max-width: 100%;
+  max-height: 220px;
   height: auto;
+  object-fit: contain;
+  margin: 0 auto;
 }
 
-/* בתוך המלבן של השקופית הפעילה — כל התמונה נראית, בלי crop */
+@media screen and (min-width: 750px) {
+  .hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
+    max-height: 260px;
+  }
+}
+
+@media screen and (min-width: 990px) {
+  .hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
+    max-height: 280px;
+  }
+}
+
 .hero-asset-carousel__slide:not(.is-active) .hero-asset-carousel__img {
   display: block;
   width: 100%;
@@ -65,15 +111,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.75rem 0 0.15rem;
-  position: relative;
-  z-index: 3;
+  gap: 0.45rem;
+  padding: 0.55rem 0 0;
+  width: 100%;
+  max-width: min(100%, 44rem);
 }
 
 .hero-asset-carousel__dot {
-  width: 0.55rem;
-  height: 0.55rem;
+  width: 0.5rem;
+  height: 0.5rem;
   padding: 0;
   border: none;
   border-radius: 50%;

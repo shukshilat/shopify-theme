@@ -22,42 +22,44 @@
   class="hero-asset-carousel color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding{% if section.settings.full_width %} hero-asset-carousel--full{% endif %}"
   data-hero-asset-carousel
 >
-  <div
-    class="hero-asset-carousel__viewport page-width"
-    data-hero-asset-viewport
-    data-interval-ms="{{ interval_ms }}"
-    role="region"
-    aria-roledescription="carousel"
-    aria-label="{{ section.settings.accessibility_label | escape }}"
-  >
-    {%- for file in slides -%}
+  <div class="hero-asset-carousel__outer page-width">
+    <div class="hero-asset-carousel__frame">
       <div
-        class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
-        role="group"
-        aria-roledescription="slide"
-        aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
-        {% unless forloop.first %}
-          aria-hidden="true"
-        {% else %}
-          aria-hidden="false"
-        {% endunless %}
+        class="hero-asset-carousel__viewport"
+        data-hero-asset-viewport
+        data-interval-ms="{{ interval_ms }}"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ section.settings.accessibility_label | escape }}"
       >
-        <img
-          src="{{ file | asset_url }}"
-          alt=""
-          width="1200"
-          height="1200"
-          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-          {% if forloop.first and section.index == 1 %}
-            fetchpriority="high"
-          {% endif %}
-          decoding="async"
-        >
+        {%- for file in slides -%}
+          <div
+            class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
+            role="group"
+            aria-roledescription="slide"
+            aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            {% unless forloop.first %}
+              aria-hidden="true"
+            {% else %}
+              aria-hidden="false"
+            {% endunless %}
+          >
+            <img
+              src="{{ file | asset_url }}"
+              alt=""
+              class="hero-asset-carousel__img"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+              {% if forloop.first and section.index == 1 %}
+                fetchpriority="high"
+              {% endif %}
+              decoding="async"
+            >
+          </div>
+        {%- endfor -%}
       </div>
-    {%- endfor -%}
-  </div>
+    </div>
 
-  <div class="hero-asset-carousel__dots page-width" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
+    <div class="hero-asset-carousel__dots" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
     {%- for file in slides -%}
       <button
         type="button"
@@ -69,6 +71,7 @@
         <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
       </button>
     {%- endfor -%}
+    </div>
   </div>
 </div>
 
