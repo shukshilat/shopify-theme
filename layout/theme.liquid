@@ -337,6 +337,8 @@
     {% render 'floating-waze' %}
     {% render 'floating-whatsapp' %}
 
+    {{ 'product-card-media.css' | asset_url | stylesheet_tag }}
+
     <script>
       window.shopUrl = '{{ request.origin }}';
       window.routes = {

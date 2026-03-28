@@ -1,0 +1,33 @@
+/**
+ * נטען בסוף theme.liquid (אחרי כל ה-sections) כדי לנצח את component-card.css
+ * וכללים אחרים. בלי position:absolute על .card__media, גובה המסגרת מתקפל
+ * ל-0 והתמונה נעלמת.
+ */
+.product-card-wrapper .card--media:not(.card--horizontal) > .card__inner.ratio {
+  --ratio-percent: 100% !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  margin: var(--image-padding) !important;
+  width: calc(100% - 2 * var(--image-padding)) !important;
+  max-height: none !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media > .media {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}
+
+.product-card-wrapper .card--media:not(.card--horizontal) .card__inner > .card__media .media > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
