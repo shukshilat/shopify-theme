@@ -1,84 +1,64 @@
-/* Hero carousel: natural image proportions, site content width — no forced fullscreen crop */
+/*
+  Hero carousel — גובה לפי התמונה הפעילה (פרופורציה מקורית), בלי חיתוך מ־max-height קטן.
+  רק השקופית עם .is-active בזרימת המסמך; השאר absolute בתוך אותו מלבן.
+*/
 
 .hero-asset-carousel {
   position: relative;
   width: 100%;
 }
 
-/* Full-width section = רקע עד הקצה; התמונות נשארות בתוך page-width */
 .hero-asset-carousel--full {
   width: 100%;
 }
 
 .hero-asset-carousel__viewport {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  justify-items: center;
-  align-items: center;
   width: 100%;
   overflow: hidden;
   background: rgb(var(--color-background));
 }
 
 .hero-asset-carousel__slide {
-  grid-area: 1 / 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  opacity: 0;
+  margin: 0;
+  padding: 0;
   transition: opacity 0.85s ease-in-out;
-  pointer-events: none;
-  z-index: 0;
 }
 
+/* גובה האזור נקבע רק כאן — רוחב מלא של עמודת התוכן, גובה לפי יחס התמונה */
 .hero-asset-carousel__slide.is-active {
+  position: relative;
+  z-index: 2;
   opacity: 1;
   pointer-events: auto;
+}
+
+.hero-asset-carousel__slide:not(.is-active) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
+  opacity: 0;
+  pointer-events: none;
 }
 
-/*
-  באנר קומפקטי — לא כמעט מסך מלא (היה 90vh).
-  פרופורציה נשמרת; רק מגבילים גובה מקסימלי.
-*/
-.hero-asset-carousel__viewport {
-  max-height: min(32vh, 260px);
-}
-
-@media screen and (min-width: 750px) {
-  .hero-asset-carousel__viewport {
-    max-height: min(34vh, 300px);
-  }
-}
-
-@media screen and (min-width: 990px) {
-  .hero-asset-carousel__viewport {
-    max-height: min(36vh, 340px);
-  }
-}
-
-.hero-asset-carousel__img {
+.hero-asset-carousel__slide.is-active .hero-asset-carousel__img {
   display: block;
-  width: auto;
-  height: auto;
+  width: 100%;
   max-width: 100%;
-  max-height: min(32vh, 260px);
+  height: auto;
+}
+
+/* בתוך המלבן של השקופית הפעילה — כל התמונה נראית, בלי crop */
+.hero-asset-carousel__slide:not(.is-active) .hero-asset-carousel__img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-}
-
-@media screen and (min-width: 750px) {
-  .hero-asset-carousel__img {
-    max-height: min(34vh, 300px);
-  }
-}
-
-@media screen and (min-width: 990px) {
-  .hero-asset-carousel__img {
-    max-height: min(36vh, 340px);
-  }
+  object-position: center center;
 }
 
 .hero-asset-carousel__dots {
@@ -86,9 +66,9 @@
   justify-content: center;
   align-items: center;
   gap: 0.55rem;
-  padding: 1rem 0 0.25rem;
+  padding: 0.75rem 0 0.15rem;
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .hero-asset-carousel__dot {
