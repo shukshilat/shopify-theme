@@ -127,11 +127,21 @@
                 >
               {%- endif -%}
             </div>
+            {%- if show_card_bottom_qty -%}
+              <div class="card__media-actions">
+                {% render 'card-product-quantity',
+                  product: card_product,
+                  section_id: section_id,
+                  section: section,
+                  card_qty_in_media: true
+                %}
+              </div>
+            {%- endif -%}
           </div>
         {%- endif -%}
         {% if card_quick_add_mode == 'standard' %}
+          {%- unless show_card_bottom_qty -%}
           <div class="card__quick-add-overlay no-js-hidden">
-            {%- unless show_card_bottom_qty -%}
               {%- if card_product.available == false -%}
                 <button
                   type="button"
@@ -196,8 +206,8 @@
                   {%- endform -%}
                 </product-form>
               {%- endif -%}
-            {%- endunless -%}
           </div>
+          {%- endunless -%}
         {% endif %}
         <div class="card__content">
           <div class="card__information">
@@ -387,9 +397,15 @@
                 </quantity-popover>
               {% endif %}
             {%- endif -%}
-            {%- if show_card_bottom_qty -%}
-              {% render 'card-product-quantity', product: card_product, section_id: section_id, section: section %}
-            {%- elsif card_product.available and card_product.variants_count > 1 and card_quick_add_mode == 'standard' -%}
+            {%- if show_card_bottom_qty and card_product.featured_media == nil -%}
+              {% render 'card-product-quantity',
+                product: card_product,
+                section_id: section_id,
+                section: section,
+                card_qty_in_media: false
+              %}
+            {%- endif -%}
+            {%- if card_product.available and card_product.variants_count > 1 and card_quick_add_mode == 'standard' -%}
               <div class="card-product-qty card-product-qty--variants no-js-hidden">
                 <modal-opener data-modal="#QuickAdd-{{ card_product.id }}">
                   <button

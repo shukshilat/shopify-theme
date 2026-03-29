@@ -222,7 +222,9 @@
         "increase_units": "Increase unit quantity",
         "decrease_kg": "Decrease weight in kg",
         "increase_kg": "Increase weight in kg",
-        "line_total": "Total"
+        "line_total": "Total",
+        "by_units_short": "ea",
+        "by_weight_short": "kg"
       }
     },
     "modal": {

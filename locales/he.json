@@ -217,7 +217,9 @@
         "increase_units": "הגדל כמות יחידות",
         "decrease_kg": "הפחת משקל בקילוגרם",
         "increase_kg": "הגדל משקל בקילוגרם",
-        "line_total": "סה״כ"
+        "line_total": "סה״כ",
+        "by_units_short": "יח׳",
+        "by_weight_short": "ק״ג"
       }
     },
     "modal": {
