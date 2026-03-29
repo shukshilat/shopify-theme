@@ -15,16 +15,34 @@
   if inc_q == null or inc_q < 1
     assign inc_q = 1
   endif
-  assign sell_modes = product.metafields.custom.card_sell_modes.value
-  if sell_modes == blank
-    assign sell_modes = 'both'
+  comment
+    Metafield custom.card_sell_modes: unit_only | weight_only | both
+    ברירת מחדל: unit_only — "לפי משקל" מוצג רק כשמגדירים במפורש both או weight_only
+  endcomment
+  assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
+  assign sell_modes = 'unit_only'
+  if sell_modes_raw != blank
+    assign sell_modes_try = sell_modes_raw | strip | downcase
+    if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
+      assign sell_modes = sell_modes_try
+    else
+      for sell_modes_entry in sell_modes_raw
+        assign sell_modes = sell_modes_entry | strip | downcase
+        break
+      endfor
+    endif
   endif
-  assign show_weight = true
+  unless sell_modes == 'both' or sell_modes == 'unit_only' or sell_modes == 'weight_only'
+    assign sell_modes = 'unit_only'
+  endunless
+  assign show_weight = false
   assign show_unit = true
-  if sell_modes == 'unit_only'
-    assign show_weight = false
-  elsif sell_modes == 'weight_only'
+  if sell_modes == 'weight_only'
+    assign show_weight = true
     assign show_unit = false
+  elsif sell_modes == 'both'
+    assign show_weight = true
+    assign show_unit = true
   endif
   assign form_id = 'CardQtyForm-' | append: section_id | append: '-' | append: product.id
   assign weight_behavior = settings.card_weight_cart_behavior | default: 'grams'
