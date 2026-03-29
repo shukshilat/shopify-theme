@@ -16,11 +16,11 @@
     assign inc_q = 1
   endif
   comment
-    Metafield custom.card_sell_modes: unit_only | weight_only | both
-    ברירת מחדל: unit_only — "לפי משקל" מוצג רק כשמגדירים במפורש both או weight_only
+    Metafield custom.card_sell_modes (אופציונלי): both | unit_only | weight_only
+    ברירת מחדל both — מתג יחידה/משקל. הגדר unit_only רק למוצרים שנמכרים ביחידה בלבד (למשל קוקוס).
   endcomment
   assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
-  assign sell_modes = 'unit_only'
+  assign sell_modes = 'both'
   if sell_modes_raw != blank
     assign sell_modes_try = sell_modes_raw | strip | downcase
     if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
@@ -33,7 +33,7 @@
     endif
   endif
   unless sell_modes == 'both' or sell_modes == 'unit_only' or sell_modes == 'weight_only'
-    assign sell_modes = 'unit_only'
+    assign sell_modes = 'both'
   endunless
   assign show_weight = false
   assign show_unit = true
