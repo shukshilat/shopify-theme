@@ -2,10 +2,10 @@
 
 .product-card-wrapper--premium-card-qty .card {
   border-radius: 1.6rem;
-  border: 1px solid rgba(var(--color-foreground), 0.08);
+  border: 1px solid var(--brand-accent-soft, rgba(185, 28, 28, 0.12));
   box-shadow:
-    0 0.4rem 1.6rem rgba(var(--color-shadow), 0.06),
-    0 0.1rem 0.3rem rgba(var(--color-foreground), 0.04);
+    0 0.4rem 1.6rem rgba(185, 28, 28, 0.07),
+    0 0.1rem 0.3rem rgba(185, 28, 28, 0.04);
   transition:
     box-shadow var(--duration-medium) ease,
     transform var(--duration-medium) ease;
@@ -13,15 +13,15 @@
 
 .product-card-wrapper--premium-card-qty .card:hover {
   box-shadow:
-    0 0.8rem 2.4rem rgba(var(--color-shadow), 0.1),
-    0 0.2rem 0.6rem rgba(var(--color-foreground), 0.06);
+    0 0.8rem 2.4rem rgba(185, 28, 28, 0.1),
+    0 0.2rem 0.6rem rgba(185, 28, 28, 0.06);
 }
 
 .product-card-wrapper--premium-card-qty .card__content .card__heading-title {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.35;
-  color: var(--brand-accent, #c1121f);
+  color: var(--brand-accent, #b91c1c);
 }
 
 .product-card-wrapper--premium-card-qty .card-information .price {
@@ -31,7 +31,7 @@
 .product-card-wrapper--premium-card-qty .card-information .price-item--regular,
 .product-card-wrapper--premium-card-qty .card-information .price-item--sale,
 .product-card-wrapper--premium-card-qty .card-information .price-item--last {
-  color: var(--brand-accent, #c1121f);
+  color: rgb(var(--color-foreground));
 }
 
 /* כותרת ומחיר רק מתחת למסגרת — לא כפילות מעל התמונה (רק כשיש .card--media) */
@@ -64,9 +64,9 @@
   bottom: 0;
   z-index: 4;
   padding: 0.55rem 0.65rem 0.65rem;
-  background: rgb(var(--color-background));
-  border-top: 1px solid rgba(var(--color-foreground), 0.08);
-  box-shadow: 0 -0.4rem 1.2rem rgba(var(--color-shadow), 0.06);
+  background: rgba(255, 255, 255, 0.97);
+  border-top: none;
+  box-shadow: 0 -0.35rem 1.25rem rgba(185, 28, 28, 0.08);
 }
 
 .card-product-qty--media-bar {
@@ -135,20 +135,20 @@
   line-height: 1.2;
   border-radius: 999px;
   cursor: pointer;
-  color: rgba(var(--color-foreground), 0.55);
+  color: rgba(127, 29, 29, 0.75);
   transition:
     background var(--duration-short) ease,
     color var(--duration-short) ease;
 }
 
 .card-product-qty__mode--compact .card-product-qty__mode-label:has(.card-product-qty__mode-input:checked) {
-  background: var(--brand-accent, #c1121f);
+  background: var(--brand-accent, #b91c1c);
   color: #fff;
   box-shadow: none;
 }
 
 .card-product-qty__mode--compact .card-product-qty__mode-label:focus-within {
-  outline: 0.2rem solid rgba(var(--color-foreground), 0.35);
+  outline: 0.2rem solid rgba(185, 28, 28, 0.35);
   outline-offset: 0.15rem;
 }
 

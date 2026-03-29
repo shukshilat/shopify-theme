@@ -6,9 +6,11 @@
   --focused-base-outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   --focused-base-outline-offset: 0.3rem;
   --focused-base-box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
-  /* מותג: אדום–שחור–לבן (משלים את color schemes) */
-  --brand-accent: #c1121f;
-  --brand-accent-hover: #9b0e18;
+  /* מותג — משתלב עם רקע אדום בהיר (scheme) */
+  --brand-accent: #b91c1c;
+  --brand-accent-hover: #991b1b;
+  --brand-accent-soft: rgba(185, 28, 28, 0.12);
+  --brand-accent-mid: rgba(185, 28, 28, 0.2);
 }
 
 .product-card-wrapper .card,
@@ -4084,8 +4086,8 @@ details {
   background: rgb(var(--color-background));
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 1px 0 rgba(var(--color-foreground), 0.06);
-  border: 1px solid rgba(var(--color-foreground), 0.08);
+  box-shadow: 0 2px 16px rgba(185, 28, 28, 0.06);
+  border: 1px solid var(--brand-accent-soft);
 }
 
 /* כותרת סינון */
@@ -4097,7 +4099,7 @@ summary {
 
 /* אפקט פתיחה */
 details {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--brand-accent-soft);
   padding: 10px 0;
   transition: 0.3s;
 }
@@ -4114,7 +4116,7 @@ summary:hover {
   background: rgb(var(--color-background));
   padding: 15px;
   border-radius: 16px;
-  border: 1px solid rgba(var(--color-foreground), 0.08);
+  border: 1px solid var(--brand-accent-soft);
 }
 /* ===================== */
 /* כותרת */
