@@ -39,6 +39,19 @@
   display: none !important;
 }
 
+/*
+  ב-Dawn, .card__content הפנימי בא אחרי .card__media וממלא את אזור היחס — נצבע מעל המדיה
+  (גם כשהרקע שקוף) וחוסם קליקים על המצב/כמות/עגלה.
+*/
+.product-card-wrapper--premium-card-qty .card--media .card__inner > .card__content {
+  pointer-events: none;
+}
+
+.product-card-wrapper--premium-card-qty .card--media .card__inner > .card__content .card__badge,
+.product-card-wrapper--premium-card-qty .card--media .card__inner > .card__content .badge {
+  pointer-events: auto;
+}
+
 /* שורת פעולות בתחתית מסגרת התמונה */
 .product-card-wrapper--premium-card-qty .card__media {
   overflow: hidden;
