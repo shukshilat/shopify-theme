@@ -152,26 +152,35 @@
   outline-offset: 0.15rem;
 }
 
-/* כמות — כפתורים עגולים וקומפקטיים */
+/* כמות — משתלבת בשורה בלי מסגרת/רקע (מבטלים גם :before/:after של Dawn) */
 .card-product-qty--media-bar .quantity {
   width: 100%;
   max-width: 100%;
   min-width: 0;
   min-height: 0;
-  border-radius: 999px;
-  background: rgba(var(--color-foreground), 0.05);
-  border: 1px solid rgba(var(--color-foreground), 0.1);
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
+.card-product-qty--media-bar .quantity:before,
 .card-product-qty--media-bar .quantity:after {
-  border-radius: 999px;
+  display: none !important;
 }
 
 .card-product-qty--media-bar .quantity__input {
   font-size: 1.2rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  padding: 0.25rem 0.15rem;
+  padding: 0.25rem 0.35rem;
+  flex-grow: 0;
+  width: auto;
+  min-width: 1.5rem;
+  max-width: 4rem;
+  background: transparent !important;
 }
 
 .card-product-qty--media-bar .quantity__button {
@@ -179,13 +188,19 @@
   min-width: 2.35rem;
   height: 2.35rem;
   border-radius: 50%;
-  margin: 0.2rem;
-  background: rgba(var(--color-background), 0.95);
-  border: 1px solid rgba(var(--color-foreground), 0.12);
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+.card-product-qty--media-bar .quantity__button:first-child,
+.card-product-qty--media-bar .quantity__button:last-child {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .card-product-qty--media-bar .quantity__button:hover {
-  background: rgba(var(--color-foreground), 0.06);
+  background: rgba(var(--color-foreground), 0.08) !important;
 }
 
 /* כפתור עגלה בעמודה ימין/שמאל לפי כיוון */
