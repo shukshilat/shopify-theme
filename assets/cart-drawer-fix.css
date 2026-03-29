@@ -140,14 +140,14 @@ cart-drawer.drawer .checkout-btn {
   border-radius: 14px;
   border: none;
   font-weight: bold;
-  background: #2e7d32;
+  background: var(--brand-accent, #c1121f);
   color: #fff;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
 
 cart-drawer.drawer .checkout-btn:hover {
-  background: #1b5e20;
+  background: var(--brand-accent-hover, #9b0e18);
   transform: translateY(-2px);
 }
 

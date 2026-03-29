@@ -6,6 +6,9 @@
   --focused-base-outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   --focused-base-outline-offset: 0.3rem;
   --focused-base-box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
+  /* מותג: אדום–שחור–לבן (משלים את color schemes) */
+  --brand-accent: #c1121f;
+  --brand-accent-hover: #9b0e18;
 }
 
 .product-card-wrapper .card,
@@ -2366,9 +2369,9 @@ input[type='checkbox'] {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
-/* Full-width green rule under header (was on .header.page-width and looked “cut off”) */
+/* פס הדגשה תחת הכותרת */
 .section-header .header-wrapper {
-  border-bottom: 3px solid #2e7d32 !important;
+  border-bottom: 3px solid var(--brand-accent) !important;
 }
 
 .section-header .header.page-width {
@@ -2945,21 +2948,15 @@ details-disclosure > details {
   word-break: break-word;
 }
 
+/* רקע אחיד — ללא שכבות גרדיאנט ירוקות/צבעוניות מעל scheme */
 .gradient {
-  background:
-    radial-gradient(circle at 85% 15%, rgba(var(--color-button), 0.16), transparent 45%),
-    radial-gradient(circle at 15% 85%, rgba(var(--color-foreground), 0.08), transparent 40%),
-    var(--gradient-background);
-  background-attachment: fixed;
+  background: var(--gradient-background);
+  background-attachment: scroll;
 }
 
-/* Force global luxury background visibility */
 body.gradient {
-  background:
-    radial-gradient(circle at 85% 15%, rgba(var(--color-button), 0.16), transparent 45%),
-    radial-gradient(circle at 15% 85%, rgba(var(--color-foreground), 0.08), transparent 40%),
-    var(--gradient-background) !important;
-  background-attachment: fixed;
+  background: var(--gradient-background) !important;
+  background-attachment: scroll;
 }
 
 main#MainContent,
@@ -2968,19 +2965,19 @@ main#MainContent,
   background-color: transparent !important;
 }
 
-/* Keep header/logo area always white (full width, not body gradient bleeding through) */
+/* כותרת באותו רקע כמו גוף העמוד (ללא פס לבן נפרד) */
 .section-header,
 .shopify-section-header,
 .header-wrapper,
 .header {
-  background-color: #ffffff !important;
+  background-color: rgb(var(--color-background)) !important;
+  background-image: none !important;
 }
 
-/* header-wrapper uses .gradient — override global luxury background so sides stay white */
 .section-header .header-wrapper.gradient,
 .header-wrapper.gradient {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
+  background: rgb(var(--color-background)) !important;
+  background-color: rgb(var(--color-background)) !important;
   background-image: none !important;
   background-attachment: scroll !important;
 }
@@ -3733,13 +3730,13 @@ cart-drawer .cart__checkout-button {
   border-radius: 14px;
   font-weight: bold;
   padding: 14px;
-  background: #2e7d32;
+  background: var(--brand-accent);
   color: #fff;
   transition: 0.2s;
 }
 
 cart-drawer .cart__checkout-button:hover {
-  background: #1b5e20;
+  background: var(--brand-accent-hover);
   transform: translateY(-2px);
 } 
 /* ===== FREE SHIPPING PREMIUM ===== */
@@ -3752,7 +3749,7 @@ cart-drawer .cart__checkout-button:hover {
 
 /* כשהגיע למשלוח חינם */
 .free-shipping-text.free-active {
-  color: #2e7d32;
+  color: var(--brand-accent);
   font-weight: bold;
 } 
 .qty-box {
@@ -3835,12 +3832,12 @@ cart-drawer .cart__checkout-button:hover {
 
 /* אפקט מעבר */
 .header__inline-menu .list-menu__item:hover {
-  color: #2e7d32;
+  color: var(--brand-accent);
 }
 
 /* קטגוריה פעילה */
 .header__menu-item--active {
-  color: #1b5e20;
+  color: var(--brand-accent);
   font-weight: 700;
 } 
 .header__inline-menu .list-menu__item {
@@ -4084,10 +4081,11 @@ details {
 /* סינון פרימיום */
 /* ===================== */
 .facets {
-  background: #fff;
+  background: rgb(var(--color-background));
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 0 rgba(var(--color-foreground), 0.06);
+  border: 1px solid rgba(var(--color-foreground), 0.08);
 }
 
 /* כותרת סינון */
@@ -4113,9 +4111,10 @@ summary:hover {
 /* פס עליון */
 /* ===================== */
 .facets-vertical {
-  background: #f7f7f7;
+  background: rgb(var(--color-background));
   padding: 15px;
   border-radius: 16px;
+  border: 1px solid rgba(var(--color-foreground), 0.08);
 }
 /* ===================== */
 /* כותרת */

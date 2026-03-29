@@ -21,7 +21,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.35;
-  color: #1a5c36;
+  color: var(--brand-accent, #c1121f);
 }
 
 .product-card-wrapper--premium-card-qty .card-information .price {
@@ -31,7 +31,7 @@
 .product-card-wrapper--premium-card-qty .card-information .price-item--regular,
 .product-card-wrapper--premium-card-qty .card-information .price-item--sale,
 .product-card-wrapper--premium-card-qty .card-information .price-item--last {
-  color: #1a5c36;
+  color: var(--brand-accent, #c1121f);
 }
 
 /* כותרת ומחיר רק מתחת למסגרת — לא כפילות מעל התמונה (רק כשיש .card--media) */
@@ -142,7 +142,7 @@
 }
 
 .card-product-qty__mode--compact .card-product-qty__mode-label:has(.card-product-qty__mode-input:checked) {
-  background: #1a5c36;
+  background: var(--brand-accent, #c1121f);
   color: #fff;
   box-shadow: none;
 }
