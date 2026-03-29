@@ -11,6 +11,8 @@
   --brand-accent-hover: #991b1b;
   --brand-accent-soft: rgba(185, 28, 28, 0.12);
   --brand-accent-mid: rgba(185, 28, 28, 0.2);
+  /* רקע מעטפת האתר (גוף + כותרת) — ורוד־אדום בהיר */
+  --site-shell-bg: #fef2f2;
 }
 
 .product-card-wrapper .card,
@@ -2110,6 +2112,12 @@ input[type='checkbox'] {
   line-height: calc(1 + 0.1 / var(--font-body-scale));
 }
 
+/* בועת כמות בעגלה: שחור + לבן (לא אדום מכפתור המותג) */
+.header .cart-count-bubble {
+  background-color: #1c1917 !important;
+  color: #ffffff !important;
+}
+
 /* utility-bar */
 .utility-bar {
   height: 100%;
@@ -2594,6 +2602,12 @@ input[type='checkbox'] {
   margin-right: -1.2rem;
 }
 
+.header__icon--cart .icon,
+.header__icon--cart svg {
+  color: #1c1917;
+  stroke: #1c1917;
+}
+
 .header__icon--account shop-user-avatar {
   --shop-avatar-size: 2.8rem;
 }
@@ -2956,8 +2970,14 @@ details-disclosure > details {
   background-attachment: scroll;
 }
 
+/* גיבוי ורוד־אדום בהיר כשהגדרות צבע בערכת הנושא לא נטענו / עדיין לבן */
+html {
+  background-color: var(--site-shell-bg);
+}
+
 body.gradient {
-  background: var(--gradient-background) !important;
+  background-color: var(--site-shell-bg) !important;
+  background-image: none !important;
   background-attachment: scroll;
 }
 
@@ -2972,14 +2992,14 @@ main#MainContent,
 .shopify-section-header,
 .header-wrapper,
 .header {
-  background-color: rgb(var(--color-background)) !important;
+  background-color: var(--site-shell-bg) !important;
   background-image: none !important;
 }
 
 .section-header .header-wrapper.gradient,
 .header-wrapper.gradient {
-  background: rgb(var(--color-background)) !important;
-  background-color: rgb(var(--color-background)) !important;
+  background: var(--site-shell-bg) !important;
+  background-color: var(--site-shell-bg) !important;
   background-image: none !important;
   background-attachment: scroll !important;
 }

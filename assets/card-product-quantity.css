@@ -21,7 +21,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.35;
-  color: var(--brand-accent, #b91c1c);
+  color: rgb(var(--color-foreground));
 }
 
 .product-card-wrapper--premium-card-qty .card-information .price {
