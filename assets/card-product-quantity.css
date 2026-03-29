@@ -213,18 +213,14 @@
   min-height: 2.85rem !important;
   padding: 0 !important;
   border-radius: 50% !important;
-  background: linear-gradient(
-    160deg,
-    rgb(var(--color-button)) 0%,
-    rgba(var(--color-button), 0.9) 100%
-  ) !important;
-  color: rgb(var(--color-button-text)) !important;
+  background: #1c1917 !important;
+  color: #ffffff !important;
   border: none !important;
-  box-shadow: 0 0.2rem 0.65rem rgba(var(--color-shadow), 0.2);
+  box-shadow: 0 0.2rem 0.55rem rgba(0, 0, 0, 0.12);
 }
 
 .card-product-qty__submit--bar:not(:disabled):hover {
-  filter: brightness(1.05);
+  filter: brightness(1.08);
 }
 
 .card-product-qty__submit--bar .card-product-qty__cart-icon {
@@ -465,6 +461,10 @@
 
 .card-product-qty__submit.loading > .loading__spinner .path {
   stroke: rgb(var(--color-button-text));
+}
+
+.card-product-qty__submit--bar.loading > .loading__spinner .path {
+  stroke: #ffffff;
 }
 
 .card-product-qty--variants {

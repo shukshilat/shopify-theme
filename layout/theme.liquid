@@ -301,6 +301,33 @@
 
     {{ 'floating-waze.css' | asset_url | stylesheet_tag }}
 
+    {% comment %}
+      רקע ורוד־אדום בהיר — אחרי כל ה־CSS כדי שלא יידרס; מכסה גם .shopify-section > .gradient (הילד הישיר, לא העוטף)
+    {% endcomment %}
+    <style id="theme-site-shell-bg">
+      html {
+        background-color: #fef2f2 !important;
+        min-height: 100%;
+      }
+      body.gradient {
+        background-color: #fef2f2 !important;
+        background-image: none !important;
+      }
+      .section-header,
+      .header-wrapper,
+      .header {
+        background-color: #fef2f2 !important;
+        background-image: none !important;
+      }
+      .shopify-section > .gradient {
+        background-color: #fef2f2 !important;
+        background-image: none !important;
+      }
+      main#MainContent {
+        background: transparent !important;
+      }
+    </style>
+
     <script>
       if (Shopify.designMode) {
         document.documentElement.classList.add('shopify-design-mode');

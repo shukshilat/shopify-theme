@@ -2987,6 +2987,12 @@ main#MainContent,
   background-color: transparent !important;
 }
 
+/* ילד ישיר של סקשן עם .gradient — שם יושב הרקע של האוסף/באנר (לא כרטיסי מוצר) */
+.shopify-section > .gradient {
+  background-color: var(--site-shell-bg) !important;
+  background-image: none !important;
+}
+
 /* כותרת באותו רקע כמו גוף העמוד (ללא פס לבן נפרד) */
 .section-header,
 .shopify-section-header,
