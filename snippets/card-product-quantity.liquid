@@ -16,11 +16,19 @@
     assign inc_q = 1
   endif
   comment
-    Metafield custom.card_sell_modes (אופציונלי): both | unit_only | weight_only
-    ברירת מחדל both — מתג יחידה/משקל. הגדר unit_only רק למוצרים שנמכרים ביחידה בלבד (למשל קוקוס).
+    מתג יחידה/משקל:
+    - בלי מטא־פילד: אוטומטית לפי unit_price_measurement של הווריאנט — kg/g = both, item או ללא = unit_only (קוקוס וכו׳)
+    - custom.card_sell_modes דורס: both | unit_only | weight_only
   endcomment
   assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
-  assign sell_modes = 'both'
+  assign card_ref_unit = ''
+  if v.unit_price_measurement != blank
+    assign card_ref_unit = v.unit_price_measurement.reference_unit | default: ''
+  endif
+  assign sell_modes = 'unit_only'
+  if card_ref_unit == 'kg' or card_ref_unit == 'g'
+    assign sell_modes = 'both'
+  endif
   if sell_modes_raw != blank
     assign sell_modes_try = sell_modes_raw | strip | downcase
     if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
@@ -33,7 +41,10 @@
     endif
   endif
   unless sell_modes == 'both' or sell_modes == 'unit_only' or sell_modes == 'weight_only'
-    assign sell_modes = 'both'
+    assign sell_modes = 'unit_only'
+    if card_ref_unit == 'kg' or card_ref_unit == 'g'
+      assign sell_modes = 'both'
+    endif
   endunless
   assign show_weight = false
   assign show_unit = true
