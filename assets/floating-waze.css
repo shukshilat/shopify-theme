@@ -1,20 +1,29 @@
 /*
-  Centered shortcut row under the header — normal document flow, scrolls with the page.
+  Vertical stack on the side, vertically centered in the viewport (where the shortcuts were).
+  RTL: inset-inline-end = visual left edge.
 */
 .floating-side-bar {
+  position: fixed;
+  inset-inline-end: 0.75rem;
+  inset-inline-start: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10002;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 0.25rem;
+  margin: 0;
+  width: auto;
+  max-width: none;
   box-sizing: border-box;
-  position: static;
-  z-index: 2;
+  pointer-events: none;
+}
+
+.floating-side-bar > * {
+  pointer-events: auto;
 }
 
 /* Floating shortcuts (Waze + WhatsApp) */
@@ -69,6 +78,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .floating-side-bar {
+    transform: translateY(-50%);
+  }
+
   .floating-waze,
   .floating-whatsapp {
     transition: none;
@@ -82,8 +95,8 @@
 
 @media screen and (max-width: 749px) {
   .floating-side-bar {
+    inset-inline-end: 0.5rem;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
   }
 
   .floating-waze,
