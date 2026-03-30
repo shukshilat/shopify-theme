@@ -1,9 +1,13 @@
-/* Side column: viewport-fixed so icons stay on screen while scrolling */
+/* Scrolls with page: absolute inside #MainContent (not fixed to viewport) */
+#MainContent {
+  position: relative;
+}
+
 .floating-side-bar {
-  position: fixed;
+  position: absolute;
   inset-inline-end: 1.25rem;
   inset-inline-start: auto;
-  top: 50%;
+  top: 50vh;
   transform: translateY(-50%);
   z-index: 10002;
   display: flex;
