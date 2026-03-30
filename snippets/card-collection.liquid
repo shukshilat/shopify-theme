@@ -146,5 +146,12 @@
         </div>
       </div>
     {%- endif -%}
+    {%- if card_collection != blank -%}
+      <a
+        href="{{ card_collection.url }}"
+        class="card__full-link"
+        aria-label="{{ card_collection.title | escape }}"
+      ></a>
+    {%- endif -%}
   </div>
 </div>

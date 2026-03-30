@@ -80,6 +80,16 @@
   margin-inline: auto;
 }
 
+.section-collection-list .collection-list__item .card {
+  position: relative;
+}
+
+.section-collection-list .collection-list__item .card__full-link {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+
 .section-collection-list .collection-list__item .card__media {
   margin: 0 !important;
   width: 100% !important;
