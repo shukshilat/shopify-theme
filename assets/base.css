@@ -2627,6 +2627,16 @@ input[type='checkbox'] {
   box-shadow: none !important;
 }
 
+/* Dawn's .button pseudo-elements can render a colored ring on cart icon buttons */
+.card__quick-add-button::before,
+.card__quick-add-button::after,
+.card-product-qty__submit--bar::before,
+.card-product-qty__submit--bar::after {
+  content: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
 .header__icon--account shop-user-avatar {
   --shop-avatar-size: 2.8rem;
 }
