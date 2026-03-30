@@ -59,3 +59,14 @@
 .collection-list-view-all {
   margin-top: 2rem;
 }
+
+/* Category name centered under each image (no arrows — see card-collection.liquid) */
+.section-collection-list .card--standard.card--media > .card__content,
+.section-collection-list .card--card.card--media > .card__content {
+  text-align: center;
+}
+
+.section-collection-list .card--standard.card--media > .card__content .card__information,
+.section-collection-list .card--card.card--media > .card__content .card__information {
+  width: 100%;
+}
