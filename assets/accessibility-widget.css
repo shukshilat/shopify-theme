@@ -199,6 +199,12 @@ html.a11y-high-contrast body {
   filter: contrast(1.25) saturate(1.1);
 }
 
+/* filter on an ancestor breaks position:fixed (viewport anchoring) for cart-drawer.
+   Drop it while the drawer is open so the panel can float correctly. */
+html.a11y-high-contrast.cart-drawer-open body {
+  filter: none;
+}
+
 html.a11y-underline-links a {
   text-decoration: underline !important;
   text-underline-offset: 0.2em;

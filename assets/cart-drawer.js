@@ -50,6 +50,7 @@ class CartDrawer extends HTMLElement {
       { once: true }
     );
 
+    document.documentElement.classList.add('cart-drawer-open');
     document.body.classList.add('overflow-hidden');
 
     if (!this._boundOnResize) {
@@ -119,6 +120,7 @@ class CartDrawer extends HTMLElement {
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
+    document.documentElement.classList.remove('cart-drawer-open');
   }
 
   setSummaryAccessibility(cartDrawerNote) {
