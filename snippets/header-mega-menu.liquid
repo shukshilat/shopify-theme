@@ -8,7 +8,14 @@
 <nav class="header__inline-menu">
   <ul class="list-menu list-menu--inline" role="list">
     {%- for link in section.settings.menu.links -%}
-      <li>
+      {%- liquid
+        assign show_custom_subcats = false
+        assign link_title_down = link.title | downcase
+        if link_title_down contains 'ביצים'
+          assign show_custom_subcats = true
+        endif
+      -%}
+      <li{% if show_custom_subcats and link.links == blank %} class="header__menu-item--has-custom-subcats"{% endif %}>
         {%- if link.links != blank -%}
           <header-menu>
             <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu">
@@ -87,6 +94,42 @@
               {{- link.title | escape -}}
             </span>
           </a>
+          {%- if show_custom_subcats -%}
+            <ul class="header__custom-submenu list-menu" role="list" aria-label="תתי קטגוריות">
+              <li>
+                <a
+                  href="/search?q={{ 'תבליני פרג' | url_encode }}&type=product"
+                  class="header__menu-item list-menu__item link link--text focus-inset"
+                >
+                  תבליני פרג
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/search?q={{ 'שמן זית' | url_encode }}&type=product"
+                  class="header__menu-item list-menu__item link link--text focus-inset"
+                >
+                  שמן זית
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/search?q={{ 'ביצי חופש' | url_encode }}&type=product"
+                  class="header__menu-item list-menu__item link link--text focus-inset"
+                >
+                  ביצי חופש
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product"
+                  class="header__menu-item list-menu__item link link--text focus-inset"
+                >
+                  מוצרי מרכול
+                </a>
+              </li>
+            </ul>
+          {%- endif -%}
         {%- endif -%}
       </li>
     {%- endfor -%}

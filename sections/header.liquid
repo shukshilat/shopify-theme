@@ -163,6 +163,47 @@
     background: rgba(0, 0, 0, 0.35);
   }
 
+  /* Desktop hover submenu for the eggs/oil category */
+  .header__menu-item--has-custom-subcats {
+    position: relative;
+  }
+
+  .header__custom-submenu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    min-width: 20rem;
+    padding: 0.6rem 0;
+    border-radius: 1rem;
+    background: rgb(var(--color-background));
+    box-shadow: 0 1rem 2.4rem rgba(var(--color-shadow), 0.18);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    z-index: 30;
+  }
+
+  .header__custom-submenu .list-menu__item {
+    display: block;
+    padding: 0.65rem 1rem;
+    white-space: nowrap;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #000 !important;
+  }
+
+  .header__custom-submenu .list-menu__item:hover,
+  .header__custom-submenu .list-menu__item:focus-visible {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  @media screen and (min-width: 990px) {
+    .header__menu-item--has-custom-subcats:hover > .header__custom-submenu,
+    .header__menu-item--has-custom-subcats:focus-within > .header__custom-submenu {
+      display: block;
+    }
+  }
+
   /* Categories below logo, centered (same idea as top-center) */
   @media screen and (min-width: 990px) {
     .header.header--middle-center:not(.drawer-menu) {
