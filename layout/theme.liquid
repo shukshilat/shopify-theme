@@ -347,7 +347,9 @@
     {% sections 'header-group' %}
 
     <main id="MainContent" class="content-for-layout focus-none main-with-floating-sidebar" role="main" tabindex="-1">
-      {{ content_for_layout }}
+      <div class="main-with-floating-sidebar__content">
+        {{ content_for_layout }}
+      </div>
       <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
         {% render 'floating-waze' %}
         {% render 'floating-whatsapp' %}
