@@ -32,6 +32,7 @@
       compareAtCents: parseInt(d.compareAtCents || '0', 10) || 0,
       comparePerKg: parseInt(d.comparePerKg || '0', 10) || 0,
       centsPerKg: parseInt(d.centsPerKg || '0', 10) || 0,
+      lineUnitCents: parseInt(d.lineUnitCents || '0', 10) || 0,
       currencyWithCode: d.currencyWithCode === 'true',
     };
   }
@@ -60,10 +61,18 @@
     return Math.max(0.1, Math.round(kg * 1000) / 1000);
   }
 
+  function isWeightCapableProduct(root) {
+    return root?.dataset?.showWeight === 'true';
+  }
+
   function lineCents(mode, form, p) {
     if (mode === 'weight') {
       const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
       return Math.round(perKg * getKg(form));
+    }
+    // For products that can be sold by weight, "unit" mode should not multiply price by units.
+    if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
+      return p.lineUnitCents > 0 ? p.lineUnitCents : p.variantCents;
     }
     return Math.round(p.variantCents * getUnitQty(form));
   }
@@ -74,6 +83,10 @@
       if (p.comparePerKg > 0) return Math.round(p.comparePerKg * getKg(form));
       if (p.variantCents > 0) return Math.round(line * (p.compareAtCents / p.variantCents));
       return 0;
+    }
+    if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
+      const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+      return Math.round(p.compareAtCents * min);
     }
     return Math.round(p.compareAtCents * getUnitQty(form));
   }
