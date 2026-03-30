@@ -211,6 +211,10 @@
         render 'header-drawer'
       endif
 
+      if section.settings.logo_position == 'middle-center' and section.settings.menu != blank
+        render 'header-search', input_id: 'Search-In-Modal-Right'
+      endif
+
       if section.settings.logo_position == 'top-center' or section.settings.menu == blank
         render 'header-search', input_id: 'Search-In-Modal-1'
       endif
@@ -322,9 +326,11 @@
           </localization-form>
         {%- endif -%}
       </div>
-      {%- unless section.settings.logo_position == 'top-center' and section.settings.menu != blank -%}
+      {%- if section.settings.menu != blank and section.settings.logo_position == 'middle-center' -%}
+      {%- elsif section.settings.menu != blank and section.settings.logo_position == 'top-center' -%}
+      {%- else -%}
         {% render 'header-search', input_id: 'Search-In-Modal' %}
-      {%- endunless %}
+      {%- endif -%}
 
       <a
         href="tel:+97286160126"
