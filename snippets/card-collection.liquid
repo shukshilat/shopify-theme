@@ -29,6 +29,7 @@
     assign card_color_scheme = settings.collection_card_color_scheme
     assign card_style = settings.collection_card_style
   endif
+  assign card_link_label = card_collection.title | default: 'onboarding.collection_title' | t
 -%}
 
 <div class="card-wrapper {% if wrapper_class and wrapper_class != 'none' %}{{ wrapper_class }}{% else %}collection-card-wrapper{% endif %}">
@@ -84,20 +85,13 @@
         <div class="card__content">
           <div class="card__information">
             <h3 class="card__heading">
-              <a
-                {% if card_collection == blank %}
-                  role="link" aria-disabled="true"
-                {% else %}
-                  href="{{ card_collection.url }}"
-                {% endif %}
-                class="full-unstyled-link"
-              >
+              <span class="full-unstyled-link">
                 {%- if card_collection.title != blank -%}
                   {{- card_collection.title | escape -}}
                 {%- else -%}
                   {{ 'onboarding.collection_title' | t }}
                 {%- endif -%}
-              </a>
+              </span>
             </h3>
             {%- if card_collection.description != blank -%}
               <p class="card__caption">
@@ -112,20 +106,13 @@
       <div class="card__content">
         <div class="card__information">
           <h3 class="card__heading">
-            <a
-              {% if card_collection == blank %}
-                role="link" aria-disabled="true"
-              {% else %}
-                href="{{ card_collection.url }}"
-              {% endif %}
-              class="full-unstyled-link"
-            >
+            <span class="full-unstyled-link">
               {%- if card_collection.title != blank -%}
                 {{- card_collection.title | escape -}}
               {%- else -%}
                 {{ 'onboarding.collection_title' | t }}
               {%- endif -%}
-            </a>
+            </span>
           </h3>
           {%- if card_collection.featured_image == null and card_collection.description != blank -%}
             <p class="card__caption">
@@ -150,7 +137,7 @@
       <a
         href="{{ card_collection.url }}"
         class="card__full-link"
-        aria-label="{{ card_collection.title | escape }}"
+        aria-label="{{ card_link_label | escape }}"
       ></a>
     {%- endif -%}
   </div>

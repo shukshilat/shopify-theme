@@ -82,12 +82,24 @@
 
 .section-collection-list .collection-list__item .card {
   position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .section-collection-list .collection-list__item .card__full-link {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  display: block;
+  z-index: 20;
+}
+
+.section-collection-list .collection-list__item .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.6rem 1.6rem rgba(var(--color-shadow), 0.12);
+}
+
+.section-collection-list .collection-list__item .card:hover .card__media img {
+  transform: scale(1.03);
 }
 
 .section-collection-list .collection-list__item .card__media {
