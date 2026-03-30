@@ -1,9 +1,10 @@
 /**
  * Cart drawer — must load AFTER component-cart-drawer.css
  * Pins panel to the LEFT (physical), RTL content inside, footer at bottom of panel.
+ * Height follows content up to max-height (compact mini-cart), not full viewport.
  */
 
-/* Full overlay; panel docked LEFT (flex-start in LTR host) */
+/* Full overlay; panel docked LEFT — do not stretch panel to full viewport height */
 cart-drawer.drawer {
   direction: ltr;
   position: fixed;
@@ -13,23 +14,24 @@ cart-drawer.drawer {
   height: 100%;
   display: flex;
   justify-content: flex-start;
-  align-items: stretch;
-  align-content: stretch;
+  align-items: flex-start;
+  align-content: flex-start;
   z-index: 1000;
 }
 
 cart-drawer.drawer #CartDrawer.cart-drawer {
   position: relative;
   flex: 0 0 auto;
-  align-self: stretch;
-  width: min(40rem, calc(100vw - 3rem));
+  align-self: flex-start;
+  width: min(36rem, calc(100vw - 2rem));
   max-width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: none;
   min-height: 0;
   display: flex;
   flex-direction: column;
   margin: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 @media screen and (max-width: 749px) {
@@ -55,16 +57,16 @@ cart-drawer.drawer .drawer__inner.cart-drawer__panel {
   direction: rtl;
   width: 100%;
   max-width: 100%;
-  height: 100%;
+  height: auto;
   min-height: 0;
-  max-height: 100%;
+  max-height: min(88vh, 52rem);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   /* panel on left: rounded on the inner (right) edge */
-  border-radius: 0 2rem 2rem 0;
+  border-radius: 0 1.2rem 1.2rem 0;
   box-shadow: 1rem 0 2.5rem rgba(0, 0, 0, 0.12);
-  padding: 2rem;
+  padding: 1.6rem 1.8rem;
   background: #fff;
   transition: transform var(--duration-default, 0.3s) ease;
 }
