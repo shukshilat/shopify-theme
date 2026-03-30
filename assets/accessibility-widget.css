@@ -12,17 +12,17 @@
   direction: inherit;
 }
 
-/* Stacked with Waze/WhatsApp — bar is fixed; widget is a normal flex item */
+/* Stacked with Waze/WhatsApp — must not use viewport fixed (overrides base .a11y-widget) */
 .floating-side-bar .a11y-widget {
-  position: relative;
-  bottom: auto;
+  position: relative !important;
+  bottom: auto !important;
   z-index: auto;
 }
 
 .floating-side-bar .a11y-widget.a11y-widget--pos-start,
 .floating-side-bar .a11y-widget.a11y-widget--pos-end {
-  inset-inline-start: auto;
-  inset-inline-end: auto;
+  inset-inline-start: auto !important;
+  inset-inline-end: auto !important;
 }
 
 .a11y-widget--pos-start {
