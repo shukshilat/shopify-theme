@@ -346,10 +346,10 @@
 
     {% sections 'header-group' %}
 
-    <main id="MainContent" class="content-for-layout focus-none main-with-floating-sidebar" role="main" tabindex="-1">
-      <div class="main-with-floating-sidebar__content">
+    <div class="page-with-sidebar">
+      <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
         {{ content_for_layout }}
-      </div>
+      </main>
       <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
         {% render 'floating-waze' %}
         {% render 'floating-whatsapp' %}
@@ -357,7 +357,7 @@
           {% render 'accessibility-widget' %}
         {%- endif -%}
       </aside>
-    </main>
+    </div>
 
     {% sections 'footer-group' %}
 

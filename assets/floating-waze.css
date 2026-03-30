@@ -1,8 +1,9 @@
 /*
-  Flex row: no absolute/fixed — sidebar is in normal flow and scrolls with the page.
-  RTL: first column = content (right), second = icons (left / inline-end).
+  Wrapper (not main) uses flex — avoids theme rules on main#MainContent.
+  Sidebar is in normal flow and scrolls with the document.
+  RTL: main first = content (right), aside second = icons (left).
 */
-.main-with-floating-sidebar {
+.page-with-sidebar {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -12,13 +13,13 @@
   box-sizing: border-box;
 }
 
-.main-with-floating-sidebar__content {
+.page-with-sidebar > main {
   flex: 1 1 0;
   min-width: 0;
 }
 
 .floating-side-bar {
-  position: static;
+  position: static !important;
   flex: 0 0 auto;
   align-self: flex-start;
   z-index: 10002;
@@ -94,7 +95,7 @@
 }
 
 @media screen and (max-width: 749px) {
-  .main-with-floating-sidebar {
+  .page-with-sidebar {
     flex-direction: column;
   }
 
