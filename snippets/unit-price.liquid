@@ -15,6 +15,16 @@
       {%- assign unit_he = 'ליטר' -%}
     {%- when 'ml' -%}
       {%- assign unit_he = 'מ״ל' -%}
+    {%- when 'item' -%}
+      {%- assign unit_he = 'יחידה' -%}
+    {%- when 'items' -%}
+      {%- assign unit_he = 'יחידות' -%}
+    {%- when 'ea' -%}
+      {%- assign unit_he = 'יחידה' -%}
+    {%- when 'pc' -%}
+      {%- assign unit_he = 'יחידה' -%}
+    {%- when 'pcs' -%}
+      {%- assign unit_he = 'יחידות' -%}
     {%- else -%}
       {%- assign unit_he = unit -%}
   {%- endcase -%}
