@@ -1,4 +1,3 @@
-﻿
 :root {
   --alpha-button-background: 1;
   --alpha-button-border: 1;
@@ -7,12 +6,12 @@
   --focused-base-outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   --focused-base-outline-offset: 0.3rem;
   --focused-base-box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
-  /* Ã—Å¾Ã—â€¢Ã—ÂªÃ—â€™ Ã¢â‚¬â€ Ã—Å¾Ã—Â©Ã—ÂªÃ—Å“Ã—â€˜ Ã—Â¢Ã—Â Ã—Â¨Ã—Â§Ã—Â¢ Ã—ÂÃ—â€œÃ—â€¢Ã—Â Ã—â€˜Ã—â€Ã—â„¢Ã—Â¨ (scheme) */
+  /* ×ž×•×ª×’ â€” ×ž×©×ª×œ×‘ ×¢× ×¨×§×¢ ××“×•× ×‘×”×™×¨ (scheme) */
   --brand-accent: #b91c1c;
   --brand-accent-hover: #991b1b;
   --brand-accent-soft: rgba(185, 28, 28, 0.12);
   --brand-accent-mid: rgba(185, 28, 28, 0.2);
-  /* Ã—Â¨Ã—Â§Ã—Â¢ Ã—Å¾Ã—Â¢Ã—ËœÃ—Â¤Ã—Âª Ã—â€Ã—ÂÃ—ÂªÃ—Â¨ (Ã—â€™Ã—â€¢Ã—Â£ + Ã—â€ºÃ—â€¢Ã—ÂªÃ—Â¨Ã—Âª) Ã¢â‚¬â€ Ã—â€¢Ã—Â¨Ã—â€¢Ã—â€œÃ–Â¾Ã—ÂÃ—â€œÃ—â€¢Ã—Â Ã—â€˜Ã—â€Ã—â„¢Ã—Â¨ */
+  /* ×¨×§×¢ ×ž×¢×˜×¤×ª ×”××ª×¨ (×’×•×£ + ×›×•×ª×¨×ª) â€” ×•×¨×•×“Ö¾××“×•× ×‘×”×™×¨ */
   --site-shell-bg: #fef2f2;
 }
 
@@ -2113,7 +2112,7 @@ input[type='checkbox'] {
   line-height: calc(1 + 0.1 / var(--font-body-scale));
 }
 
-/* Ã—â€˜Ã—â€¢Ã—Â¢Ã—Âª Ã—â€ºÃ—Å¾Ã—â€¢Ã—Âª Ã—â€˜Ã—Â¢Ã—â€™Ã—Å“Ã—â€: Ã—Â©Ã—â€”Ã—â€¢Ã—Â¨ + Ã—Å“Ã—â€˜Ã—Å¸ (Ã—Å“Ã—Â Ã—ÂÃ—â€œÃ—â€¢Ã—Â Ã—Å¾Ã—â€ºÃ—Â¤Ã—ÂªÃ—â€¢Ã—Â¨ Ã—â€Ã—Å¾Ã—â€¢Ã—ÂªÃ—â€™) */
+/* ×‘×•×¢×ª ×›×ž×•×ª ×‘×¢×’×œ×”: ×©×—×•×¨ + ×œ×‘×Ÿ (×œ× ××“×•× ×ž×›×¤×ª×•×¨ ×”×ž×•×ª×’) */
 .header .cart-count-bubble {
   background-color: #1c1917 !important;
   color: #ffffff !important;
@@ -2380,7 +2379,7 @@ input[type='checkbox'] {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
-/* Ã—Â¤Ã—Â¡ Ã—â€Ã—â€œÃ—â€™Ã—Â©Ã—â€ Ã—ÂªÃ—â€”Ã—Âª Ã—â€Ã—â€ºÃ—â€¢Ã—ÂªÃ—Â¨Ã—Âª */
+/* ×¤×¡ ×”×“×’×©×” ×ª×—×ª ×”×›×•×ª×¨×ª */
 .section-header .header-wrapper {
   border-bottom: 3px solid var(--brand-accent) !important;
 }
@@ -2965,13 +2964,13 @@ details-disclosure > details {
   word-break: break-word;
 }
 
-/* Ã—Â¨Ã—Â§Ã—Â¢ Ã—ÂÃ—â€”Ã—â„¢Ã—â€œ Ã¢â‚¬â€ Ã—Å“Ã—Å“Ã—Â Ã—Â©Ã—â€ºÃ—â€˜Ã—â€¢Ã—Âª Ã—â€™Ã—Â¨Ã—â€œÃ—â„¢Ã—ÂÃ—Â Ã—Ëœ Ã—â„¢Ã—Â¨Ã—â€¢Ã—Â§Ã—â€¢Ã—Âª/Ã—Â¦Ã—â€˜Ã—Â¢Ã—â€¢Ã—Â Ã—â„¢Ã—â€¢Ã—Âª Ã—Å¾Ã—Â¢Ã—Å“ scheme */
+/* ×¨×§×¢ ××—×™×“ â€” ×œ×œ× ×©×›×‘×•×ª ×’×¨×“×™×× ×˜ ×™×¨×•×§×•×ª/×¦×‘×¢×•× ×™×•×ª ×ž×¢×œ scheme */
 .gradient {
   background: var(--gradient-background);
   background-attachment: scroll;
 }
 
-/* Ã—â€™Ã—â„¢Ã—â€˜Ã—â€¢Ã—â„¢ Ã—â€¢Ã—Â¨Ã—â€¢Ã—â€œÃ–Â¾Ã—ÂÃ—â€œÃ—â€¢Ã—Â Ã—â€˜Ã—â€Ã—â„¢Ã—Â¨ Ã—â€ºÃ—Â©Ã—â€Ã—â€™Ã—â€œÃ—Â¨Ã—â€¢Ã—Âª Ã—Â¦Ã—â€˜Ã—Â¢ Ã—â€˜Ã—Â¢Ã—Â¨Ã—â€ºÃ—Âª Ã—â€Ã—Â Ã—â€¢Ã—Â©Ã—Â Ã—Å“Ã—Â Ã—Â Ã—ËœÃ—Â¢Ã—Â Ã—â€¢ / Ã—Â¢Ã—â€œÃ—â„¢Ã—â„¢Ã—Å¸ Ã—Å“Ã—â€˜Ã—Å¸ */
+/* ×’×™×‘×•×™ ×•×¨×•×“Ö¾××“×•× ×‘×”×™×¨ ×›×©×”×’×“×¨×•×ª ×¦×‘×¢ ×‘×¢×¨×›×ª ×”× ×•×©× ×œ× × ×˜×¢× ×• / ×¢×“×™×™×Ÿ ×œ×‘×Ÿ */
 html {
   background-color: var(--site-shell-bg);
 }
@@ -2985,10 +2984,10 @@ body.gradient {
 main#MainContent,
 .shopify-section,
 .section {
-  background-color: var(--site-shell-bg) !important;
+  background-color: transparent !important;
 }
 
-/* Ã—â„¢Ã—Å“Ã—â€œ Ã—â„¢Ã—Â©Ã—â„¢Ã—Â¨ Ã—Â©Ã—Å“ Ã—Â¡Ã—Â§Ã—Â©Ã—Å¸ Ã—Â¢Ã—Â .gradient Ã¢â‚¬â€ Ã—Â©Ã—Â Ã—â„¢Ã—â€¢Ã—Â©Ã—â€˜ Ã—â€Ã—Â¨Ã—Â§Ã—Â¢ Ã—Â©Ã—Å“ Ã—â€Ã—ÂÃ—â€¢Ã—Â¡Ã—Â£/Ã—â€˜Ã—ÂÃ—Â Ã—Â¨ (Ã—Å“Ã—Â Ã—â€ºÃ—Â¨Ã—ËœÃ—â„¢Ã—Â¡Ã—â„¢ Ã—Å¾Ã—â€¢Ã—Â¦Ã—Â¨) */
+/* ×™×œ×“ ×™×©×™×¨ ×©×œ ×¡×§×©×Ÿ ×¢× .gradient â€” ×©× ×™×•×©×‘ ×”×¨×§×¢ ×©×œ ×”××•×¡×£/×‘×× ×¨ (×œ× ×›×¨×˜×™×¡×™ ×ž×•×¦×¨) */
 .shopify-section > .gradient {
   background-color: var(--site-shell-bg) !important;
   background-image: none !important;
@@ -3001,7 +3000,7 @@ main#MainContent,
   background-image: none !important;
 }
 
-/* Ã—â€ºÃ—â€¢Ã—ÂªÃ—Â¨Ã—Âª Ã—â€˜Ã—ÂÃ—â€¢Ã—ÂªÃ—â€¢ Ã—Â¨Ã—Â§Ã—Â¢ Ã—â€ºÃ—Å¾Ã—â€¢ Ã—â€™Ã—â€¢Ã—Â£ Ã—â€Ã—Â¢Ã—Å¾Ã—â€¢Ã—â€œ (Ã—Å“Ã—Å“Ã—Â Ã—Â¤Ã—Â¡ Ã—Å“Ã—â€˜Ã—Å¸ Ã—Â Ã—Â¤Ã—Â¨Ã—â€œ) */
+/* ×›×•×ª×¨×ª ×‘××•×ª×• ×¨×§×¢ ×›×ž×• ×’×•×£ ×”×¢×ž×•×“ (×œ×œ× ×¤×¡ ×œ×‘×Ÿ × ×¤×¨×“) */
 .section-header,
 .shopify-section-header,
 .header-wrapper,
@@ -3681,7 +3680,7 @@ main#MainContent,
 
 /* Cart drawer layout: see assets/cart-drawer-fix.css (loaded after component-cart-drawer.css) */
 
-/* Ã—Â¤Ã—Â¨Ã—â„¢Ã—Ëœ */
+/* ×¤×¨×™×˜ */
 cart-drawer .cart-item {
   display: grid;
   grid-template-columns: 70px 1fr auto;
@@ -3691,7 +3690,7 @@ cart-drawer .cart-item {
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-/* Ã—ÂªÃ—Å¾Ã—â€¢Ã—Â Ã—â€ (Ã—â€“Ã—â€ Ã—â€Ã—ÂªÃ—â„¢Ã—Â§Ã—â€¢Ã—Å¸ Ã—â€Ã—â€”Ã—Â©Ã—â€¢Ã—â€˜!) */
+/* ×ª×ž×•× ×” (×–×” ×”×ª×™×§×•×Ÿ ×”×—×©×•×‘!) */
 cart-drawer .cart-item__media {
   width: 70px;
   min-width: 70px;
@@ -3704,37 +3703,37 @@ cart-drawer .cart-item__media img {
   border-radius: 12px;
 }
 
-/* Ã—ÂªÃ—â€¢Ã—â€ºÃ—Å¸ */
+/* ×ª×•×›×Ÿ */
 cart-drawer .cart-item__details {
   text-align: right;
 }
 
-/* Ã—Â©Ã—Â Ã—Å¾Ã—â€¢Ã—Â¦Ã—Â¨ */
+/* ×©× ×ž×•×¦×¨ */
 cart-drawer .cart-item__name {
   font-weight: 600;
   font-size: 15px;
   display: block;
 }
 
-/* Ã—Å¾Ã—â€”Ã—â„¢Ã—Â¨ */
+/* ×ž×—×™×¨ */
 cart-drawer .cart-item__final-price {
   font-weight: 700;
   font-size: 16px;
 }
 
-/* Ã—Å¾Ã—â€”Ã—â„¢Ã—Â¨ Ã—Å“Ã—Â§Ã—Â´Ã—â€™ */
+/* ×ž×—×™×¨ ×œ×§×´×’ */
 cart-drawer .unit-price-line {
   font-size: 12px;
   opacity: 0.6;
 }
 
-/* Ã—Â¦Ã—â€œ Ã—â„¢Ã—Å¾Ã—â„¢Ã—Å¸ */
+/* ×¦×“ ×™×ž×™×Ÿ */
 cart-drawer .cart-item__totals {
   text-align: left;
   font-weight: bold;
 }
 
-/* Ã—â€ºÃ—Å¾Ã—â€¢Ã—Âª */
+/* ×›×ž×•×ª */
 cart-drawer .quantity {
   direction: ltr;
   border: 1px solid rgba(0,0,0,0.1);
@@ -3742,7 +3741,7 @@ cart-drawer .quantity {
   overflow: hidden;
 }
 
-/* Ã—â€Ã—Â¡Ã—Â¨Ã—â€ */
+/* ×”×¡×¨×” */
 cart-drawer .cart-remove-button button {
   opacity: 0.6;
   transition: 0.2s;
@@ -3752,7 +3751,7 @@ cart-drawer .cart-remove-button button:hover {
   opacity: 1;
 }
 
-/* Ã—Â¡Ã—â€Ã—Â´Ã—â€º */
+/* ×¡×”×´×› */
 cart-drawer .totals {
   border-top: 1px solid rgba(0,0,0,0.1);
   margin-top: 15px;
@@ -3760,7 +3759,7 @@ cart-drawer .totals {
   font-size: 18px;
 }
 
-/* Ã—â€ºÃ—Â¤Ã—ÂªÃ—â€¢Ã—Â¨ */
+/* ×›×¤×ª×•×¨ */
 cart-drawer .cart__checkout-button {
   width: 100%;
   border-radius: 14px;
@@ -3783,7 +3782,7 @@ cart-drawer .cart__checkout-button:hover {
   transition: all 0.3s ease;
 }
 
-/* Ã—â€ºÃ—Â©Ã—â€Ã—â€™Ã—â„¢Ã—Â¢ Ã—Å“Ã—Å¾Ã—Â©Ã—Å“Ã—â€¢Ã—â€” Ã—â€”Ã—â„¢Ã—Â Ã—Â */
+/* ×›×©×”×’×™×¢ ×œ×ž×©×œ×•×— ×—×™× × */
 .free-shipping-text.free-active {
   color: var(--brand-accent);
   font-weight: bold;
@@ -3816,21 +3815,21 @@ cart-drawer .cart__checkout-button:hover {
   border: 1px solid #ddd;
   border-radius: 6px;
 } 
-/* Ã—Â¨Ã—â„¢Ã—â€¢Ã—â€¢Ã—â€” Ã—â€˜Ã—â„¢Ã—Å¸ Ã—ÂÃ—â„¢Ã—â„¢Ã—Â§Ã—â€¢Ã—Â Ã—â„¢Ã—Â */
+/* ×¨×™×•×•×— ×‘×™×Ÿ ××™×™×§×•× ×™× */
 .header__icons {
   display: flex;
   align-items: center;
-  gap: 14px; /* Ã—Â©Ã—Â Ã—â€ Ã—Å“Ã—Â¤Ã—â„¢ Ã—ËœÃ—Â¢Ã—Â */
+  gap: 14px; /* ×©× ×” ×œ×¤×™ ×˜×¢× */
 }
 
-/* Ã—Å¾Ã—Â¨Ã—â€¢Ã—â€¢Ã—â€” Ã—Â¡Ã—Â¤Ã—Â¦Ã—â„¢Ã—Â¤Ã—â„¢ Ã—â€˜Ã—â„¢Ã—Å¸ Ã—Â¢Ã—â€™Ã—Å“Ã—â€ Ã—Å“Ã—Å¾Ã—Â©Ã—ÂªÃ—Å¾Ã—Â© */
+/* ×ž×¨×•×•×— ×¡×¤×¦×™×¤×™ ×‘×™×Ÿ ×¢×’×œ×” ×œ×ž×©×ª×ž×© */
 .header__icon--account {
   margin-left: 8px;
 }
 
-/* Ã—Å“Ã—Â§Ã—Â¨Ã—â€˜ Ã—ÂÃ—Âª Ã—â€Ã—â€”Ã—â„¢Ã—Â¤Ã—â€¢Ã—Â© Ã—Å“Ã—Å“Ã—â€¢Ã—â€™Ã—â€¢ */
+/* ×œ×§×¨×‘ ××ª ×”×—×™×¤×•×© ×œ×œ×•×’×• */
 .header__icon--search {
-  margin-left: -10px; /* Ã—Â©Ã—â€”Ã—Â§ Ã—Â¢Ã—Â Ã—â€“Ã—â€ */
+  margin-left: -10px; /* ×©×—×§ ×¢× ×–×” */
 } 
 .header__heading {
   display: flex;
@@ -3853,25 +3852,25 @@ cart-drawer .cart__checkout-button:hover {
 /* ===== HEADER MENU STYLE ===== */
 
 .header__inline-menu .list-menu__item {
-  font-size: 18px; /* Ã—â€™Ã—â€¢Ã—â€œÃ—Å“ */
-  font-weight: 600; /* Ã—Â¢Ã—â€¢Ã—â€˜Ã—â„¢ */
-  font-family: 'Heebo', sans-serif; /* Ã—Â¤Ã—â€¢Ã—Â Ã—Ëœ Ã—Â¢Ã—â€˜Ã—Â¨Ã—â„¢ Ã—â„¢Ã—Â¤Ã—â€ */
-  margin-left: 20px; /* Ã—Â¨Ã—â€¢Ã—â€¢Ã—â€” Ã—â€˜Ã—â„¢Ã—Å¸ Ã—Â§Ã—ËœÃ—â€™Ã—â€¢Ã—Â¨Ã—â„¢Ã—â€¢Ã—Âª */
+  font-size: 18px; /* ×’×•×“×œ */
+  font-weight: 600; /* ×¢×•×‘×™ */
+  font-family: 'Heebo', sans-serif; /* ×¤×•× ×˜ ×¢×‘×¨×™ ×™×¤×” */
+  margin-left: 20px; /* ×¨×•×•×— ×‘×™×Ÿ ×§×˜×’×•×¨×™×•×ª */
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
-/* Ã—â„¢Ã—â„¢Ã—Â©Ã—â€¢Ã—Â¨ Ã—Å“Ã—â„¢Ã—Å¾Ã—â„¢Ã—Å¸ (Ã—â€”Ã—Â©Ã—â€¢Ã—â€˜ Ã—Å“Ã—Â¢Ã—â€˜Ã—Â¨Ã—â„¢Ã—Âª) */
+/* ×™×™×©×•×¨ ×œ×™×ž×™×Ÿ (×—×©×•×‘ ×œ×¢×‘×¨×™×ª) */
 .header__inline-menu {
   direction: rtl;
 }
 
-/* Ã—ÂÃ—Â¤Ã—Â§Ã—Ëœ Ã—Å¾Ã—Â¢Ã—â€˜Ã—Â¨ */
+/* ××¤×§×˜ ×ž×¢×‘×¨ */
 .header__inline-menu .list-menu__item:hover {
   color: var(--brand-accent);
 }
 
-/* Ã—Â§Ã—ËœÃ—â€™Ã—â€¢Ã—Â¨Ã—â„¢Ã—â€ Ã—Â¤Ã—Â¢Ã—â„¢Ã—Å“Ã—â€ */
+/* ×§×˜×’×•×¨×™×” ×¤×¢×™×œ×” */
 .header__menu-item--active {
   color: var(--brand-accent);
   font-weight: 700;
@@ -3894,5 +3893,379 @@ cart-drawer .cart__checkout-button:hover {
 .header__inline-menu .list-menu__item:hover::after {
   width: 100%;
 } 
-/* 
+/* ===================== */
+/* ×›×•×ª×¨×ª ×¨××©×™×ª ×™×•×§×¨×ª×™×ª */
+/* ===================== */
+h1, .title, .collection-hero__title {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ===================== */
+/* ×¡×™× ×•×Ÿ - ×¢×™×¦×•×‘ ×™×•×§×¨×ª×™ */
+/* ===================== */
+.facets {
+  background: #f8f8f8;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.facets__heading,
+.facets__summary,
+summary {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ×¤×ª×™×—×” ×—×œ×§×” ×œ×¡×™× ×•×Ÿ */
+details {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 10px 0;
+}
+
+details[open] summary {
+  color: #000;
+}
+
+/* ===================== */
+/* ×›×¤×ª×•×¨ ×ž×™×•×Ÿ */
+/* ===================== */
+select {
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+}
+
+/* ===================== */
+/* ×’×¨×™×“ ×ž×•×¦×¨×™× */
+/* ===================== */
+.product-grid {
+  gap: 25px;
+}
+
+/* ===================== */
+/* ×›×¨×˜×™×¡ ×ž×•×¦×¨ */
+/* ===================== */
+
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* ===================== */
+/* ×ª×ž×•× ×•×ª ×§×˜× ×•×ª ×™×•×ª×¨ */
+/* ===================== */
+/* Exclude product cards: fixed height breaks Dawn ratio + uniform product thumbnails */
+.card-wrapper:not(.product-card-wrapper) .card__media img {
+  height: 180px;
+  object-fit: contain;
+}
+
+/* ===================== */
+/* ×©× ×ž×•×¦×¨ */
+/* ===================== */
+.card__heading {
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ===================== */
+/* ×ž×—×™×¨ */
+/* ===================== */
+.price {
+  font-size: 15px;
+  text-align: center;
+  color: #333;
+} 
+/* ×›×•×ª×¨×ª ×™×•×§×¨×ª×™×ª */
+.collection-hero__title,
+h1 {
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 20px;
+} 
+.facets-vertical {
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 14px;
+} 
+.facets {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+summary {
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+details {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+} 
+.product-grid {
+  gap: 28px;
+}
+
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+} 
+.card-wrapper:not(.product-card-wrapper) .card__media img {
+  height: 240px;
+  object-fit: contain;
+  transition: 0.3s;
+}
+
+.card:hover img {
+  transform: scale(1.05);
+} 
+.card__content {
+  text-align: center;
+}
+
+.card__heading {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.price {
+  margin: 8px 0;
+  font-weight: 500;
+} 
+
+/* ===================== */
+/* ×›×¨×˜×™×¡ ×ž×•×¦×¨ ×¤×¨×™×ž×™×•× */
+/* ===================== */
+
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* ===================== */
+/* ×ª×ž×•× ×” + ×–×•× */
+/* ===================== */
+.card__media {
+  overflow: hidden;
+}
+
+.card-wrapper:not(.product-card-wrapper) .card__media img {
+  height: 240px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card__media img {
+  transform: scale(1.1);
+}
+
+/* ===================== */
+/* ×ª×•×›×Ÿ */
+/* ===================== */
+.card__content {
+  text-align: center;
+  padding: 10px;
+}
+
+.card__heading {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.price {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #333;
+}
+
+/* ===================== */
+/* badge (×ž×‘×¦×¢ / ×—×“×©) */
+/* ===================== */
+.card::before {
+  content: "×—×“×©";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* ===================== */
+/* ×’×¨×™×“ × ×§×™ */
+/* ===================== */
+.product-grid {
+  gap: 30px;
+}
+
+/* ===================== */
+/* ×¡×™× ×•×Ÿ ×¤×¨×™×ž×™×•× */
+/* ===================== */
+.facets {
+  background: rgb(var(--color-background));
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(185, 28, 28, 0.06);
+  border: 1px solid var(--brand-accent-soft);
+}
+
+/* ×›×•×ª×¨×ª ×¡×™× ×•×Ÿ */
+summary {
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ××¤×§×˜ ×¤×ª×™×—×” */
+details {
+  border-bottom: 1px solid var(--brand-accent-soft);
+  padding: 10px 0;
+  transition: 0.3s;
+}
+
+/* hover */
+summary:hover {
+  color: #000;
+}
+
+/* ===================== */
+/* ×¤×¡ ×¢×œ×™×•×Ÿ */
+/* ===================== */
+.facets-vertical {
+  background: rgb(var(--color-background));
+  padding: 15px;
+  border-radius: 16px;
+  border: 1px solid var(--brand-accent-soft);
+}
+/* ===================== */
+/* ×›×•×ª×¨×ª */
+/* ===================== */
+.collection-hero__title,
+h1 {
+  font-size: 42px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 25px;
+} 
+/* FINAL CLEAN PRODUCT CARD */
+
+.card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Do not clip the floating quick-add control (it sits on the media, outside .card__content) */
+.product-card-wrapper .card {
+  overflow: visible;
+}
+
+.product-card-wrapper .card__inner {
+  overflow: hidden;
+  border-radius: inherit;
+  background: transparent;
+}
+
+/*
+  Do not set position: relative on product card media â€” Dawn uses position: absolute
+  (top/bottom) so the media fills the ratio box. With only absolute children, a relative
+  box collapses to 0 height and product images disappear.
+*/
+.card-wrapper:not(.product-card-wrapper) .card__media {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.card-wrapper:not(.product-card-wrapper) .card__content {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+/* Global image/media wrappers should blend with site background */
+.media,
+.card .media,
+.card__inner,
+.collection-card .media,
+.article-card .media {
+  background-color: transparent !important;
+}
+
+/* Only style the full-width add-to-cart row â€” not the round icon on the image or quantity +/- */
+.card__content form button:not(.card__quick-add-button):not(.quantity__button) {
+  width: 100%;
+  background: #000;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px;
+  border: none;
+} 
+
+/*
+  Mobile header menu (RTL): Dawn shows the panel only when <details> has .menu-opening (see global.js).
+  Do not force translateX(0) on .menu-drawer at all times â€” that breaks visibility/transform sync.
+*/
+@media screen and (max-width: 989px) {
+  header-drawer .menu-drawer-container,
+  header-drawer #menu-drawer {
+    direction: rtl;
+  }
+
+  header-drawer #menu-drawer .menu-drawer__menu {
+    text-align: right;
+  }
+
+  header-drawer .menu-drawer-container {
+    justify-content: flex-end;
+  }
+
+  [dir='rtl'] header-drawer .menu-drawer {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+  }
+
+  [dir='rtl'] .js header-drawer details[open].menu-opening > .menu-drawer {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  [dir='rtl'] .js header-drawer .menu-drawer__submenu {
+    left: auto;
+    right: 0;
+    transform: translateX(-100%);
+  }
+
+  [dir='rtl'] .js header-drawer details[open].menu-opening > .menu-drawer__submenu {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .js header-drawer details[open].menu-opening > #menu-drawer.menu-drawer {
+    min-height: min(100dvh, 100vh);
+  }
+
+  /* Undo global "details" cosmetic rules inside the drawer (they are meant for accordions elsewhere) */
+  header-drawer details,
+  header-drawer #menu-drawer details {
+    border-bottom: none;
+    padding: 0;
+  }
+}
 
