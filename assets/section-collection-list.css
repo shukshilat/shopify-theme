@@ -97,3 +97,36 @@
   text-align: center !important;
   justify-content: center;
 }
+
+/* Tighten image-to-title spacing and keep title centered directly below image */
+.section-collection-list .card--standard.card--media > .card__content,
+.section-collection-list .card--card.card--media > .card__content {
+  display: block !important;
+  padding-top: 0.8rem !important;
+  margin-top: 0 !important;
+}
+
+.section-collection-list .card--standard.card--media > .card__content .card__information,
+.section-collection-list .card--card.card--media > .card__content .card__information {
+  padding: 0 !important;
+}
+
+.section-collection-list .card--standard.card--media > .card__content .card__heading,
+.section-collection-list .card--card.card--media > .card__content .card__heading {
+  margin: 0 !important;
+}
+
+/* Make category images look bigger and visually centered */
+.section-collection-list .collection-list__item .card__media .media img {
+  transform: scale(1.2);
+  transform-origin: center;
+}
+
+/* Keep 3 cards closer to center on desktop */
+@media screen and (min-width: 990px) {
+  .section-collection-list .collection-list.grid--3-col-desktop {
+    max-width: 92rem !important;
+    margin-inline: auto;
+    column-gap: 2.2rem;
+  }
+}
