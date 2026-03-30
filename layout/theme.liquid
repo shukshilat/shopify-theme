@@ -333,7 +333,6 @@
       }
       main#MainContent {
         background: transparent !important;
-        position: relative !important;
       }
 
       /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
@@ -346,11 +345,6 @@
 
       .shopify-section-header-hidden {
         top: auto !important;
-      }
-
-      /* Floating shortcuts: never viewport-fixed */
-      .floating-side-bar {
-        position: absolute !important;
       }
     </style>
 
@@ -372,14 +366,15 @@
 
     {% sections 'header-group' %}
 
+    <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
+      {% render 'floating-waze' %}
+      {% render 'floating-whatsapp' %}
+      {%- if settings.show_accessibility_widget -%}
+        {% render 'accessibility-widget' %}
+      {%- endif -%}
+    </aside>
+
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-      <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
-        {% render 'floating-waze' %}
-        {% render 'floating-whatsapp' %}
-        {%- if settings.show_accessibility_widget -%}
-          {% render 'accessibility-widget' %}
-        {%- endif -%}
-      </aside>
       {{ content_for_layout }}
     </main>
 
