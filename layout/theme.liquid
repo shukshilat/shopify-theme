@@ -357,12 +357,13 @@
       <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
     </ul>
 
-    {%- if settings.show_accessibility_widget -%}
-      {% render 'accessibility-widget' %}
-    {%- endif -%}
-
-    {% render 'floating-waze' %}
-    {% render 'floating-whatsapp' %}
+    <div class="floating-side-bar" data-floating-side-bar>
+      {% render 'floating-waze' %}
+      {% render 'floating-whatsapp' %}
+      {%- if settings.show_accessibility_widget -%}
+        {% render 'accessibility-widget' %}
+      {%- endif -%}
+    </div>
 
     <script>
       window.shopUrl = '{{ request.origin }}';

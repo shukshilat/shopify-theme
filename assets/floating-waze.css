@@ -1,14 +1,30 @@
-/* Floating shortcuts (Waze + WhatsApp) */
-.floating-waze,
-.floating-whatsapp {
+/* Side column: viewport-fixed so icons stay on screen while scrolling */
+.floating-side-bar {
   position: fixed;
-  transform: translateY(-50%);
   inset-inline-end: 1.25rem;
   inset-inline-start: auto;
-  z-index: 9990;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10002;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.floating-side-bar > * {
+  pointer-events: auto;
+}
+
+/* Floating shortcuts (Waze + WhatsApp) — children of .floating-side-bar */
+.floating-waze,
+.floating-whatsapp {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 5.6rem;
   height: 5.6rem;
   padding: 0;
@@ -22,17 +38,9 @@
   overflow: hidden;
 }
 
-.floating-waze {
-  top: 50%;
-}
-
-.floating-whatsapp {
-  top: calc(50% + 7rem);
-}
-
 .floating-waze:hover,
 .floating-whatsapp:hover {
-  transform: translateY(-50%) scale(1.06);
+  transform: scale(1.06);
   box-shadow: 0 0.6rem 1.8rem rgba(0, 0, 0, 0.28);
 }
 
@@ -68,19 +76,18 @@
 
   .floating-waze:hover,
   .floating-whatsapp:hover {
-    transform: translateY(-50%);
+    transform: none;
   }
 }
 
 @media screen and (max-width: 749px) {
+  .floating-side-bar {
+    inset-inline-end: 1rem;
+  }
+
   .floating-waze,
   .floating-whatsapp {
     width: 5.2rem;
     height: 5.2rem;
-    inset-inline-end: 1rem;
-  }
-
-  .floating-whatsapp {
-    top: calc(50% + 6.4rem);
   }
 }

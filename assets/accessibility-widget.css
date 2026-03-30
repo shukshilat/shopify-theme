@@ -12,6 +12,19 @@
   direction: inherit;
 }
 
+/* Stacked with Waze/WhatsApp — bar is fixed; widget is a normal flex item */
+.floating-side-bar .a11y-widget {
+  position: relative;
+  bottom: auto;
+  z-index: auto;
+}
+
+.floating-side-bar .a11y-widget.a11y-widget--pos-start,
+.floating-side-bar .a11y-widget.a11y-widget--pos-end {
+  inset-inline-start: auto;
+  inset-inline-end: auto;
+}
+
 .a11y-widget--pos-start {
   inset-inline-start: 1.25rem;
   inset-inline-end: auto;
