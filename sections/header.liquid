@@ -103,6 +103,21 @@
     }
   }
 
+  /* Middle-center: keep search on the right, next to hamburger on mobile */
+  .header.header--middle-center > header-drawer + .header__search {
+    display: inline-flex;
+    grid-area: left-icons;
+    justify-self: end;
+    margin-inline-end: 4.8rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .header.header--middle-center > .header__search {
+      display: inline-flex !important;
+      margin-inline-end: 0;
+    }
+  }
+
   /* Categories below logo, centered (same idea as top-center) */
   @media screen and (min-width: 990px) {
     .header.header--middle-center:not(.drawer-menu) {
@@ -193,7 +208,7 @@
         render 'header-drawer'
       endif
 
-      if section.settings.logo_position == 'top-center' or section.settings.menu == blank or section.settings.logo_position == 'middle-center'
+      if section.settings.logo_position == 'top-center' or section.settings.menu == blank
         render 'header-search', input_id: 'Search-In-Modal-1'
       endif
     -%}
@@ -304,7 +319,7 @@
           </localization-form>
         {%- endif -%}
       </div>
-      {%- unless section.settings.logo_position == 'middle-center' and section.settings.menu != blank -%}
+      {%- unless section.settings.logo_position == 'top-center' and section.settings.menu != blank -%}
         {% render 'header-search', input_id: 'Search-In-Modal' %}
       {%- endunless %}
 
@@ -723,3 +738,5 @@
   ]
 }
 {% endschema %}
+
+
