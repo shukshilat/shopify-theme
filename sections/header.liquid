@@ -45,9 +45,17 @@
     display: flex;
   }
 
-  /* Extra spacing between the header side icons (cart/account/phone) */
+  /* Extra spacing between header side icons (force spacing) */
   .header__icons {
-    gap: 0.8rem;
+    gap: 0 !important;
+  }
+
+  .header__icons .header__icon {
+    margin-inline-start: 0.8rem;
+  }
+
+  .header__icons .header__icon:first-of-type {
+    margin-inline-start: 0;
   }
 
   .list-menu {
