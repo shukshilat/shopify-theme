@@ -217,7 +217,8 @@
 
   @media screen and (min-width: 990px) {
     .header__menu-item--has-custom-subcats:hover > .header__custom-submenu,
-    .header__menu-item--has-custom-subcats:focus-within > .header__custom-submenu {
+    .header__menu-item--has-custom-subcats:focus-within > .header__custom-submenu,
+    .header__menu-item--has-custom-subcats.is-open > .header__custom-submenu {
       display: block;
     }
   }
@@ -639,6 +640,40 @@
     ],
     "url": {{ request.origin | append: page.url | json }}
   }
+</script>
+
+<script>
+  (function () {
+    function initDesktopCustomSubmenu() {
+      if (window.matchMedia('(max-width: 989px)').matches) return;
+
+      document.querySelectorAll('.header__menu-item--has-custom-subcats').forEach(function (item) {
+        let closeTimer = null;
+
+        const openMenu = function () {
+          if (closeTimer) {
+            window.clearTimeout(closeTimer);
+            closeTimer = null;
+          }
+          item.classList.add('is-open');
+        };
+
+        const closeMenu = function () {
+          if (closeTimer) window.clearTimeout(closeTimer);
+          closeTimer = window.setTimeout(function () {
+            item.classList.remove('is-open');
+          }, 220);
+        };
+
+        item.addEventListener('mouseenter', openMenu);
+        item.addEventListener('mouseleave', closeMenu);
+        item.addEventListener('focusin', openMenu);
+        item.addEventListener('focusout', closeMenu);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initDesktopCustomSubmenu);
+  })();
 </script>
 
 {%- if request.page_type == 'index' -%}
