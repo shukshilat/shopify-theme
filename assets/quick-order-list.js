@@ -8,11 +8,12 @@ if (!customElements.get('quick-order-list')) {
         super();
         this.isListInsideModal = this.closest('bulk-modal');
 
-        this.stickyHeaderElement = document.querySelector('sticky-header');
+        this.stickyHeaderElement =
+          document.querySelector('sticky-header') || document.querySelector('.header-wrapper');
         if (this.stickyHeaderElement) {
           this.stickyHeader = {
             height: this.stickyHeaderElement.offsetHeight,
-            type: `${this.stickyHeaderElement.getAttribute('data-sticky-type')}`,
+            type: `${this.stickyHeaderElement.getAttribute('data-sticky-type') || 'none'}`,
           };
         }
 

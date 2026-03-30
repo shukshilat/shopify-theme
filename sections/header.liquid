@@ -252,8 +252,9 @@
     padding: {{ section.settings.padding_top | times: 0.5 | round: 0 }}px 3rem {{ section.settings.padding_bottom | times: 0.5 | round: 0 }}px 3rem;
   }
 
+  /* Always non-sticky: icons + header must scroll with the page (overrides theme sticky setting). */
   .section-header {
-    position: {% if section.settings.sticky_header_type == 'none' %}relative{% else %}sticky{% endif %};
+    position: relative !important;
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
   }
 
@@ -281,18 +282,12 @@
   endfor
 -%}
 
+{% comment %} Always <div>: sticky-header JS adds .shopify-section-header-sticky (position:sticky) and pins the bar. {% endcomment %}
 {% liquid
   assign header_tag = 'div'
-
-  if section.settings.sticky_header_type != 'none'
-    assign header_tag = 'sticky-header'
-  endif
 %}
 
 <{{ header_tag }}
-  {% if header_tag == 'sticky-header' %}
-    data-sticky-type="{{ section.settings.sticky_header_type }}"
-  {% endif %}
   class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}"
 >
   {%- liquid
