@@ -6,12 +6,12 @@
   --focused-base-outline: 0.2rem solid rgba(var(--color-foreground), 0.5);
   --focused-base-outline-offset: 0.3rem;
   --focused-base-box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
-  /* ×ž×•×ª×’ â€” ×ž×©×ª×œ×‘ ×¢× ×¨×§×¢ ××“×•× ×‘×”×™×¨ (scheme) */
+  /* מותג — משתלב עם רקע אדום בהיר (scheme) */
   --brand-accent: #b91c1c;
   --brand-accent-hover: #991b1b;
   --brand-accent-soft: rgba(185, 28, 28, 0.12);
   --brand-accent-mid: rgba(185, 28, 28, 0.2);
-  /* ×¨×§×¢ ×ž×¢×˜×¤×ª ×”××ª×¨ (×’×•×£ + ×›×•×ª×¨×ª) â€” ×•×¨×•×“Ö¾××“×•× ×‘×”×™×¨ */
+  /* רקע מעטפת האתר (גוף + כותרת) — ורוד־אדום בהיר */
   --site-shell-bg: #fef2f2;
 }
 
@@ -2112,7 +2112,7 @@ input[type='checkbox'] {
   line-height: calc(1 + 0.1 / var(--font-body-scale));
 }
 
-/* ×‘×•×¢×ª ×›×ž×•×ª ×‘×¢×’×œ×”: ×©×—×•×¨ + ×œ×‘×Ÿ (×œ× ××“×•× ×ž×›×¤×ª×•×¨ ×”×ž×•×ª×’) */
+/* בועת כמות בעגלה: שחור + לבן (לא אדום מכפתור המותג) */
 .header .cart-count-bubble {
   background-color: #1c1917 !important;
   color: #ffffff !important;
@@ -2379,7 +2379,7 @@ input[type='checkbox'] {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
-/* ×¤×¡ ×”×“×’×©×” ×ª×—×ª ×”×›×•×ª×¨×ª */
+/* פס הדגשה תחת הכותרת */
 .section-header .header-wrapper {
   border-bottom: 3px solid var(--brand-accent) !important;
 }
@@ -2964,13 +2964,13 @@ details-disclosure > details {
   word-break: break-word;
 }
 
-/* ×¨×§×¢ ××—×™×“ â€” ×œ×œ× ×©×›×‘×•×ª ×’×¨×“×™×× ×˜ ×™×¨×•×§×•×ª/×¦×‘×¢×•× ×™×•×ª ×ž×¢×œ scheme */
+/* רקע אחיד — ללא שכבות גרדיאנט ירוקות/צבעוניות מעל scheme */
 .gradient {
   background: var(--gradient-background);
   background-attachment: scroll;
 }
 
-/* ×’×™×‘×•×™ ×•×¨×•×“Ö¾××“×•× ×‘×”×™×¨ ×›×©×”×’×“×¨×•×ª ×¦×‘×¢ ×‘×¢×¨×›×ª ×”× ×•×©× ×œ× × ×˜×¢× ×• / ×¢×“×™×™×Ÿ ×œ×‘×Ÿ */
+/* גיבוי ורוד־אדום בהיר כשהגדרות צבע בערכת הנושא לא נטענו / עדיין לבן */
 html {
   background-color: var(--site-shell-bg);
 }
@@ -2987,20 +2987,13 @@ main#MainContent,
   background-color: transparent !important;
 }
 
-/* ×™×œ×“ ×™×©×™×¨ ×©×œ ×¡×§×©×Ÿ ×¢× .gradient â€” ×©× ×™×•×©×‘ ×”×¨×§×¢ ×©×œ ×”××•×¡×£/×‘×× ×¨ (×œ× ×›×¨×˜×™×¡×™ ×ž×•×¦×¨) */
+/* ילד ישיר של סקשן עם .gradient — שם יושב הרקע של האוסף/באנר (לא כרטיסי מוצר) */
 .shopify-section > .gradient {
   background-color: var(--site-shell-bg) !important;
   background-image: none !important;
 }
 
-/* Force site shell color for all scheme-1 wrappers */
-.color-scheme-1,
-.color-scheme-1.gradient {
-  background-color: var(--site-shell-bg) !important;
-  background-image: none !important;
-}
-
-/* ×›×•×ª×¨×ª ×‘××•×ª×• ×¨×§×¢ ×›×ž×• ×’×•×£ ×”×¢×ž×•×“ (×œ×œ× ×¤×¡ ×œ×‘×Ÿ × ×¤×¨×“) */
+/* כותרת באותו רקע כמו גוף העמוד (ללא פס לבן נפרד) */
 .section-header,
 .shopify-section-header,
 .header-wrapper,
@@ -3680,7 +3673,7 @@ main#MainContent,
 
 /* Cart drawer layout: see assets/cart-drawer-fix.css (loaded after component-cart-drawer.css) */
 
-/* ×¤×¨×™×˜ */
+/* פריט */
 cart-drawer .cart-item {
   display: grid;
   grid-template-columns: 70px 1fr auto;
@@ -3690,7 +3683,7 @@ cart-drawer .cart-item {
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-/* ×ª×ž×•× ×” (×–×” ×”×ª×™×§×•×Ÿ ×”×—×©×•×‘!) */
+/* תמונה (זה התיקון החשוב!) */
 cart-drawer .cart-item__media {
   width: 70px;
   min-width: 70px;
@@ -3703,37 +3696,37 @@ cart-drawer .cart-item__media img {
   border-radius: 12px;
 }
 
-/* ×ª×•×›×Ÿ */
+/* תוכן */
 cart-drawer .cart-item__details {
   text-align: right;
 }
 
-/* ×©× ×ž×•×¦×¨ */
+/* שם מוצר */
 cart-drawer .cart-item__name {
   font-weight: 600;
   font-size: 15px;
   display: block;
 }
 
-/* ×ž×—×™×¨ */
+/* מחיר */
 cart-drawer .cart-item__final-price {
   font-weight: 700;
   font-size: 16px;
 }
 
-/* ×ž×—×™×¨ ×œ×§×´×’ */
+/* מחיר לק״ג */
 cart-drawer .unit-price-line {
   font-size: 12px;
   opacity: 0.6;
 }
 
-/* ×¦×“ ×™×ž×™×Ÿ */
+/* צד ימין */
 cart-drawer .cart-item__totals {
   text-align: left;
   font-weight: bold;
 }
 
-/* ×›×ž×•×ª */
+/* כמות */
 cart-drawer .quantity {
   direction: ltr;
   border: 1px solid rgba(0,0,0,0.1);
@@ -3741,7 +3734,7 @@ cart-drawer .quantity {
   overflow: hidden;
 }
 
-/* ×”×¡×¨×” */
+/* הסרה */
 cart-drawer .cart-remove-button button {
   opacity: 0.6;
   transition: 0.2s;
@@ -3751,7 +3744,7 @@ cart-drawer .cart-remove-button button:hover {
   opacity: 1;
 }
 
-/* ×¡×”×´×› */
+/* סה״כ */
 cart-drawer .totals {
   border-top: 1px solid rgba(0,0,0,0.1);
   margin-top: 15px;
@@ -3759,7 +3752,7 @@ cart-drawer .totals {
   font-size: 18px;
 }
 
-/* ×›×¤×ª×•×¨ */
+/* כפתור */
 cart-drawer .cart__checkout-button {
   width: 100%;
   border-radius: 14px;
@@ -3782,7 +3775,7 @@ cart-drawer .cart__checkout-button:hover {
   transition: all 0.3s ease;
 }
 
-/* ×›×©×”×’×™×¢ ×œ×ž×©×œ×•×— ×—×™× × */
+/* כשהגיע למשלוח חינם */
 .free-shipping-text.free-active {
   color: var(--brand-accent);
   font-weight: bold;
@@ -3815,21 +3808,21 @@ cart-drawer .cart__checkout-button:hover {
   border: 1px solid #ddd;
   border-radius: 6px;
 } 
-/* ×¨×™×•×•×— ×‘×™×Ÿ ××™×™×§×•× ×™× */
+/* ריווח בין אייקונים */
 .header__icons {
   display: flex;
   align-items: center;
-  gap: 14px; /* ×©× ×” ×œ×¤×™ ×˜×¢× */
+  gap: 14px; /* שנה לפי טעם */
 }
 
-/* ×ž×¨×•×•×— ×¡×¤×¦×™×¤×™ ×‘×™×Ÿ ×¢×’×œ×” ×œ×ž×©×ª×ž×© */
+/* מרווח ספציפי בין עגלה למשתמש */
 .header__icon--account {
   margin-left: 8px;
 }
 
-/* ×œ×§×¨×‘ ××ª ×”×—×™×¤×•×© ×œ×œ×•×’×• */
+/* לקרב את החיפוש ללוגו */
 .header__icon--search {
-  margin-left: -10px; /* ×©×—×§ ×¢× ×–×” */
+  margin-left: -10px; /* שחק עם זה */
 } 
 .header__heading {
   display: flex;
@@ -3852,25 +3845,25 @@ cart-drawer .cart__checkout-button:hover {
 /* ===== HEADER MENU STYLE ===== */
 
 .header__inline-menu .list-menu__item {
-  font-size: 18px; /* ×’×•×“×œ */
-  font-weight: 600; /* ×¢×•×‘×™ */
-  font-family: 'Heebo', sans-serif; /* ×¤×•× ×˜ ×¢×‘×¨×™ ×™×¤×” */
-  margin-left: 20px; /* ×¨×•×•×— ×‘×™×Ÿ ×§×˜×’×•×¨×™×•×ª */
+  font-size: 18px; /* גודל */
+  font-weight: 600; /* עובי */
+  font-family: 'Heebo', sans-serif; /* פונט עברי יפה */
+  margin-left: 20px; /* רווח בין קטגוריות */
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
-/* ×™×™×©×•×¨ ×œ×™×ž×™×Ÿ (×—×©×•×‘ ×œ×¢×‘×¨×™×ª) */
+/* יישור לימין (חשוב לעברית) */
 .header__inline-menu {
   direction: rtl;
 }
 
-/* ××¤×§×˜ ×ž×¢×‘×¨ */
+/* אפקט מעבר */
 .header__inline-menu .list-menu__item:hover {
   color: var(--brand-accent);
 }
 
-/* ×§×˜×’×•×¨×™×” ×¤×¢×™×œ×” */
+/* קטגוריה פעילה */
 .header__menu-item--active {
   color: var(--brand-accent);
   font-weight: 700;
@@ -3894,7 +3887,7 @@ cart-drawer .cart__checkout-button:hover {
   width: 100%;
 } 
 /* ===================== */
-/* ×›×•×ª×¨×ª ×¨××©×™×ª ×™×•×§×¨×ª×™×ª */
+/* כותרת ראשית יוקרתית */
 /* ===================== */
 h1, .title, .collection-hero__title {
   font-size: 42px;
@@ -3905,7 +3898,7 @@ h1, .title, .collection-hero__title {
 }
 
 /* ===================== */
-/* ×¡×™× ×•×Ÿ - ×¢×™×¦×•×‘ ×™×•×§×¨×ª×™ */
+/* סינון - עיצוב יוקרתי */
 /* ===================== */
 .facets {
   background: #f8f8f8;
@@ -3920,7 +3913,7 @@ summary {
   font-weight: 600;
 }
 
-/* ×¤×ª×™×—×” ×—×œ×§×” ×œ×¡×™× ×•×Ÿ */
+/* פתיחה חלקה לסינון */
 details {
   border-bottom: 1px solid #e5e5e5;
   padding: 10px 0;
@@ -3931,7 +3924,7 @@ details[open] summary {
 }
 
 /* ===================== */
-/* ×›×¤×ª×•×¨ ×ž×™×•×Ÿ */
+/* כפתור מיון */
 /* ===================== */
 select {
   border-radius: 10px;
@@ -3941,14 +3934,14 @@ select {
 }
 
 /* ===================== */
-/* ×’×¨×™×“ ×ž×•×¦×¨×™× */
+/* גריד מוצרים */
 /* ===================== */
 .product-grid {
   gap: 25px;
 }
 
 /* ===================== */
-/* ×›×¨×˜×™×¡ ×ž×•×¦×¨ */
+/* כרטיס מוצר */
 /* ===================== */
 
 
@@ -3957,7 +3950,7 @@ select {
 }
 
 /* ===================== */
-/* ×ª×ž×•× ×•×ª ×§×˜× ×•×ª ×™×•×ª×¨ */
+/* תמונות קטנות יותר */
 /* ===================== */
 /* Exclude product cards: fixed height breaks Dawn ratio + uniform product thumbnails */
 .card-wrapper:not(.product-card-wrapper) .card__media img {
@@ -3966,7 +3959,7 @@ select {
 }
 
 /* ===================== */
-/* ×©× ×ž×•×¦×¨ */
+/* שם מוצר */
 /* ===================== */
 .card__heading {
   font-size: 16px;
@@ -3975,14 +3968,14 @@ select {
 }
 
 /* ===================== */
-/* ×ž×—×™×¨ */
+/* מחיר */
 /* ===================== */
 .price {
   font-size: 15px;
   text-align: center;
   color: #333;
 } 
-/* ×›×•×ª×¨×ª ×™×•×§×¨×ª×™×ª */
+/* כותרת יוקרתית */
 .collection-hero__title,
 h1 {
   font-size: 40px;
@@ -4045,7 +4038,7 @@ details {
 } 
 
 /* ===================== */
-/* ×›×¨×˜×™×¡ ×ž×•×¦×¨ ×¤×¨×™×ž×™×•× */
+/* כרטיס מוצר פרימיום */
 /* ===================== */
 
 
@@ -4055,7 +4048,7 @@ details {
 }
 
 /* ===================== */
-/* ×ª×ž×•× ×” + ×–×•× */
+/* תמונה + זום */
 /* ===================== */
 .card__media {
   overflow: hidden;
@@ -4072,7 +4065,7 @@ details {
 }
 
 /* ===================== */
-/* ×ª×•×›×Ÿ */
+/* תוכן */
 /* ===================== */
 .card__content {
   text-align: center;
@@ -4091,10 +4084,10 @@ details {
 }
 
 /* ===================== */
-/* badge (×ž×‘×¦×¢ / ×—×“×©) */
+/* badge (מבצע / חדש) */
 /* ===================== */
 .card::before {
-  content: "×—×“×©";
+  content: "חדש";
   position: absolute;
   top: 10px;
   right: 10px;
@@ -4106,14 +4099,14 @@ details {
 }
 
 /* ===================== */
-/* ×’×¨×™×“ × ×§×™ */
+/* גריד נקי */
 /* ===================== */
 .product-grid {
   gap: 30px;
 }
 
 /* ===================== */
-/* ×¡×™× ×•×Ÿ ×¤×¨×™×ž×™×•× */
+/* סינון פרימיום */
 /* ===================== */
 .facets {
   background: rgb(var(--color-background));
@@ -4123,14 +4116,14 @@ details {
   border: 1px solid var(--brand-accent-soft);
 }
 
-/* ×›×•×ª×¨×ª ×¡×™× ×•×Ÿ */
+/* כותרת סינון */
 summary {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
 
-/* ××¤×§×˜ ×¤×ª×™×—×” */
+/* אפקט פתיחה */
 details {
   border-bottom: 1px solid var(--brand-accent-soft);
   padding: 10px 0;
@@ -4143,7 +4136,7 @@ summary:hover {
 }
 
 /* ===================== */
-/* ×¤×¡ ×¢×œ×™×•×Ÿ */
+/* פס עליון */
 /* ===================== */
 .facets-vertical {
   background: rgb(var(--color-background));
@@ -4152,7 +4145,7 @@ summary:hover {
   border: 1px solid var(--brand-accent-soft);
 }
 /* ===================== */
-/* ×›×•×ª×¨×ª */
+/* כותרת */
 /* ===================== */
 .collection-hero__title,
 h1 {
@@ -4182,7 +4175,7 @@ h1 {
 }
 
 /*
-  Do not set position: relative on product card media â€” Dawn uses position: absolute
+  Do not set position: relative on product card media — Dawn uses position: absolute
   (top/bottom) so the media fills the ratio box. With only absolute children, a relative
   box collapses to 0 height and product images disappear.
 */
@@ -4207,7 +4200,7 @@ h1 {
   background-color: transparent !important;
 }
 
-/* Only style the full-width add-to-cart row â€” not the round icon on the image or quantity +/- */
+/* Only style the full-width add-to-cart row — not the round icon on the image or quantity +/- */
 .card__content form button:not(.card__quick-add-button):not(.quantity__button) {
   width: 100%;
   background: #000;
@@ -4219,7 +4212,7 @@ h1 {
 
 /*
   Mobile header menu (RTL): Dawn shows the panel only when <details> has .menu-opening (see global.js).
-  Do not force translateX(0) on .menu-drawer at all times â€” that breaks visibility/transform sync.
+  Do not force translateX(0) on .menu-drawer at all times — that breaks visibility/transform sync.
 */
 @media screen and (max-width: 989px) {
   header-drawer .menu-drawer-container,
@@ -4268,4 +4261,3 @@ h1 {
     padding: 0;
   }
 }
-
