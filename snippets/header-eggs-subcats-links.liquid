@@ -1,16 +1,41 @@
 {% comment %}
-  Sub-links for "ביצים, שמן זית ועוד" — collection URLs from Header section settings.
-  Snippets nested inside snippets do NOT inherit `section`; callers must pass these:
-  eggs_subcat_tavlinim, eggs_subcat_olive_oil, eggs_subcat_free_eggs, eggs_subcat_grocery
-  Param: link_class (required) — CSS classes for the inner <a>
+  Sub-links for "ביצים, שמן זית ועוד".
+  1) Uses collection objects from Header settings when set in the theme editor.
+  2) If blank, finds store collections by exact title (works without theme editor picks).
+  Parents must pass: eggs_subcat_tavlinim, eggs_subcat_olive_oil, eggs_subcat_free_eggs, eggs_subcat_grocery
+  Param: link_class (required)
 {% endcomment %}
+{%- assign eggs_subcat_tavlinim_resolved = eggs_subcat_tavlinim -%}
+{%- assign eggs_subcat_olive_oil_resolved = eggs_subcat_olive_oil -%}
+{%- assign eggs_subcat_free_eggs_resolved = eggs_subcat_free_eggs -%}
+{%- assign eggs_subcat_grocery_resolved = eggs_subcat_grocery -%}
+{%- if eggs_subcat_tavlinim_resolved == blank or eggs_subcat_olive_oil_resolved == blank or eggs_subcat_free_eggs_resolved == blank or eggs_subcat_grocery_resolved == blank -%}
+  {%- for c in collections -%}
+    {%- assign t = c.title | strip -%}
+    {%- if eggs_subcat_tavlinim_resolved == blank and t == 'תבליני פרג' -%}
+      {%- assign eggs_subcat_tavlinim_resolved = c -%}
+    {%- endif -%}
+    {%- if eggs_subcat_olive_oil_resolved == blank and t == 'שמן זית' -%}
+      {%- assign eggs_subcat_olive_oil_resolved = c -%}
+    {%- endif -%}
+    {%- if eggs_subcat_free_eggs_resolved == blank and t == 'ביצים' -%}
+      {%- assign eggs_subcat_free_eggs_resolved = c -%}
+    {%- endif -%}
+    {%- if eggs_subcat_free_eggs_resolved == blank and t == 'ביצי חופש' -%}
+      {%- assign eggs_subcat_free_eggs_resolved = c -%}
+    {%- endif -%}
+    {%- if eggs_subcat_grocery_resolved == blank and t == 'מוצרי מרכול' -%}
+      {%- assign eggs_subcat_grocery_resolved = c -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
 <li>
   <a
-    href="{% if eggs_subcat_tavlinim != blank %}{{ eggs_subcat_tavlinim.url }}{% else %}/search?q={{ 'תבליני פרג' | url_encode }}&type=product{% endif %}"
+    href="{% if eggs_subcat_tavlinim_resolved != blank %}{{ eggs_subcat_tavlinim_resolved.url }}{% else %}/search?q={{ 'תבליני פרג' | url_encode }}&type=product{% endif %}"
     class="{{ link_class }}"
   >
-    {%- if eggs_subcat_tavlinim != blank -%}
-      {{- eggs_subcat_tavlinim.title | escape -}}
+    {%- if eggs_subcat_tavlinim_resolved != blank -%}
+      {{- eggs_subcat_tavlinim_resolved.title | escape -}}
     {%- else -%}
       תבליני פרג
     {%- endif -%}
@@ -18,11 +43,11 @@
 </li>
 <li>
   <a
-    href="{% if eggs_subcat_olive_oil != blank %}{{ eggs_subcat_olive_oil.url }}{% else %}/search?q={{ 'שמן זית' | url_encode }}&type=product{% endif %}"
+    href="{% if eggs_subcat_olive_oil_resolved != blank %}{{ eggs_subcat_olive_oil_resolved.url }}{% else %}/search?q={{ 'שמן זית' | url_encode }}&type=product{% endif %}"
     class="{{ link_class }}"
   >
-    {%- if eggs_subcat_olive_oil != blank -%}
-      {{- eggs_subcat_olive_oil.title | escape -}}
+    {%- if eggs_subcat_olive_oil_resolved != blank -%}
+      {{- eggs_subcat_olive_oil_resolved.title | escape -}}
     {%- else -%}
       שמן זית
     {%- endif -%}
@@ -30,11 +55,11 @@
 </li>
 <li>
   <a
-    href="{% if eggs_subcat_free_eggs != blank %}{{ eggs_subcat_free_eggs.url }}{% else %}/search?q={{ 'ביצי חופש' | url_encode }}&type=product{% endif %}"
+    href="{% if eggs_subcat_free_eggs_resolved != blank %}{{ eggs_subcat_free_eggs_resolved.url }}{% else %}/search?q={{ 'ביצי חופש' | url_encode }}&type=product{% endif %}"
     class="{{ link_class }}"
   >
-    {%- if eggs_subcat_free_eggs != blank -%}
-      {{- eggs_subcat_free_eggs.title | escape -}}
+    {%- if eggs_subcat_free_eggs_resolved != blank -%}
+      {{- eggs_subcat_free_eggs_resolved.title | escape -}}
     {%- else -%}
       ביצי חופש
     {%- endif -%}
@@ -42,11 +67,11 @@
 </li>
 <li>
   <a
-    href="{% if eggs_subcat_grocery != blank %}{{ eggs_subcat_grocery.url }}{% else %}/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product{% endif %}"
+    href="{% if eggs_subcat_grocery_resolved != blank %}{{ eggs_subcat_grocery_resolved.url }}{% else %}/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product{% endif %}"
     class="{{ link_class }}"
   >
-    {%- if eggs_subcat_grocery != blank -%}
-      {{- eggs_subcat_grocery.title | escape -}}
+    {%- if eggs_subcat_grocery_resolved != blank -%}
+      {{- eggs_subcat_grocery_resolved.title | escape -}}
     {%- else -%}
       מוצרי מרכול
     {%- endif -%}
