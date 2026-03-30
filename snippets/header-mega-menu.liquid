@@ -96,38 +96,9 @@
           </a>
           {%- if show_custom_subcats -%}
             <ul class="header__custom-submenu list-menu" role="list" aria-label="תתי קטגוריות">
-              <li>
-                <a
-                  href="/search?q={{ 'תבליני פרג' | url_encode }}&type=product"
-                  class="header__menu-item list-menu__item link link--text focus-inset"
-                >
-                  תבליני פרג
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/search?q={{ 'שמן זית' | url_encode }}&type=product"
-                  class="header__menu-item list-menu__item link link--text focus-inset"
-                >
-                  שמן זית
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/search?q={{ 'ביצי חופש' | url_encode }}&type=product"
-                  class="header__menu-item list-menu__item link link--text focus-inset"
-                >
-                  ביצי חופש
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product"
-                  class="header__menu-item list-menu__item link link--text focus-inset"
-                >
-                  מוצרי מרכול
-                </a>
-              </li>
+              {% render 'header-eggs-subcats-links',
+                link_class: 'header__menu-item list-menu__item link link--text focus-inset'
+              %}
             </ul>
           {%- endif -%}
         {%- endif -%}

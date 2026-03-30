@@ -168,38 +168,9 @@
                             {{ link.title | escape }}
                           </button>
                           <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
-                            <li>
-                              <a
-                                href="/search?q={{ 'תבליני פרג' | url_encode }}&type=product"
-                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
-                              >
-                                תבליני פרג
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="/search?q={{ 'שמן זית' | url_encode }}&type=product"
-                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
-                              >
-                                שמן זית
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="/search?q={{ 'ביצי חופש' | url_encode }}&type=product"
-                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
-                              >
-                                ביצי חופש
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product"
-                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
-                              >
-                                מוצרי מרכול
-                              </a>
-                            </li>
+                            {% render 'header-eggs-subcats-links',
+                              link_class: 'menu-drawer__menu-item link link--text list-menu__item focus-inset'
+                            %}
                           </ul>
                         </div>
                       </div>

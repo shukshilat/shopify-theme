@@ -1,0 +1,52 @@
+{% comment %}
+  Sub-links for "ביצים, שמן זית ועוד" — uses section collection settings, falls back to search.
+  Params: link_class (required) — CSS classes for the inner <a>
+{% endcomment %}
+<li>
+  <a
+    href="{% if section.settings.eggs_subcat_tavlinim != blank %}{{ section.settings.eggs_subcat_tavlinim.url }}{% else %}/search?q={{ 'תבליני פרג' | url_encode }}&type=product{% endif %}"
+    class="{{ link_class }}"
+  >
+    {%- if section.settings.eggs_subcat_tavlinim != blank -%}
+      {{- section.settings.eggs_subcat_tavlinim.title | escape -}}
+    {%- else -%}
+      תבליני פרג
+    {%- endif -%}
+  </a>
+</li>
+<li>
+  <a
+    href="{% if section.settings.eggs_subcat_olive_oil != blank %}{{ section.settings.eggs_subcat_olive_oil.url }}{% else %}/search?q={{ 'שמן זית' | url_encode }}&type=product{% endif %}"
+    class="{{ link_class }}"
+  >
+    {%- if section.settings.eggs_subcat_olive_oil != blank -%}
+      {{- section.settings.eggs_subcat_olive_oil.title | escape -}}
+    {%- else -%}
+      שמן זית
+    {%- endif -%}
+  </a>
+</li>
+<li>
+  <a
+    href="{% if section.settings.eggs_subcat_free_eggs != blank %}{{ section.settings.eggs_subcat_free_eggs.url }}{% else %}/search?q={{ 'ביצי חופש' | url_encode }}&type=product{% endif %}"
+    class="{{ link_class }}"
+  >
+    {%- if section.settings.eggs_subcat_free_eggs != blank -%}
+      {{- section.settings.eggs_subcat_free_eggs.title | escape -}}
+    {%- else -%}
+      ביצי חופש
+    {%- endif -%}
+  </a>
+</li>
+<li>
+  <a
+    href="{% if section.settings.eggs_subcat_grocery != blank %}{{ section.settings.eggs_subcat_grocery.url }}{% else %}/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product{% endif %}"
+    class="{{ link_class }}"
+  >
+    {%- if section.settings.eggs_subcat_grocery != blank -%}
+      {{- section.settings.eggs_subcat_grocery.title | escape -}}
+    {%- else -%}
+      מוצרי מרכול
+    {%- endif -%}
+  </a>
+</li>
