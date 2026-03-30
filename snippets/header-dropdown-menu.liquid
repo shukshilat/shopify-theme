@@ -106,7 +106,11 @@
           {%- if show_custom_subcats -%}
             <ul class="header__custom-submenu list-menu" role="list" aria-label="תתי קטגוריות">
               {% render 'header-eggs-subcats-links',
-                link_class: 'header__menu-item list-menu__item link link--text focus-inset'
+                link_class: 'header__menu-item list-menu__item link link--text focus-inset',
+                eggs_subcat_tavlinim: section.settings.eggs_subcat_tavlinim,
+                eggs_subcat_olive_oil: section.settings.eggs_subcat_olive_oil,
+                eggs_subcat_free_eggs: section.settings.eggs_subcat_free_eggs,
+                eggs_subcat_grocery: section.settings.eggs_subcat_grocery
               %}
             </ul>
           {%- endif -%}

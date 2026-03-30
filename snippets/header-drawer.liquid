@@ -169,7 +169,11 @@
                           </button>
                           <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
                             {% render 'header-eggs-subcats-links',
-                              link_class: 'menu-drawer__menu-item link link--text list-menu__item focus-inset'
+                              link_class: 'menu-drawer__menu-item link link--text list-menu__item focus-inset',
+                              eggs_subcat_tavlinim: section.settings.eggs_subcat_tavlinim,
+                              eggs_subcat_olive_oil: section.settings.eggs_subcat_olive_oil,
+                              eggs_subcat_free_eggs: section.settings.eggs_subcat_free_eggs,
+                              eggs_subcat_grocery: section.settings.eggs_subcat_grocery
                             %}
                           </ul>
                         </div>
