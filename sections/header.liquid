@@ -253,7 +253,7 @@
   }
 
   .section-header {
-    position: sticky; /* This is for fixing a Safari z-index issue. PR #2147 */
+    position: {% if section.settings.sticky_header_type == 'none' %}relative{% else %}sticky{% endif %};
     margin-bottom: {{ section.settings.margin_bottom | times: 0.75 | round: 0 }}px;
   }
 
@@ -676,6 +676,18 @@
   })();
 </script>
 
+<script>
+  (function () {
+    function setHeaderHeightVar() {
+      var el = document.querySelector('.section-header');
+      if (el) document.documentElement.style.setProperty('--header-height', el.offsetHeight + 'px');
+    }
+    setHeaderHeightVar();
+    document.addEventListener('DOMContentLoaded', setHeaderHeightVar);
+    window.addEventListener('resize', setHeaderHeightVar);
+  })();
+</script>
+
 {%- if request.page_type == 'index' -%}
   {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
   <script type="application/ld+json">
@@ -787,7 +799,7 @@
           "label": "t:sections.header.settings.sticky_header_type.options__4.label"
         }
       ],
-      "default": "on-scroll-up",
+      "default": "none",
       "label": "t:sections.header.settings.sticky_header_type.label"
     },
     {

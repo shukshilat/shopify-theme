@@ -1,13 +1,14 @@
 /*
-  Vertical stack on the side, vertically centered in the viewport (where the shortcuts were).
+  Side shortcuts — position:absolute on body so they scroll with the page (not fixed to viewport).
   RTL: inset-inline-end = visual left edge.
+  body { position: relative } is set in theme.liquid.
 */
 .floating-side-bar {
-  position: fixed;
+  position: absolute;
   inset-inline-end: 0.75rem;
   inset-inline-start: auto;
-  top: 50%;
-  transform: translateY(-50%);
+  top: max(10rem, calc(var(--header-height, 5.6rem) + 2rem));
+  transform: none;
   z-index: 10002;
   display: flex;
   flex-direction: column;

@@ -309,6 +309,10 @@
       רקע ורוד־אדום בהיר — אחרי כל ה־CSS כדי שלא יידרס; מכסה גם .shopify-section > .gradient (הילד הישיר, לא העוטף)
     {% endcomment %}
     <style id="theme-site-shell-bg">
+      /* Anchor for position:absolute (cart drawer, floating shortcuts) so they scroll with the page */
+      body.site-body-scroll-context {
+        position: relative;
+      }
       html {
         background-color: #f8dede !important;
         min-height: 100%;
@@ -339,7 +343,7 @@
     </script>
   </head>
 
-  <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient site-body-scroll-context{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>

@@ -4,46 +4,41 @@
  * Height follows content up to max-height (compact mini-cart), not full viewport.
  */
 
-/* Full overlay; panel docked LEFT — do not stretch panel to full viewport height */
+/* Scrolls with document (body is position: relative). #CartDrawer is full-width; panel stays narrow. */
 cart-drawer.drawer {
   direction: ltr;
-  position: fixed;
+  position: absolute;
   inset: 0;
   width: 100%;
   max-width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: flex-start;
+  min-height: 100%;
+  height: auto;
+  display: block;
   z-index: 1000;
 }
 
 cart-drawer.drawer #CartDrawer.cart-drawer {
   position: relative;
-  flex: 0 0 auto;
-  align-self: flex-start;
-  width: min(36rem, calc(100vw - 2rem));
+  width: 100%;
   max-width: 100%;
+  min-height: 100%;
   height: auto;
-  max-height: none;
-  min-height: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   margin: 0;
   overflow: visible;
 }
 
-@media screen and (max-width: 749px) {
-  cart-drawer.drawer #CartDrawer.cart-drawer {
-    width: 100%;
-    max-width: 100%;
-  }
+/* Dim layer: full area of cart-drawer (scrolls with page), not fixed to viewport */
+cart-drawer.drawer .cart-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 /*
  * Slide from LEFT: override Dawn's translateX(100%) (right drawer).
- * Higher specificity than .drawer__inner and .drawer.active .drawer__inner
  */
 cart-drawer.drawer:not(.active) .drawer__inner.cart-drawer__panel {
   transform: translateX(-100%);
@@ -54,21 +49,30 @@ cart-drawer.drawer.active .drawer__inner.cart-drawer__panel {
 }
 
 cart-drawer.drawer .drawer__inner.cart-drawer__panel {
+  position: relative;
+  z-index: 1;
   direction: rtl;
-  width: 100%;
+  width: min(36rem, calc(100vw - 2rem));
   max-width: 100%;
+  flex-shrink: 0;
   height: auto;
   min-height: 0;
   max-height: min(88vh, 52rem);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  /* panel on left: rounded on the inner (right) edge */
   border-radius: 0 1.2rem 1.2rem 0;
   box-shadow: 1rem 0 2.5rem rgba(0, 0, 0, 0.12);
   padding: 1.6rem 1.8rem;
   background: #fff;
   transition: transform var(--duration-default, 0.3s) ease;
+}
+
+@media screen and (max-width: 749px) {
+  cart-drawer.drawer .drawer__inner.cart-drawer__panel {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* Form: column only — kills flex-wrap:wrap from .cart-drawer__form */
