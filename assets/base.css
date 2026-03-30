@@ -2608,6 +2608,25 @@ input[type='checkbox'] {
   stroke: #1c1917;
 }
 
+/* Cart icons: remove colored frame/outline and keep icon clean */
+#cart-icon-bubble,
+#cart-icon-bubble:focus,
+#cart-icon-bubble:focus-visible,
+.card__quick-add-button,
+.card__quick-add-button:focus,
+.card__quick-add-button:focus-visible,
+.card-product-qty__submit--bar,
+.card-product-qty__submit--bar:focus,
+.card-product-qty__submit--bar:focus-visible {
+  border: none !important;
+  outline: none !important;
+}
+
+.card__quick-add-button:focus-visible,
+.card-product-qty__submit--bar:focus-visible {
+  box-shadow: none !important;
+}
+
 .header__icon--account shop-user-avatar {
   --shop-avatar-size: 2.8rem;
 }
