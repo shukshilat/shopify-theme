@@ -32,6 +32,10 @@ class CartDrawer extends HTMLElement {
     // here the animation doesn't seem to always get triggered. A timeout seem to help
     setTimeout(() => {
       this.classList.add('animate', 'active');
+      requestAnimationFrame(() => {
+        this.applyPanelAnchorPosition(triggeredBy);
+        requestAnimationFrame(() => this.applyPanelAnchorPosition(triggeredBy));
+      });
     });
 
     this.addEventListener(
@@ -47,9 +51,43 @@ class CartDrawer extends HTMLElement {
     );
 
     document.body.classList.add('overflow-hidden');
+
+    if (!this._boundOnResize) {
+      this._boundOnResize = this.applyPanelAnchorPosition.bind(this, null);
+      window.addEventListener('resize', this._boundOnResize);
+    }
+  }
+
+  /**
+   * Aligns the drawer panel vertically with the anchor element (product card / button) in the viewport.
+   */
+  applyPanelAnchorPosition(triggeredBy) {
+    const el = triggeredBy || this.activeElement;
+    const panel = this.querySelector('.drawer__inner.cart-drawer__panel');
+    if (!panel) return;
+
+    const vh = window.innerHeight;
+    const margin = 8;
+    const maxPanelH = Math.min(vh * 0.88, 52 * 16);
+
+    let panelH = panel.getBoundingClientRect().height;
+    if (!panelH || panelH < 40) panelH = Math.min(maxPanelH, 400);
+
+    let topPx;
+    if (el && typeof el.getBoundingClientRect === 'function') {
+      const r = el.getBoundingClientRect();
+      const anchorCenterY = r.top + Math.max(r.height, 1) / 2;
+      topPx = anchorCenterY - panelH / 2;
+    } else {
+      topPx = (vh - panelH) / 2;
+    }
+
+    topPx = Math.max(margin, Math.min(topPx, vh - panelH - margin));
+    this.style.setProperty('--cart-panel-top', `${Math.round(topPx)}px`);
   }
 
   close() {
+    window.removeEventListener('resize', this._boundOnResize || (() => {}));
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
@@ -86,6 +124,7 @@ class CartDrawer extends HTMLElement {
     setTimeout(() => {
       this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
       this.open();
+      requestAnimationFrame(() => this.applyPanelAnchorPosition());
     });
   }
 

@@ -17,6 +17,14 @@ cart-drawer.drawer {
   z-index: 1000;
 }
 
+/* When open: lock to viewport so panel top aligns with product anchor (see cart-drawer.js --cart-panel-top) */
+cart-drawer.drawer.active {
+  position: fixed !important;
+  inset: 0;
+  min-height: 100vh;
+  height: 100%;
+}
+
 cart-drawer.drawer #CartDrawer.cart-drawer {
   position: relative;
   width: 100%;
@@ -49,8 +57,11 @@ cart-drawer.drawer.active .drawer__inner.cart-drawer__panel {
 }
 
 cart-drawer.drawer .drawer__inner.cart-drawer__panel {
-  position: relative;
-  z-index: 1;
+  /* Viewport-fixed so --cart-panel-top matches add-to-cart button / card row */
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: var(--cart-panel-top, 1.5rem);
   direction: rtl;
   width: min(36rem, calc(100vw - 2rem));
   max-width: 100%;

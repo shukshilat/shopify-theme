@@ -108,7 +108,12 @@ if (!customElements.get('product-form')) {
             this.cart.getSectionsToRender().map((section) => section.id)
           );
           formData.append('sections_url', window.location.pathname);
-          this.cart.setActiveElement(document.activeElement);
+          const anchorForCart =
+            evt.submitter ||
+            this.closest('[data-card-quantity-root]') ||
+            this.closest('.product-card-wrapper') ||
+            this.submitButton;
+          this.cart.setActiveElement(anchorForCart);
         }
         config.body = formData;
 
