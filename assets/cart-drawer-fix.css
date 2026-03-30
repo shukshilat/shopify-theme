@@ -4,10 +4,10 @@
  * Height follows content up to max-height (compact mini-cart), not full viewport.
  */
 
-/* Scrolls with document (body is position: relative). #CartDrawer is full-width; panel stays narrow. */
+/* !important: beats legacy `.drawer { position: fixed }` if that selector ever matches cart-drawer */
 cart-drawer.drawer {
   direction: ltr;
-  position: absolute;
+  position: absolute !important;
   inset: 0;
   width: 100%;
   max-width: 100%;
@@ -32,8 +32,8 @@ cart-drawer.drawer #CartDrawer.cart-drawer {
 
 /* Dim layer: full area of cart-drawer (scrolls with page), not fixed to viewport */
 cart-drawer.drawer .cart-drawer__overlay {
-  position: absolute;
-  inset: 0;
+  position: absolute !important;
+  inset: 0 !important;
   z-index: 0;
 }
 

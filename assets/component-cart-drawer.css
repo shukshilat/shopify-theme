@@ -1,4 +1,5 @@
-.drawer {
+/* Do not target <cart-drawer class="drawer"> — that uses cart-drawer-fix / position absolute */
+.drawer:not(cart-drawer) {
   position: fixed;
   z-index: 1000;
   left: 0;
@@ -149,11 +150,8 @@ cart-drawer {
 }
 
 .cart-drawer__overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: absolute;
+  inset: 0;
 }
 
 .cart-drawer__overlay:empty {

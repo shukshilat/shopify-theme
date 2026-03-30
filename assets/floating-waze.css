@@ -1,13 +1,16 @@
 /*
-  Side shortcuts — position:absolute on body so they scroll with the page (not fixed to viewport).
+  Inside #MainContent (position: relative) so the stack scrolls with the page — not viewport-fixed.
   RTL: inset-inline-end = visual left edge.
-  body { position: relative } is set in theme.liquid.
 */
+main#MainContent {
+  position: relative;
+}
+
 .floating-side-bar {
   position: absolute;
   inset-inline-end: 0.75rem;
   inset-inline-start: auto;
-  top: max(10rem, calc(var(--header-height, 5.6rem) + 2rem));
+  top: 1rem;
   transform: none;
   z-index: 10002;
   display: flex;
@@ -80,7 +83,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .floating-side-bar {
-    transform: translateY(-50%);
+    transform: none;
   }
 
   .floating-waze,
