@@ -37,6 +37,13 @@
             >
               {%- if menu_links != blank -%}
                 {%- for link in menu_links -%}
+                {%- liquid
+                  assign show_custom_subcats = false
+                  assign link_title_down = link.title | downcase
+                  if link_title_down contains 'ביצים'
+                    assign show_custom_subcats = true
+                  endif
+                -%}
                 <li>
                   {%- if link.links != blank -%}
                     <details id="Details-menu-drawer-menu-item-{{ forloop.index }}">
@@ -130,6 +137,69 @@
                                 {%- endif -%}
                               </li>
                             {%- endfor -%}
+                          </ul>
+                        </div>
+                      </div>
+                    </details>
+                  {%- elsif show_custom_subcats -%}
+                    <details id="Details-menu-drawer-menu-item-{{ forloop.index }}-custom-subcats">
+                      <summary
+                        id="HeaderDrawer-{{ link.handle }}-subcats"
+                        class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if link.current %} menu-drawer__menu-item--active{% endif %}"
+                      >
+                        {{ link.title | escape }}
+                        <span class="svg-wrapper">
+                          {{- 'icon-arrow.svg' | inline_asset_content -}}
+                        </span>
+                        <span class="svg-wrapper">
+                          {{- 'icon-caret.svg' | inline_asset_content -}}
+                        </span>
+                      </summary>
+                      <div
+                        id="link-{{ link.handle | escape }}-custom-subcats"
+                        class="menu-drawer__submenu has-submenu gradient motion-reduce"
+                        tabindex="-1"
+                      >
+                        <div class="menu-drawer__inner-submenu">
+                          <button class="menu-drawer__close-button link link--text focus-inset" aria-expanded="true">
+                            <span class="svg-wrapper">
+                              {{- 'icon-arrow.svg' | inline_asset_content -}}
+                            </span>
+                            {{ link.title | escape }}
+                          </button>
+                          <ul class="menu-drawer__menu list-menu" role="list" tabindex="-1">
+                            <li>
+                              <a
+                                href="/search?q={{ 'תבליני פרג' | url_encode }}&type=product"
+                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
+                              >
+                                תבליני פרג
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="/search?q={{ 'שמן זית' | url_encode }}&type=product"
+                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
+                              >
+                                שמן זית
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="/search?q={{ 'ביצי חופש' | url_encode }}&type=product"
+                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
+                              >
+                                ביצי חופש
+                              </a>
+                            </li>
+                            <li>
+                              <a
+                                href="/search?q={{ 'מוצרי מרכול' | url_encode }}&type=product"
+                                class="menu-drawer__menu-item link link--text list-menu__item focus-inset"
+                              >
+                                מוצרי מרכול
+                              </a>
+                            </li>
                           </ul>
                         </div>
                       </div>
