@@ -53,15 +53,21 @@ class CartDrawer extends HTMLElement {
     document.body.classList.add('overflow-hidden');
 
     if (!this._boundOnResize) {
-      this._boundOnResize = this.applyPanelAnchorPosition.bind(this, null);
+      this._boundOnResize = () => this.applyPanelAnchorPosition(null);
       window.addEventListener('resize', this._boundOnResize);
+    }
+    if (!this._boundOnScroll) {
+      this._boundOnScroll = () => this.applyPanelAnchorPosition(null);
+      window.addEventListener('scroll', this._boundOnScroll, true);
     }
   }
 
   /**
-   * Aligns the drawer panel vertically with the anchor element (product card / button) in the viewport.
+   * Aligns the drawer panel to the viewport (true float) using inline !important — beats theme CSS/transform parents.
    */
   applyPanelAnchorPosition(triggeredBy) {
+    if (!this.classList.contains('active')) return;
+
     const el = triggeredBy || this.activeElement;
     const panel = this.querySelector('.drawer__inner.cart-drawer__panel');
     if (!panel) return;
@@ -74,7 +80,7 @@ class CartDrawer extends HTMLElement {
     if (!panelH || panelH < 40) panelH = Math.min(maxPanelH, 400);
 
     let topPx;
-    if (el && typeof el.getBoundingClientRect === 'function') {
+    if (el && typeof el.getBoundingClientRect === 'function' && el.isConnected) {
       const r = el.getBoundingClientRect();
       const anchorCenterY = r.top + Math.max(r.height, 1) / 2;
       topPx = anchorCenterY - panelH / 2;
@@ -83,11 +89,33 @@ class CartDrawer extends HTMLElement {
     }
 
     topPx = Math.max(margin, Math.min(topPx, vh - panelH - margin));
-    this.style.setProperty('--cart-panel-top', `${Math.round(topPx)}px`);
+    const topStr = `${Math.round(topPx)}px`;
+
+    this.style.setProperty('--cart-panel-top', topStr);
+    panel.style.setProperty('position', 'fixed', 'important');
+    panel.style.setProperty('left', '0', 'important');
+    panel.style.setProperty('top', topStr, 'important');
+    panel.style.setProperty('z-index', '10001', 'important');
+    panel.style.setProperty('max-height', '88vh', 'important');
+  }
+
+  clearPanelInlinePosition() {
+    const panel = this.querySelector('.drawer__inner.cart-drawer__panel');
+    if (!panel) return;
+    ['position', 'left', 'top', 'z-index', 'max-height'].forEach((prop) => panel.style.removeProperty(prop));
   }
 
   close() {
-    window.removeEventListener('resize', this._boundOnResize || (() => {}));
+    if (this._boundOnResize) {
+      window.removeEventListener('resize', this._boundOnResize);
+    }
+    if (this._boundOnScroll) {
+      window.removeEventListener('scroll', this._boundOnScroll, true);
+    }
+    this._boundOnResize = null;
+    this._boundOnScroll = null;
+
+    this.clearPanelInlinePosition();
     this.classList.remove('active');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
@@ -124,7 +152,10 @@ class CartDrawer extends HTMLElement {
     setTimeout(() => {
       this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
       this.open();
-      requestAnimationFrame(() => this.applyPanelAnchorPosition());
+      setTimeout(() => {
+        this.applyPanelAnchorPosition();
+        requestAnimationFrame(() => this.applyPanelAnchorPosition());
+      }, 0);
     });
   }
 

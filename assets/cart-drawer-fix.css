@@ -38,11 +38,16 @@ cart-drawer.drawer #CartDrawer.cart-drawer {
   overflow: visible;
 }
 
-/* Dim layer: full area of cart-drawer (scrolls with page), not fixed to viewport */
+/* Dim layer: full viewport when open (matches fixed panel) */
 cart-drawer.drawer .cart-drawer__overlay {
   position: absolute !important;
   inset: 0 !important;
   z-index: 0;
+}
+
+cart-drawer.drawer.active .cart-drawer__overlay {
+  position: fixed !important;
+  inset: 0 !important;
 }
 
 /*
