@@ -1150,7 +1150,7 @@ summary::-webkit-details-marker {
 }
 
 .media > img {
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
   transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -3731,7 +3731,7 @@ cart-drawer .cart-item__media {
 cart-drawer .cart-item__media img {
   width: 70px;
   height: 70px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 12px;
 }
 

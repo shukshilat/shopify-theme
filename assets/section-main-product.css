@@ -1347,7 +1347,7 @@ a.product__text {
 
   product-info .product__media-wrapper .product-media-container.media-fit-cover .media > img,
   product-info .product__media-wrapper .product-media-container.media-fit-cover .deferred-media__poster img {
-    object-fit: cover !important;
+    object-fit: contain !important;
   }
 }
 
@@ -1373,7 +1373,7 @@ a.product__text {
   }
 
   .product-media-container.media-fit-cover .deferred-media__poster img {
-    object-fit: cover;
+    object-fit: contain;
     width: 100%;
   }
 }

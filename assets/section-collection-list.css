@@ -118,8 +118,7 @@
 
 /* Make category images look bigger and visually centered */
 .section-collection-list .collection-list__item .card__media .media img {
-  transform: scale(1.34);
-  transform-origin: center;
+  transform: none;
 }
 
 /* Keep all 3 categories in one row and closer together (tablet+desktop) */

@@ -236,7 +236,7 @@
 .quick-add-modal__content-info--bulk .quick-add__product-container img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .quick-add-modal__content-info--bulk .quick-add__info {
