@@ -134,6 +134,35 @@
     }
   }
 
+  /* Category menu: bigger, bold black, with clear separators */
+  .header__inline-menu .list-menu--inline {
+    gap: 0;
+  }
+
+  .header__inline-menu .list-menu__item--link {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #000 !important;
+    padding-inline: 1.25rem;
+    position: relative;
+  }
+
+  .header__inline-menu .list-menu__item--link:hover,
+  .header__inline-menu .list-menu__item--link:focus-visible {
+    color: #000 !important;
+  }
+
+  .header__inline-menu .list-menu--inline > li:not(:last-child) .list-menu__item--link::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 1.6rem;
+    background: rgba(0, 0, 0, 0.35);
+  }
+
   /* Categories below logo, centered (same idea as top-center) */
   @media screen and (min-width: 990px) {
     .header.header--middle-center:not(.drawer-menu) {
