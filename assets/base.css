@@ -2985,7 +2985,7 @@ body.gradient {
 main#MainContent,
 .shopify-section,
 .section {
-  background-color: transparent !important;
+  background-color: var(--site-shell-bg) !important;
 }
 
 /* ×™×œ×“ ×™×©×™×¨ ×©×œ ×¡×§×©×Ÿ ×¢× .gradient â€” ×©× ×™×•×©×‘ ×”×¨×§×¢ ×©×œ ×”××•×¡×£/×‘×× ×¨ (×œ× ×›×¨×˜×™×¡×™ ×ž×•×¦×¨) */

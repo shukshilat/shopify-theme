@@ -33,6 +33,12 @@
     }
   {%- endif -%}
 
+  @media screen and (min-width: 990px) {
+    header-drawer {
+      display: none !important;
+    }
+  }
+
   {%- if section.settings.menu_type_desktop != "drawer" -%}
     @media screen and (min-width: 990px) {
       header-drawer {
@@ -210,10 +216,10 @@
 
     {%- liquid
       if section.settings.menu != blank
-        if section.settings.menu_type_desktop == 'dropdown'
-          render 'header-dropdown-menu'
-        elsif section.settings.menu_type_desktop != 'drawer'
+        if section.settings.menu_type_desktop == 'mega'
           render 'header-mega-menu'
+        else
+          render 'header-dropdown-menu'
         endif
       endif
     %}
