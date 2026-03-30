@@ -346,18 +346,17 @@
 
     {% sections 'header-group' %}
 
-    <div class="page-with-sidebar">
-      <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
-        {{ content_for_layout }}
-      </main>
-      <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
-        {% render 'floating-waze' %}
-        {% render 'floating-whatsapp' %}
-        {%- if settings.show_accessibility_widget -%}
-          {% render 'accessibility-widget' %}
-        {%- endif -%}
-      </aside>
-    </div>
+    <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
+      {% render 'floating-waze' %}
+      {% render 'floating-whatsapp' %}
+      {%- if settings.show_accessibility_widget -%}
+        {% render 'accessibility-widget' %}
+      {%- endif -%}
+    </aside>
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
 
     {% sections 'footer-group' %}
 

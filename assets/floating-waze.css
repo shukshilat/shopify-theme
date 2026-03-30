@@ -1,71 +1,20 @@
 /*
-  Desktop: aside is position:absolute inside .page-with-sidebar (position:relative).
-  Anchored to the inline-end edge (visual left in RTL) — scrolls with the page, not the viewport.
-  Mobile: flex column + order so icons stay above content; static positioning.
+  Centered shortcut row under the header — normal document flow, scrolls with the page.
 */
-.page-with-sidebar {
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-@media screen and (min-width: 750px) {
-  .page-with-sidebar > main {
-    /* Room for icon column on the inline-end side (left in RTL) */
-    padding-inline-end: 6.75rem;
-    min-width: 0;
-  }
-
-  .floating-side-bar {
-    position: absolute !important;
-    inset-inline-end: 0.25rem;
-    inset-inline-start: auto;
-    top: 0.5rem;
-    bottom: auto;
-  }
-}
-
-@media screen and (max-width: 749px) {
-  .page-with-sidebar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .page-with-sidebar > main {
-    padding-inline-end: 0;
-    min-width: 0;
-    flex: 1 1 auto;
-  }
-
-  .floating-side-bar {
-    position: static;
-    order: -1;
-    flex: 0 0 auto;
-    align-self: center;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    padding-inline: 0.5rem;
-  }
-
-  .floating-waze,
-  .floating-whatsapp {
-    width: 5.2rem;
-    height: 5.2rem;
-  }
-}
-
 .floating-side-bar {
-  z-index: 10002;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding-inline-end: 0.25rem;
-  padding-block: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  box-sizing: border-box;
+  position: static;
+  z-index: 2;
 }
 
 /* Floating shortcuts (Waze + WhatsApp) */
@@ -128,5 +77,18 @@
   .floating-waze:hover,
   .floating-whatsapp:hover {
     transform: none;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .floating-side-bar {
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .floating-waze,
+  .floating-whatsapp {
+    width: 5.2rem;
+    height: 5.2rem;
   }
 }
