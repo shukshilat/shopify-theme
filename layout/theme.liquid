@@ -1,6 +1,10 @@
-<!doctype html> 
-<html lang="he" dir="rtl">
-  <head> 
+<!doctype html>
+{%- comment -%}
+  Dawn/menu-drawer CSS uses .js ancestors (e.g. .js details[open].menu-opening > .menu-drawer).
+  Without class "js" on html, the mobile menu panel stays invisible — looks "empty".
+{%- endcomment -%}
+<html class="js" lang="he" dir="rtl">
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
