@@ -1,27 +1,64 @@
 /*
-  Wrapper (not main) uses flex — avoids theme rules on main#MainContent.
-  Sidebar is in normal flow and scrolls with the document.
-  RTL: main first = content (right), aside second = icons (left).
+  Desktop: aside is position:absolute inside .page-with-sidebar (position:relative).
+  Anchored to the inline-end edge (visual left in RTL) — scrolls with the page, not the viewport.
+  Mobile: flex column + order so icons stay above content; static positioning.
 */
 .page-with-sidebar {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  gap: 0.5rem;
+  position: relative;
   width: 100%;
   box-sizing: border-box;
 }
 
-.page-with-sidebar > main {
-  flex: 1 1 0;
-  min-width: 0;
+@media screen and (min-width: 750px) {
+  .page-with-sidebar > main {
+    /* Room for icon column on the inline-end side (left in RTL) */
+    padding-inline-end: 6.75rem;
+    min-width: 0;
+  }
+
+  .floating-side-bar {
+    position: absolute !important;
+    inset-inline-end: 0.25rem;
+    inset-inline-start: auto;
+    top: 0.5rem;
+    bottom: auto;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .page-with-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-with-sidebar > main {
+    padding-inline-end: 0;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .floating-side-bar {
+    position: static;
+    order: -1;
+    flex: 0 0 auto;
+    align-self: center;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    padding-inline: 0.5rem;
+  }
+
+  .floating-waze,
+  .floating-whatsapp {
+    width: 5.2rem;
+    height: 5.2rem;
+  }
 }
 
 .floating-side-bar {
-  position: static !important;
-  flex: 0 0 auto;
-  align-self: flex-start;
   z-index: 10002;
   display: flex;
   flex-direction: column;
@@ -91,27 +128,5 @@
   .floating-waze:hover,
   .floating-whatsapp:hover {
     transform: none;
-  }
-}
-
-@media screen and (max-width: 749px) {
-  .page-with-sidebar {
-    flex-direction: column;
-  }
-
-  .floating-side-bar {
-    order: -1;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    width: 100%;
-    padding-inline: 0.5rem;
-  }
-
-  .floating-waze,
-  .floating-whatsapp {
-    width: 5.2rem;
-    height: 5.2rem;
   }
 }
