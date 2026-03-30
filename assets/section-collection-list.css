@@ -70,3 +70,30 @@
 .section-collection-list .card--card.card--media > .card__content .card__information {
   width: 100%;
 }
+
+/* Collection cards: larger centered images and centered labels */
+.section-collection-list .collection-list__item {
+  text-align: center;
+}
+
+.section-collection-list .collection-list__item .card-wrapper {
+  margin-inline: auto;
+}
+
+.section-collection-list .collection-list__item .card__media {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.section-collection-list .collection-list__item .card .media {
+  justify-content: center;
+  align-items: center;
+}
+
+.section-collection-list .collection-list__item .card__content,
+.section-collection-list .collection-list__item .card__information,
+.section-collection-list .collection-list__item .card__heading,
+.section-collection-list .collection-list__item .card__heading a {
+  text-align: center !important;
+  justify-content: center;
+}
