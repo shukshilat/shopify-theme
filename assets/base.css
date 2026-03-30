@@ -2964,9 +2964,11 @@ details-disclosure > details {
   word-break: break-word;
 }
 
-/* רקע אחיד — ללא שכבות גרדיאנט ירוקות/צבעוניות מעל scheme */
+/* רקע אחיד קבוע לכל מעטפת האתר */
 .gradient {
-  background: var(--gradient-background);
+  background: var(--site-shell-bg) !important;
+  background-color: var(--site-shell-bg) !important;
+  background-image: none !important;
   background-attachment: scroll;
 }
 
@@ -2979,6 +2981,14 @@ body.gradient {
   background-color: var(--site-shell-bg) !important;
   background-image: none !important;
   background-attachment: scroll;
+}
+
+/* Shopify color schemes often repaint white after load; keep shell background stable */
+[class*='color-scheme-'].gradient,
+.shopify-section [class*='color-scheme-'].gradient,
+.shopify-section > [class*='color-scheme-'] {
+  background-color: var(--site-shell-bg) !important;
+  background-image: none !important;
 }
 
 main#MainContent,
