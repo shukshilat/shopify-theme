@@ -35,6 +35,9 @@
           <div class="drawer__contents" id="CartDrawer-CartItems">
             <div class="cart-items">
               {% for item in cart.items %}
+                {%- liquid
+                  assign purchase_mode_prop = item.properties['_purchase_mode'] | default: '' | strip
+                -%}
                 <div class="cart-item" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
                   <img
                     class="cart-item__image"
@@ -64,11 +67,9 @@
                       {% else %}
                         <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
                       {% endif %}
-                      {% if item.variant.unit_price %}
-                        <div class="unit-price">
-                          {{ item.variant.unit_price | money }} / ק״ג
-                        </div>
-                      {% endif %}
+                      {%- if purchase_mode_prop != 'unit' and item.variant.available and item.unit_price != blank and item.unit_price_measurement != blank -%}
+                        {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                      {%- endif -%}
                     </div>
 
                     <div class="qty-box">
@@ -140,6 +141,39 @@
       }
     }
 
+    var UNIT_REF_LABELS = {
+      kg: 'ק״ג',
+      g: 'גרם',
+      l: 'ליטר',
+      ml: 'מ״ל',
+      item: 'יחידה',
+      items: 'יחידות',
+      ea: 'יחידה',
+      pc: 'יחידה',
+      pcs: 'יחידות',
+    };
+
+    function unitMeasurementLabel(measurement) {
+      if (!measurement || !measurement.reference_unit) return '';
+      var u = measurement.reference_unit;
+      return UNIT_REF_LABELS[u] || u;
+    }
+
+    function appendCartDrawerUnitPriceRow(priceWrap, item) {
+      var props = item.properties || {};
+      var mode = props._purchase_mode || props['_purchase_mode'];
+      if (mode === 'unit') return;
+      if (item.unit_price == null || item.unit_price === undefined || !item.unit_price_measurement) return;
+      var label = unitMeasurementLabel(item.unit_price_measurement);
+      if (!label) return;
+      var uc = cents(item.unit_price);
+      if (uc === null) return;
+      priceWrap.insertAdjacentHTML(
+        'beforeend',
+        '<div class="unit-price unit-price-custom" dir="rtl">' + formatCartMoney(uc) + ' / ' + label + '</div>'
+      );
+    }
+
     function updateLinePricesFromCart(cart) {
       if (!cart || !Array.isArray(cart.items)) return;
 
@@ -170,6 +204,8 @@
           var unit = fin !== null ? fin : orig;
           priceWrap.innerHTML = '<strong class="cart-item__unit-final">' + formatCartMoney(unit) + '</strong>';
         }
+
+        appendCartDrawerUnitPriceRow(priceWrap, item);
       });
     }
 

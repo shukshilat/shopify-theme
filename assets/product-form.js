@@ -102,6 +102,13 @@ if (!customElements.get('product-form')) {
 
         const formData = new FormData(this.form);
         formData.delete('purchase_mode');
+        if (this.form.classList.contains('card-product-qty__form')) {
+          const mode =
+            this.form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+            this.form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+            'unit';
+          formData.set('properties[_purchase_mode]', mode);
+        }
         if (this.cart) {
           formData.append(
             'sections',
