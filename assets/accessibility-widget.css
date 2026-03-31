@@ -195,14 +195,17 @@ html.a11y-font-step-2 {
   font-size: calc(var(--font-body-scale) * 75%) !important;
 }
 
+/* filter on body breaks position:fixed for viewport (cart-drawer, floating-side-bar,
+   modals moved to body). Apply per direct child instead; exclude overlays and the
+   header group (header-drawer uses position:fixed backdrops inside the group). */
 html.a11y-high-contrast body {
-  filter: contrast(1.25) saturate(1.1);
+  filter: none;
 }
 
-/* filter on an ancestor breaks position:fixed (viewport anchoring) for cart-drawer.
-   Drop it while the drawer is open so the panel can float correctly. */
-html.a11y-high-contrast.cart-drawer-open body {
-  filter: none;
+html.a11y-high-contrast
+  body
+  > *:not(cart-drawer):not(aside.floating-side-bar):not(.shopify-section-group-header-group) {
+  filter: contrast(1.25) saturate(1.1);
 }
 
 html.a11y-underline-links a {
