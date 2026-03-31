@@ -37,6 +37,12 @@
               {% for item in cart.items %}
                 {%- liquid
                   assign purchase_mode_prop = item.properties['_purchase_mode'] | default: '' | strip
+                  if purchase_mode_prop == blank
+                    assign qty_str = item.quantity | append: ''
+                    if qty_str contains '.'
+                      assign purchase_mode_prop = 'weight'
+                    endif
+                  endif
                 -%}
                 <div
                   class="cart-item"
@@ -220,6 +226,60 @@
       });
     }
 
+    function cartChangeUrl() {
+      return (window.routes && window.routes.cart_change_url) || '/cart/change.js';
+    }
+
+    function cartAddUrl() {
+      return (window.routes && window.routes.cart_add_url) || '/cart/add.js';
+    }
+
+    function cartJsUrl() {
+      return '/cart.js';
+    }
+
+    function cloneCartItemProperties(props) {
+      if (!props || typeof props !== 'object') return {};
+      try {
+        return JSON.parse(JSON.stringify(props));
+      } catch (e) {
+        return {};
+      }
+    }
+
+    /** Shopify change.js often accepts only integer qty; kg decimals fail — remove line and re-add. */
+    function replaceWeightLineQuantity(line, newQty) {
+      return fetch(cartJsUrl())
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (cart) {
+          var item = cart.items && cart.items[line - 1];
+          if (!item) throw new Error('no line');
+          var vid = item.variant_id;
+          if (vid == null) throw new Error('no variant');
+          var props = cloneCartItemProperties(item.properties);
+          return fetch(cartChangeUrl(), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ line: line, quantity: 0 }),
+          }).then(function (res) {
+            if (!res.ok) throw new Error('remove failed');
+            return fetch(cartAddUrl(), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                items: [{ id: vid, quantity: newQty, properties: props }],
+              }),
+            });
+          });
+        })
+        .then(function (res) {
+          if (!res.ok) throw new Error('add failed');
+          return reloadCartDrawerMarkup();
+        });
+    }
+
     function updateCartUI(cart) {
       var tp = cart && cents(cart.total_price);
       var totalEl = document.querySelector('#CartDrawer .totals strong');
@@ -245,7 +305,7 @@
       if (itemEl) itemEl.style.opacity = '0';
 
       setTimeout(function () {
-        fetch('/cart/change.js', {
+        fetch(cartChangeUrl(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ line: line, quantity: 0 }),
@@ -278,24 +338,32 @@
 
       input.disabled = true;
 
-      fetch('/cart/change.js', {
+      fetch(cartChangeUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ line: line, quantity: qty }),
       })
         .then(function (res) {
-          if (!res.ok) throw new Error('cart change failed');
-          return fetch('/cart.js');
-        })
-        .then(function (r) {
-          return r.json();
+          if (res.ok) {
+            return fetch(cartJsUrl()).then(function (r) {
+              return r.json();
+            });
+          }
+          if (isWeight) {
+            return replaceWeightLineQuantity(line, qty).then(function () {
+              return null;
+            });
+          }
+          throw new Error('cart change failed');
         })
         .then(function (cart) {
-          input.value = qty;
-          updateCartUI(cart);
+          if (cart) {
+            input.value = qty;
+            updateCartUI(cart);
+          }
         })
         .catch(function () {
-          fetch('/cart.js')
+          fetch(cartJsUrl())
             .then(function (r) {
               return r.json();
             })
