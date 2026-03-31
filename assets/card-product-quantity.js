@@ -45,12 +45,32 @@
     );
   }
 
+  /** Integer units (מנות) — matches snapUnitQuantityInt in product-form.js */
   function getUnitQty(form) {
     const inp = form.querySelector('.js-card-qty-unit');
     if (!inp) return 1;
+    const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+    const inc = parseInt(form.dataset.qtyIncrement || '1', 10) || 1;
+    const maxStr = form.dataset.qtyMax;
+    const max = maxStr && maxStr !== '' ? parseInt(maxStr, 10) : null;
     let q = parseInt(inp.value, 10);
-    if (Number.isNaN(q)) q = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+    if (Number.isNaN(q)) q = min;
+    q = Math.max(min, q);
+    if (inc > 1) {
+      const k = Math.ceil((q - min) / inc);
+      q = min + k * inc;
+    }
+    if (max != null && !Number.isNaN(max)) q = Math.min(q, max);
     return Math.max(1, q);
+  }
+
+  /** "יח'" on a kg-priced product: quantity field = kg (same as weight tab). */
+  function getUnitKgForWeightedProduct(form) {
+    const inp = form.querySelector('.js-card-qty-unit');
+    if (!inp) return 0.1;
+    let kg = parseFloat(String(inp.value).replace(',', '.'));
+    if (Number.isNaN(kg)) kg = 0.1;
+    return Math.max(0.001, Math.round(kg * 1000) / 1000);
   }
 
   function getKg(form) {
@@ -70,9 +90,9 @@
       const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
       return Math.round(perKg * getKg(form));
     }
-    // For products that can be sold by weight, "unit" mode should not multiply price by units.
     if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
-      return p.lineUnitCents > 0 ? p.lineUnitCents : p.variantCents;
+      const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
+      return Math.round(perKg * getUnitKgForWeightedProduct(form));
     }
     return Math.round(p.variantCents * getUnitQty(form));
   }
@@ -85,8 +105,10 @@
       return 0;
     }
     if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
-      const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
-      return Math.round(p.compareAtCents * min);
+      const kg = getUnitKgForWeightedProduct(form);
+      if (p.comparePerKg > 0) return Math.round(p.comparePerKg * kg);
+      if (p.variantCents > 0) return Math.round(line * (p.compareAtCents / p.variantCents));
+      return 0;
     }
     return Math.round(p.compareAtCents * getUnitQty(form));
   }

@@ -1,3 +1,38 @@
+/**
+ * Cart quantity string for weight: grams (legacy) or kg decimal (matches per-kg variant price).
+ * Used for both "משקל" and "יח'" when quantity means kg.
+ */
+function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
+  const grams = Math.round(kg * 1000);
+
+  if (behavior === 'grams') {
+    let g = Math.max(1, grams);
+    if (increment > 1) {
+      g = Math.round(g / increment) * increment;
+      if (g < min) g = min;
+    }
+    if (max != null && !Number.isNaN(max)) g = Math.min(g, max);
+    return String(Math.max(1, g));
+  }
+
+  let kgQty = Math.max(0.001, Math.round(kg * 1000) / 1000);
+  const stepKg = increment > 1 ? increment / 1000 : 0.1;
+  if (increment > 1) {
+    kgQty = Math.round(kgQty / stepKg) * stepKg;
+    kgQty = Math.round(kgQty * 1000) / 1000;
+  } else {
+    kgQty = Math.round(kgQty / 0.1) * 0.1;
+    kgQty = Math.round(kgQty * 1000) / 1000;
+  }
+  if (min > 0) {
+    kgQty = Math.max(min / 1000, kgQty);
+  }
+  if (max != null && !Number.isNaN(max)) {
+    kgQty = Math.min(max / 1000, kgQty);
+  }
+  return String(kgQty);
+}
+
 if (!customElements.get('product-form')) {
   customElements.define(
     'product-form',
@@ -39,11 +74,14 @@ if (!customElements.get('product-form')) {
             : null;
         const increment = parseInt(form.dataset.qtyIncrement || '1', 10) || 1;
 
+        const root = form.closest('[data-card-quantity-root]');
+        const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
+
         form.querySelectorAll('input[name^="properties["][data-card-weight-prop="true"]').forEach((el) =>
           el.remove()
         );
 
-        const snapUnitQuantity = (raw) => {
+        const snapUnitQuantityInt = (raw) => {
           let q = parseInt(raw, 10);
           if (Number.isNaN(q)) q = min;
           q = Math.max(min, q);
@@ -55,57 +93,36 @@ if (!customElements.get('product-form')) {
           return Math.max(1, q);
         };
 
+        const applyKgFromInput = (kgRaw) => {
+          const kg = parseFloat(String(kgRaw).replace(',', '.')) || 0.1;
+          if (behavior === 'property') {
+            qtyHidden.value = '1';
+            const inp = document.createElement('input');
+            inp.type = 'hidden';
+            inp.name = 'properties[משקל]';
+            inp.setAttribute('data-card-weight-prop', 'true');
+            inp.value = `${String(kg).replace(/\.?0+$/, '')} ק״ג`;
+            form.appendChild(inp);
+            return;
+          }
+          qtyHidden.value = computeCardKgQuantityValue(kg, behavior, min, max, increment);
+        };
+
+        // יח' על מוצר שנמכר לפי משקל: המספר בשדה = ק״ג (לא יחידות שלמות) — כמו לשונית ק״ג
+        if (mode === 'unit' && sellByWeightAndUnit) {
+          const kgRaw = form.querySelector('.js-card-qty-unit')?.value;
+          applyKgFromInput(kgRaw);
+          return;
+        }
+
         if (mode === 'unit') {
           const raw = form.querySelector('.js-card-qty-unit')?.value;
-          qtyHidden.value = String(snapUnitQuantity(raw));
+          qtyHidden.value = String(snapUnitQuantityInt(raw));
           return;
         }
 
-        const kg = parseFloat(form.querySelector('.js-card-qty-kg')?.value) || 0.1;
-        const grams = Math.round(kg * 1000);
-
-        if (behavior === 'property') {
-          qtyHidden.value = '1';
-          const inp = document.createElement('input');
-          inp.type = 'hidden';
-          inp.name = 'properties[משקל]';
-          inp.setAttribute('data-card-weight-prop', 'true');
-          inp.value = `${String(kg).replace(/\.?0+$/, '')} ק״ג`;
-          form.appendChild(inp);
-          return;
-        }
-
-        // grams: legacy — quantity = grams (integer). Variant price in Shopify must be per gram
-        // (e.g. ₪0.02/g), not per kg, or line total will be wrong.
-        if (behavior === 'grams') {
-          let g = Math.max(1, grams);
-          if (increment > 1) {
-            g = Math.round(g / increment) * increment;
-            if (g < min) g = min;
-          }
-          if (max != null && !Number.isNaN(max)) g = Math.min(g, max);
-          qtyHidden.value = String(Math.max(1, g));
-          return;
-        }
-
-        // kg (default): cart quantity = kilograms as decimal. Matches variant price "per 1 kg"
-        // in Shopify (line total = qty × variant price → 1.2 × ₪20 = ₪24, not 1200 × ₪20).
-        let kgQty = Math.max(0.001, Math.round(kg * 1000) / 1000);
-        const stepKg = increment > 1 ? increment / 1000 : 0.1;
-        if (increment > 1) {
-          kgQty = Math.round(kgQty / stepKg) * stepKg;
-          kgQty = Math.round(kgQty * 1000) / 1000;
-        } else {
-          kgQty = Math.round(kgQty / 0.1) * 0.1;
-          kgQty = Math.round(kgQty * 1000) / 1000;
-        }
-        if (min > 0) {
-          kgQty = Math.max(min / 1000, kgQty);
-        }
-        if (max != null && !Number.isNaN(max)) {
-          kgQty = Math.min(max / 1000, kgQty);
-        }
-        qtyHidden.value = String(kgQty);
+        const kgRaw = form.querySelector('.js-card-qty-kg')?.value;
+        applyKgFromInput(kgRaw);
       }
 
       onSubmitHandler(evt) {
@@ -127,11 +144,14 @@ if (!customElements.get('product-form')) {
         const formData = new FormData(this.form);
         formData.delete('purchase_mode');
         if (this.form.classList.contains('card-product-qty__form')) {
+          const root = this.form.closest('[data-card-quantity-root]');
+          const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
           const mode =
             this.form.querySelector('input[name="purchase_mode"]:checked')?.value ||
             this.form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
             'unit';
-          formData.set('properties[_purchase_mode]', mode);
+          const modeForCart = sellByWeightAndUnit && mode === 'unit' ? 'weight' : mode;
+          formData.set('properties[_purchase_mode]', modeForCart);
         }
         if (this.cart) {
           formData.append(

@@ -204,11 +204,18 @@
                     type="number"
                     class="quantity__input js-card-qty-unit"
                     aria-labelledby="CardQtyUnitLabel-{{ section_id }}-{{ product.id }}"
-                    min="{{ min_q }}"
-                    {% if max_q != null %}max="{{ max_q }}"{% endif %}
-                    step="{{ inc_q }}"
-                    value="{{ min_q }}"
-                    data-min="{{ min_q }}"
+                    {% if show_unit and show_weight %}
+                      min="0.1"
+                      step="0.1"
+                      value="1"
+                      data-min="0.1"
+                    {% else %}
+                      min="{{ min_q }}"
+                      {% if max_q != null %}max="{{ max_q }}"{% endif %}
+                      step="{{ inc_q }}"
+                      value="{{ min_q }}"
+                      data-min="{{ min_q }}"
+                    {% endif %}
                   >
                   <button
                     class="quantity__button"
