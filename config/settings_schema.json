@@ -549,15 +549,19 @@
         "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.label",
         "options": [
           {
-            "value": "grams",
+            "value": "kg",
             "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.options__1.label"
           },
           {
-            "value": "property",
+            "value": "grams",
             "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.options__2.label"
+          },
+          {
+            "value": "property",
+            "label": "t:settings_schema.cards.settings.card_quantity.weight_behavior.options__3.label"
           }
         ],
-        "default": "grams"
+        "default": "kg"
       },
       {
         "type": "header",

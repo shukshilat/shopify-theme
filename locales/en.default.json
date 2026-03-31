@@ -216,7 +216,7 @@
         "units_label": "Number of units",
         "weight_label": "Weight in kilograms",
         "kg_suffix": "kg",
-        "weight_hint": "Default: cart quantity is set in grams (kg × 1000). Change theme settings if your pricing uses a different unit.",
+        "weight_hint": "Default: cart quantity is in kilograms (e.g. 1.2 for 1.2 kg) when variant price is per kg. Use grams mode only if your variant price in Shopify is per gram.",
         "mode_group": "How to choose quantity",
         "decrease_units": "Decrease unit quantity",
         "increase_units": "Increase unit quantity",

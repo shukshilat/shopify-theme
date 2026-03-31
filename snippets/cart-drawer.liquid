@@ -38,7 +38,11 @@
                 {%- liquid
                   assign purchase_mode_prop = item.properties['_purchase_mode'] | default: '' | strip
                 -%}
-                <div class="cart-item" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
+                <div
+                  class="cart-item"
+                  id="CartDrawer-Item-{{ item.index | plus: 1 }}"
+                  data-purchase-mode="{{ purchase_mode_prop }}"
+                >
                   <img
                     class="cart-item__image"
                     src="{{ item.image | image_url: width: 120 }}"
@@ -78,7 +82,14 @@
                         type="number"
                         id="qty-{{ item.index | plus: 1 }}"
                         value="{{ item.quantity }}"
-                        min="1"
+                        {% if purchase_mode_prop == 'weight' %}
+                          min="0.001"
+                          step="0.1"
+                          inputmode="decimal"
+                        {% else %}
+                          min="1"
+                          step="1"
+                        {% endif %}
                       >
                       <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, -1)">−</button>
                     </div>
@@ -250,8 +261,20 @@
       var input = document.getElementById('qty-' + line);
       if (!input) return;
 
-      var qty = parseInt(input.value, 10) + change;
-      if (qty < 1) return;
+      var row = input.closest('.cart-item');
+      var mode = row && row.getAttribute('data-purchase-mode');
+      var isWeight = mode === 'weight';
+      var step = isWeight ? 0.1 : 1;
+      var cur = isWeight
+        ? parseFloat(String(input.value).replace(',', '.')) || 0
+        : parseInt(input.value, 10) || 0;
+      var qty = Math.round((cur + change * step) * 1000) / 1000;
+      if (isWeight) {
+        if (qty < 0.001) return;
+      } else {
+        qty = Math.round(qty);
+        if (qty < 1) return;
+      }
 
       input.disabled = true;
 

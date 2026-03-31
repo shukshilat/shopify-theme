@@ -71,9 +71,12 @@
           "weight_behavior": {
             "label": "When customers buy by weight (kg)",
             "options__1": {
-              "label": "Set cart quantity to grams (kg × 1000)"
+              "label": "Cart quantity in kilograms (decimal) — use when variant price is per kg"
             },
             "options__2": {
+              "label": "Cart quantity in grams — only if variant price in Shopify is per gram"
+            },
+            "options__3": {
               "label": "Keep quantity 1 and add weight as a line item property"
             }
           }

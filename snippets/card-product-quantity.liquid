@@ -56,7 +56,7 @@
     assign show_unit = true
   endif
   assign form_id = 'CardQtyForm-' | append: section_id | append: '-' | append: product.id
-  assign weight_behavior = settings.card_weight_cart_behavior | default: 'grams'
+  assign weight_behavior = settings.card_weight_cart_behavior | default: 'kg'
   assign max_q_str = max_q | default: ''
 
   assign cents_per_kg = 0

@@ -23,7 +23,7 @@ if (!customElements.get('product-form')) {
         const form = this.form;
         if (!form || !form.classList.contains('card-product-qty__form')) return;
 
-        const behavior = form.dataset.weightBehavior || 'grams';
+        const behavior = form.dataset.weightBehavior || 'kg';
         const mode =
           form.querySelector('input[name="purchase_mode"]:checked')?.value ||
           form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
@@ -75,13 +75,37 @@ if (!customElements.get('product-form')) {
           return;
         }
 
-        let g = Math.max(1, grams);
-        if (increment > 1) {
-          g = Math.round(g / increment) * increment;
-          if (g < min) g = min;
+        // grams: legacy — quantity = grams (integer). Variant price in Shopify must be per gram
+        // (e.g. ₪0.02/g), not per kg, or line total will be wrong.
+        if (behavior === 'grams') {
+          let g = Math.max(1, grams);
+          if (increment > 1) {
+            g = Math.round(g / increment) * increment;
+            if (g < min) g = min;
+          }
+          if (max != null && !Number.isNaN(max)) g = Math.min(g, max);
+          qtyHidden.value = String(Math.max(1, g));
+          return;
         }
-        if (max != null && !Number.isNaN(max)) g = Math.min(g, max);
-        qtyHidden.value = String(Math.max(1, g));
+
+        // kg (default): cart quantity = kilograms as decimal. Matches variant price "per 1 kg"
+        // in Shopify (line total = qty × variant price → 1.2 × ₪20 = ₪24, not 1200 × ₪20).
+        let kgQty = Math.max(0.001, Math.round(kg * 1000) / 1000);
+        const stepKg = increment > 1 ? increment / 1000 : 0.1;
+        if (increment > 1) {
+          kgQty = Math.round(kgQty / stepKg) * stepKg;
+          kgQty = Math.round(kgQty * 1000) / 1000;
+        } else {
+          kgQty = Math.round(kgQty / 0.1) * 0.1;
+          kgQty = Math.round(kgQty * 1000) / 1000;
+        }
+        if (min > 0) {
+          kgQty = Math.max(min / 1000, kgQty);
+        }
+        if (max != null && !Number.isNaN(max)) {
+          kgQty = Math.min(max / 1000, kgQty);
+        }
+        qtyHidden.value = String(kgQty);
       }
 
       onSubmitHandler(evt) {
