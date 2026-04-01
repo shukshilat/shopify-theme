@@ -24,13 +24,48 @@ function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
     kgQty = Math.round(kgQty / 0.1) * 0.1;
     kgQty = Math.round(kgQty * 1000) / 1000;
   }
-  if (min > 0) {
-    kgQty = Math.max(min / 1000, kgQty);
+  // Shopify min/max are often in grams (≥100); if min is small (e.g. 1), treat as kg already.
+  const boundsInGrams = min >= 100 || (max != null && !Number.isNaN(max) && max >= 100);
+  const minKg = min > 0 ? (boundsInGrams ? min / 1000 : min) : 0;
+  const maxKg =
+    max != null && !Number.isNaN(max) ? (boundsInGrams ? max / 1000 : max) : null;
+  if (minKg > 0) {
+    kgQty = Math.max(minKg, kgQty);
   }
-  if (max != null && !Number.isNaN(max)) {
-    kgQty = Math.min(max / 1000, kgQty);
+  if (maxKg != null) {
+    kgQty = Math.min(maxKg, kgQty);
   }
   return String(kgQty);
+}
+
+/**
+ * Card quick-add: JSON body so quantity is a real number (decimals survive; FormData can be lossy in some paths).
+ */
+function buildCardCartAddJsonPayload(form, cart, modeForCart) {
+  const variantId = form.querySelector('[name="id"]')?.value;
+  if (!variantId) return null;
+
+  const qtyEl = form.querySelector(
+    'input.card-product-qty__quantity-hidden[name="quantity"], input[name="quantity"]'
+  );
+  const qtyRaw = qtyEl?.value ?? '1';
+  let quantity = parseFloat(String(qtyRaw).replace(',', '.'));
+  if (Number.isNaN(quantity) || quantity <= 0) quantity = 1;
+
+  const properties = {};
+  form.querySelectorAll('[name^="properties["]').forEach((el) => {
+    if (!el.name || el.disabled) return;
+    const m = el.name.match(/^properties\[(.+)\]$/);
+    if (m) properties[m[1]] = el.value;
+  });
+  if (modeForCart) properties['_purchase_mode'] = modeForCart;
+
+  const sectionIds = cart.getSectionsToRender().map((section) => section.id);
+  return {
+    items: [{ id: Number(variantId), quantity, properties }],
+    sections: sectionIds.join(','),
+    sections_url: window.location.pathname,
+  };
 }
 
 if (!customElements.get('product-form')) {
@@ -137,28 +172,50 @@ if (!customElements.get('product-form')) {
         this.submitButton.classList.add('loading');
         this.querySelector('.loading__spinner').classList.remove('hidden');
 
-        const config = fetchConfig('javascript');
-        config.headers['X-Requested-With'] = 'XMLHttpRequest';
-        delete config.headers['Content-Type'];
-
-        const formData = new FormData(this.form);
-        formData.delete('purchase_mode');
-        if (this.form.classList.contains('card-product-qty__form')) {
+        const isCardQty = this.form.classList.contains('card-product-qty__form');
+        let modeForCart = null;
+        if (isCardQty) {
           const root = this.form.closest('[data-card-quantity-root]');
           const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
           const mode =
             this.form.querySelector('input[name="purchase_mode"]:checked')?.value ||
             this.form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
             'unit';
-          const modeForCart = sellByWeightAndUnit && mode === 'unit' ? 'weight' : mode;
-          formData.set('properties[_purchase_mode]', modeForCart);
+          modeForCart = sellByWeightAndUnit && mode === 'unit' ? 'weight' : mode;
         }
+
+        const variantIdForEvents = this.form.querySelector('[name="id"]')?.value;
+
+        const config = fetchConfig('javascript');
+        config.headers['X-Requested-With'] = 'XMLHttpRequest';
+        delete config.headers['Content-Type'];
+
+        let formData = null;
+        if (isCardQty && this.cart) {
+          const payload = buildCardCartAddJsonPayload(this.form, this.cart, modeForCart);
+          if (payload) {
+            config.headers['Content-Type'] = 'application/json';
+            config.headers['Accept'] = 'application/json';
+            config.body = JSON.stringify(payload);
+          }
+        }
+        if (!config.body) {
+          formData = new FormData(this.form);
+          formData.delete('purchase_mode');
+          if (isCardQty && modeForCart) {
+            formData.set('properties[_purchase_mode]', modeForCart);
+          }
+          if (this.cart) {
+            formData.append(
+              'sections',
+              this.cart.getSectionsToRender().map((section) => section.id)
+            );
+            formData.append('sections_url', window.location.pathname);
+          }
+          config.body = formData;
+        }
+
         if (this.cart) {
-          formData.append(
-            'sections',
-            this.cart.getSectionsToRender().map((section) => section.id)
-          );
-          formData.append('sections_url', window.location.pathname);
           const anchorForCart =
             evt.submitter ||
             this.closest('[data-card-quantity-root]') ||
@@ -166,7 +223,6 @@ if (!customElements.get('product-form')) {
             this.submitButton;
           this.cart.setActiveElement(anchorForCart);
         }
-        config.body = formData;
 
         fetch(`${routes.cart_add_url}`, config)
           .then((response) => response.json())
@@ -174,7 +230,7 @@ if (!customElements.get('product-form')) {
             if (response.status) {
               publish(PUB_SUB_EVENTS.cartError, {
                 source: 'product-form',
-                productVariantId: formData.get('id'),
+                productVariantId: variantIdForEvents || formData?.get?.('id'),
                 errors: response.errors || response.description,
                 message: response.message,
               });
@@ -196,7 +252,7 @@ if (!customElements.get('product-form')) {
             if (!this.error)
               publish(PUB_SUB_EVENTS.cartUpdate, {
                 source: 'product-form',
-                productVariantId: formData.get('id'),
+                productVariantId: variantIdForEvents || formData?.get?.('id'),
                 cartData: response,
               }).then(() => {
                 CartPerformance.measureFromMarker('add:wait-for-subscribers', startMarker);

@@ -247,33 +247,50 @@ class QuantityInput extends HTMLElement {
     const previousValue = this.input.value;
     const buttonName = event.currentTarget?.name ?? event.target.name;
 
+    const stepNum = parseFloat(this.input.step);
+    const step = Number.isNaN(stepNum) || stepNum <= 0 ? 1 : stepNum;
+    const minFromDataset =
+      this.input.dataset.min != null && this.input.dataset.min !== ''
+        ? parseFloat(this.input.dataset.min)
+        : NaN;
+    const minAttr = parseFloat(this.input.min);
+    const minNum = !Number.isNaN(minFromDataset) ? minFromDataset : !Number.isNaN(minAttr) ? minAttr : NaN;
+
     if (buttonName === 'plus') {
-      if (parseInt(this.input.dataset.min) > parseInt(this.input.step) && this.input.value == 0) {
-        this.input.value = this.input.dataset.min;
+      const cur = parseFloat(this.input.value);
+      const curNum = Number.isNaN(cur) ? 0 : cur;
+      if (!Number.isNaN(minNum) && minNum > step && curNum === 0) {
+        this.input.value = String(minNum);
       } else {
         this.input.stepUp();
       }
     } else {
       this.input.stepDown();
+      if (!Number.isNaN(minNum)) {
+        const v = parseFloat(this.input.value);
+        if (!Number.isNaN(v) && v < minNum) this.input.value = String(minNum);
+      }
     }
 
     if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
-
-    if (this.input.dataset.min === previousValue && buttonName === 'minus') {
-      this.input.value = parseInt(this.input.min);
-    }
   }
 
   validateQtyRules() {
-    const value = parseInt(this.input.value);
-    if (this.input.min) {
+    const value = parseFloat(this.input.value);
+    const val = Number.isNaN(value) ? 0 : value;
+    if (this.input.min !== '' && this.input.min != null) {
+      const min = parseFloat(this.input.min);
       const buttonMinus = this.querySelector(".quantity__button[name='minus']");
-      buttonMinus.classList.toggle('disabled', parseInt(value) <= parseInt(this.input.min));
+      if (buttonMinus && !Number.isNaN(min)) {
+        buttonMinus.classList.toggle('disabled', val <= min + 1e-9);
+      }
     }
-    if (this.input.max) {
-      const max = parseInt(this.input.max);
+    if (this.input.max !== '' && this.input.max != null) {
+      const max = parseFloat(this.input.max);
       const buttonPlus = this.querySelector(".quantity__button[name='plus']");
-      buttonPlus.classList.toggle('disabled', value >= max);
+      if (buttonPlus && !Number.isNaN(max)) {
+        buttonPlus.classList.toggle('disabled', val >= max - 1e-9);
+      }
     }
   }
 }
