@@ -71,7 +71,7 @@
           "weight_behavior": {
             "label": "When customers buy by weight (kg)",
             "options__1": {
-              "label": "Cart quantity in kilograms (decimal) — use when variant price is per kg"
+              "label": "0.1 kg cart steps (Shopify-safe) — set variant price to one tenth of your per-kg price (e.g. ₪2 if ₪20/kg)"
             },
             "options__2": {
               "label": "Cart quantity in grams — only if variant price in Shopify is per gram"

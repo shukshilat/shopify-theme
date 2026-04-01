@@ -35,7 +35,15 @@ function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
   if (maxKg != null) {
     kgQty = Math.min(maxKg, kgQty);
   }
-  return String(kgQty);
+  // Shopify Ajax cart only accepts integer quantities. One cart unit = 0.1 kg; variant price in Admin must be per 0.1 kg (e.g. ₪2 when ₪20/kg).
+  const minTenths = minKg > 0 ? Math.max(1, Math.round(minKg * 10)) : 1;
+  let tenths = Math.round(kgQty * 10);
+  tenths = Math.max(minTenths, tenths);
+  if (maxKg != null && !Number.isNaN(maxKg)) {
+    const maxTenths = Math.max(minTenths, Math.round(maxKg * 10));
+    tenths = Math.min(maxTenths, tenths);
+  }
+  return String(Math.max(1, tenths));
 }
 
 /**
@@ -147,17 +155,28 @@ if (!customElements.get('product-form')) {
         if (mode === 'unit' && sellByWeightAndUnit) {
           const kgRaw = form.querySelector('.js-card-qty-unit')?.value;
           applyKgFromInput(kgRaw);
-          return;
-        }
-
-        if (mode === 'unit') {
+        } else if (mode === 'unit') {
           const raw = form.querySelector('.js-card-qty-unit')?.value;
           qtyHidden.value = String(snapUnitQuantityInt(raw));
-          return;
+        } else {
+          const kgRaw = form.querySelector('.js-card-qty-kg')?.value;
+          applyKgFromInput(kgRaw);
         }
 
-        const kgRaw = form.querySelector('.js-card-qty-kg')?.value;
-        applyKgFromInput(kgRaw);
+        form.querySelectorAll('input[name="properties[_weight_qty_unit_kg]"][data-card-weight-scale="true"]').forEach((el) =>
+          el.remove()
+        );
+        const needsWeightScaleProp =
+          behavior === 'kg' &&
+          (mode === 'weight' || (mode === 'unit' && sellByWeightAndUnit));
+        if (needsWeightScaleProp) {
+          const p = document.createElement('input');
+          p.type = 'hidden';
+          p.name = 'properties[_weight_qty_unit_kg]';
+          p.value = '0.1';
+          p.setAttribute('data-card-weight-scale', 'true');
+          form.appendChild(p);
+        }
       }
 
       onSubmitHandler(evt) {

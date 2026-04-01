@@ -43,11 +43,20 @@
                       assign purchase_mode_prop = 'weight'
                     endif
                   endif
+                  assign weight_qty_unit_kg = item.properties['_weight_qty_unit_kg'] | default: '' | strip
+                  if weight_qty_unit_kg == '0.1'
+                    assign cart_qty_display = item.quantity | times: 0.1
+                  else
+                    assign cart_qty_display = item.quantity
+                  endif
                 -%}
                 <div
                   class="cart-item"
                   id="CartDrawer-Item-{{ item.index | plus: 1 }}"
                   data-purchase-mode="{{ purchase_mode_prop }}"
+                  {% if weight_qty_unit_kg == '0.1' %}
+                    data-weight-qty-unit-kg="0.1"
+                  {% endif %}
                 >
                   <img
                     class="cart-item__image"
@@ -87,7 +96,7 @@
                       <input
                         type="number"
                         id="qty-{{ item.index | plus: 1 }}"
-                        value="{{ item.quantity }}"
+                        value="{{ cart_qty_display }}"
                         {% if purchase_mode_prop == 'weight' %}
                           min="0.001"
                           step="0.1"
@@ -324,24 +333,28 @@
       var row = input.closest('.cart-item');
       var mode = row && row.getAttribute('data-purchase-mode');
       var isWeight = mode === 'weight';
+      var unitKgAttr = row && row.getAttribute('data-weight-qty-unit-kg');
+      var scaledTenths = isWeight && unitKgAttr === '0.1';
       var step = isWeight ? 0.1 : 1;
       var cur = isWeight
         ? parseFloat(String(input.value).replace(',', '.')) || 0
         : parseInt(input.value, 10) || 0;
-      var qty = Math.round((cur + change * step) * 1000) / 1000;
+      var nextDisplay = Math.round((cur + change * step) * 1000) / 1000;
       if (isWeight) {
-        if (qty < 0.001) return;
+        if (nextDisplay < 0.001) return;
       } else {
-        qty = Math.round(qty);
-        if (qty < 1) return;
+        nextDisplay = Math.round(nextDisplay);
+        if (nextDisplay < 1) return;
       }
+
+      var apiQty = scaledTenths ? Math.max(1, Math.round(nextDisplay / 0.1)) : nextDisplay;
 
       input.disabled = true;
 
       fetch(cartChangeUrl(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line, quantity: qty }),
+        body: JSON.stringify({ line: line, quantity: apiQty }),
       })
         .then(function (res) {
           if (res.ok) {
@@ -349,8 +362,13 @@
               return r.json();
             });
           }
-          if (isWeight) {
-            return replaceWeightLineQuantity(line, qty).then(function () {
+          if (isWeight && !scaledTenths) {
+            return replaceWeightLineQuantity(line, nextDisplay).then(function () {
+              return null;
+            });
+          }
+          if (isWeight && scaledTenths) {
+            return replaceWeightLineQuantity(line, apiQty).then(function () {
               return null;
             });
           }
@@ -358,7 +376,7 @@
         })
         .then(function (cart) {
           if (cart) {
-            input.value = qty;
+            input.value = isWeight ? nextDisplay : apiQty;
             updateCartUI(cart);
           }
         })
