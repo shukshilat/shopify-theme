@@ -45,7 +45,7 @@
                   endif
                   assign weight_qty_unit_kg = item.properties['_weight_qty_unit_kg'] | default: '' | strip
                   if weight_qty_unit_kg == '0.1'
-                    assign cart_qty_display = item.quantity | times: 0.1
+                    assign cart_qty_display = item.quantity | divided_by: 10.0
                   else
                     assign cart_qty_display = item.quantity
                   endif

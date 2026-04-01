@@ -71,7 +71,7 @@ function buildCardCartAddJsonPayload(form, cart, modeForCart) {
   const sectionIds = cart.getSectionsToRender().map((section) => section.id);
   return {
     items: [{ id: Number(variantId), quantity, properties }],
-    sections: sectionIds.join(','),
+    sections: sectionIds,
     sections_url: window.location.pathname,
   };
 }
@@ -86,7 +86,8 @@ if (!customElements.get('product-form')) {
         this.form = this.querySelector('form');
         this.variantIdInput.disabled = false;
         this.form.addEventListener('submit', this.onSubmitHandler.bind(this));
-        this.cart = document.querySelector('cart-notification') || document.querySelector('cart-drawer');
+        // Prefer drawer when present — notification mode still has no <cart-drawer>; avoids wrong renderContents targets.
+        this.cart = document.querySelector('cart-drawer') || document.querySelector('cart-notification');
         this.submitButton = this.querySelector('[type="submit"]');
         this.submitButtonText =
           this.submitButton.querySelector('[data-product-form-submit-label]') ||
@@ -176,6 +177,28 @@ if (!customElements.get('product-form')) {
           p.value = '0.1';
           p.setAttribute('data-card-weight-scale', 'true');
           form.appendChild(p);
+        }
+      }
+
+      paintCartUIAfterAdd(response) {
+        if (!this.cart) return;
+        const isDrawer = this.cart.tagName === 'CART-DRAWER';
+        const drawerSectionHtml = response.sections && response.sections['cart-drawer'];
+        const drawerSectionOk =
+          typeof drawerSectionHtml === 'string' && drawerSectionHtml.length > 0;
+
+        if (isDrawer && !drawerSectionOk && typeof window.themeRefreshCartDrawerFromSection === 'function') {
+          window.themeRefreshCartDrawerFromSection();
+          return;
+        }
+
+        try {
+          this.cart.renderContents(response);
+        } catch (e) {
+          console.error(e);
+          if (isDrawer && typeof window.themeRefreshCartDrawerFromSection === 'function') {
+            window.themeRefreshCartDrawerFromSection();
+          }
         }
       }
 
@@ -284,7 +307,7 @@ if (!customElements.get('product-form')) {
                 () => {
                   setTimeout(() => {
                     CartPerformance.measure("add:paint-updated-sections", () => {
-                      this.cart.renderContents(response);
+                      this.paintCartUIAfterAdd(response);
                     });
                   });
                 },
@@ -293,7 +316,7 @@ if (!customElements.get('product-form')) {
               quickAddModal.hide(true);
             } else {
               CartPerformance.measure("add:paint-updated-sections", () => {
-                this.cart.renderContents(response);
+                this.paintCartUIAfterAdd(response);
               });
             }
           })

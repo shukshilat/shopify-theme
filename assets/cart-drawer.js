@@ -140,13 +140,16 @@ class CartDrawer extends HTMLElement {
     this.querySelector('.drawer__inner').classList.contains('is-empty') &&
       this.querySelector('.drawer__inner').classList.remove('is-empty');
     this.productId = parsedState.id;
+    const sections = parsedState.sections;
     this.getSectionsToRender().forEach((section) => {
       const sectionElement = section.selector
         ? document.querySelector(section.selector)
         : document.getElementById(section.id);
 
       if (!sectionElement) return;
-      sectionElement.innerHTML = this.getSectionInnerHTML(parsedState.sections[section.id], section.selector);
+      const html = sections && sections[section.id];
+      const inner = this.getSectionInnerHTML(html, section.selector);
+      if (inner != null) sectionElement.innerHTML = inner;
     });
 
     setTimeout(() => {
@@ -160,7 +163,10 @@ class CartDrawer extends HTMLElement {
   }
 
   getSectionInnerHTML(html, selector = '.shopify-section') {
-    return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+    if (html == null || typeof html !== 'string' || !html.trim()) return null;
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const el = doc.querySelector(selector);
+    return el ? el.innerHTML : null;
   }
 
   getSectionsToRender() {
@@ -185,6 +191,38 @@ class CartDrawer extends HTMLElement {
 }
 
 customElements.define('cart-drawer', CartDrawer);
+
+function themeCartJsUrl() {
+  if (typeof window.Shopify !== 'undefined' && window.Shopify.routes && window.Shopify.routes.root) {
+    return `${window.Shopify.routes.root}cart.js`;
+  }
+  return '/cart.js';
+}
+
+/** When bundled section HTML is missing or renderContents throws — reload drawer markup from the server cart context. */
+window.themeRefreshCartDrawerFromSection = function () {
+  const base = (window.routes && window.routes.cart_url) || '/cart';
+  return fetch(`${base}?section_id=cart-drawer`)
+    .then((r) => r.text())
+    .then((html) => {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const next = doc.getElementById('CartDrawer');
+      const cur = document.getElementById('CartDrawer');
+      if (!next || !cur) return null;
+      cur.innerHTML = next.innerHTML;
+      return fetch(themeCartJsUrl()).then((res) => res.json());
+    })
+    .then((cart) => {
+      if (cart && typeof window.updateCartUIFromCart === 'function') {
+        window.updateCartUIFromCart(cart);
+      }
+      const drawer = document.querySelector('cart-drawer');
+      if (drawer && cart && Array.isArray(cart.items)) {
+        drawer.classList.toggle('is-empty', cart.items.length === 0);
+      }
+    })
+    .catch(() => {});
+};
 
 class CartDrawerItems extends CartItems {
   getSectionsToRender() {

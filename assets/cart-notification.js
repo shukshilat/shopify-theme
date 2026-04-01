@@ -63,7 +63,10 @@ class CartNotification extends HTMLElement {
   }
 
   getSectionInnerHTML(html, selector = '.shopify-section') {
-    return new DOMParser().parseFromString(html, 'text/html').querySelector(selector).innerHTML;
+    if (html == null || typeof html !== 'string' || !html.trim()) return '';
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const el = doc.querySelector(selector);
+    return el ? el.innerHTML : '';
   }
 
   handleBodyClick(evt) {
