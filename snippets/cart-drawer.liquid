@@ -169,7 +169,7 @@
                     </div>
                   </div>
 
-                  <div class="cart-item__line-total" data-line-price>
+                  <div class="cart-item__line-total" data-line-price data-line-cents="{{ line_display_cents }}">
                     {{ line_display_cents | money }}
                   </div>
                 </div>
@@ -304,6 +304,7 @@
         var lineCents = adjustedLineCents(item);
         if (lineTotalEl && lineCents !== null) {
           lineTotalEl.textContent = formatCartMoney(lineCents);
+          lineTotalEl.setAttribute('data-line-cents', String(lineCents));
         }
 
         var priceWrap = row.querySelector('[data-unit-price]');
@@ -469,11 +470,123 @@
       return cartDisplayTotalCents(cart);
     }
 
+    function formatKgStepperDisplay(kg) {
+      var v = Math.round(Number(kg) * 1000) / 1000;
+      if (!isFinite(v)) return String(kg);
+      var s = v.toFixed(3).replace(/\.?0+$/, '');
+      return s.length ? s : String(v);
+    }
+
+    /** עדכון מיידי של שורה + סה״כ + משלוח (יחס קווי) לפני תשובת השרת */
+    function optimisticDrawerQtyPreview(line, row, curDisplay, nextDisplay, isWeight) {
+      if (!(curDisplay > 0) || !(nextDisplay > 0) || !row) return;
+      var lineEl = row.querySelector('[data-line-price]');
+      if (!lineEl) return;
+      var lc = parseInt(lineEl.getAttribute('data-line-cents'), 10);
+      if (!isFinite(lc) || lc < 0) return;
+      var ratio = nextDisplay / curDisplay;
+      if (!isFinite(ratio)) return;
+      var newLc = Math.round(lc * ratio);
+      lineEl.setAttribute('data-line-cents', String(newLc));
+      lineEl.textContent = formatCartMoney(newLc);
+
+      var totalStrong = document.querySelector('#CartDrawer .totals strong');
+      if (totalStrong) {
+        var tc = parseInt(totalStrong.getAttribute('data-cart-total-cents'), 10);
+        if (isFinite(tc)) {
+          var newTc = Math.max(0, tc - lc + newLc);
+          totalStrong.setAttribute('data-cart-total-cents', String(newTc));
+          totalStrong.textContent = formatCartMoney(newTc);
+          var fs = document.querySelector('#CartDrawer .free-shipping-text');
+          if (fs) {
+            var rem = FREE_SHIPPING_THRESHOLD - newTc;
+            if (rem > 0) {
+              fs.textContent = '🚚 נשאר לך ' + formatCartMoney(rem) + ' למשלוח חינם';
+            } else {
+              fs.textContent = '🎉 יש לך משלוח חינם!';
+            }
+          }
+        }
+      }
+
+      var inp = document.getElementById('qty-' + line);
+      if (inp) {
+        inp.value = isWeight ? formatKgStepperDisplay(nextDisplay) : String(Math.round(nextDisplay));
+      }
+    }
+
+    function syncHeaderCartIcon(cart) {
+      if (!cart) return;
+      var a = document.getElementById('cart-icon-bubble');
+      if (!a) return;
+      var count = typeof cart.item_count === 'number' ? cart.item_count : 0;
+      var bubble = a.querySelector('.cart-count-bubble');
+      if (count < 1) {
+        if (bubble) bubble.remove();
+        return;
+      }
+      if (!bubble) {
+        bubble = document.createElement('div');
+        bubble.className = 'cart-count-bubble';
+        a.appendChild(bubble);
+      }
+      var vis = bubble.querySelector('span[aria-hidden="true"]');
+      if (!vis) {
+        vis = document.createElement('span');
+        vis.setAttribute('aria-hidden', 'true');
+        bubble.insertBefore(vis, bubble.firstChild);
+      }
+      vis.textContent = count < 100 ? String(count) : '';
+    }
+
+    function publishCartSync(cart) {
+      if (!cart) return;
+      syncHeaderCartIcon(cart);
+      if (typeof publish === 'function') {
+        var ev =
+          typeof PUB_SUB_EVENTS !== 'undefined' && PUB_SUB_EVENTS.cartUpdate
+            ? PUB_SUB_EVENTS.cartUpdate
+            : 'cart-update';
+        publish(ev, { source: 'cart-drawer', cartData: cart });
+      }
+    }
+
+    /** תשובת JSON מ-change.js — בלי round-trip נוסף ל-cart.js כשהתשובה מלאה */
+    function postCartChangePayload(payload) {
+      return fetch(cartChangeUrl(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify(payload),
+      }).then(function (res) {
+        return res
+          .json()
+          .catch(function () {
+            return null;
+          })
+          .then(function (json) {
+            if (!res.ok) {
+              return Promise.reject({ status: res.status, json: json });
+            }
+            if (json && Array.isArray(json.items)) {
+              return json;
+            }
+            return fetch(cartJsUrl()).then(function (r) {
+              return r.json();
+            });
+          });
+      });
+    }
+
     function updateCartUI(cart) {
       var tp = cartTotalCentsForUi(cart);
       var totalEl = document.querySelector('#CartDrawer .totals strong');
       if (totalEl && tp !== null) {
         totalEl.textContent = formatCartMoney(tp);
+        totalEl.setAttribute('data-cart-total-cents', String(tp));
       }
 
       var el = document.querySelector('#CartDrawer .free-shipping-text');
@@ -488,6 +601,7 @@
 
       updateLinePricesFromCart(cart);
       syncDrawerQtyInputsFromCart(cart);
+      publishCartSync(cart);
     }
 
     window.removeItem = function (el, line) {
@@ -516,58 +630,19 @@
       if (isNaN(v) || v < 0.001) return;
       var scaledTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
       setDrawerQtyLineLocked(line, true);
-      if (scaledTenths) {
-        var tenthsCommit = Math.max(1, Math.round(v * 10));
-        fetch(cartChangeUrl(), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ line: line, quantity: tenthsCommit }),
-        })
-          .then(function (res) {
-            if (res.ok) {
-              return fetch(cartJsUrl()).then(function (r) {
-                return r.json();
-              });
-            }
-            return replaceWeightLineQuantity(line, v).then(function () {
-              return null;
-            });
-          })
-          .then(function (cart) {
-            if (cart) updateCartUI(cart);
-          })
-          .catch(function () {
-            fetch(cartJsUrl())
-              .then(function (r) {
-                return r.json();
-              })
-              .then(updateCartUI);
-          })
-          .finally(function () {
-            setDrawerQtyLineLocked(line, false);
-          });
-        return;
-      }
-      fetch(cartChangeUrl(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line, quantity: v }),
-      })
-        .then(function (res) {
-          if (res.ok) {
-            return fetch(cartJsUrl()).then(function (r) {
-              return r.json();
-            });
-          }
-          return replaceWeightLineQuantity(line, v).then(function () {
-            return null;
-          });
-        })
+      var commitPayload = scaledTenths
+        ? { line: line, quantity: Math.max(1, Math.round(v * 10)) }
+        : { line: line, quantity: v };
+
+      postCartChangePayload(commitPayload)
         .then(function (cart) {
-          if (cart) updateCartUI(cart);
+          updateCartUI(cart);
         })
         .catch(function () {
-          fetch(cartJsUrl())
+          return replaceWeightLineQuantity(line, v);
+        })
+        .catch(function () {
+          return fetch(cartJsUrl())
             .then(function (r) {
               return r.json();
             })
@@ -599,66 +674,29 @@
         if (nextDisplay < 1) return;
       }
 
+      optimisticDrawerQtyPreview(line, row, cur, nextDisplay, isWeight);
       setDrawerQtyLineLocked(line, true);
 
-      if (scaledTenths) {
-        var tenths = Math.max(1, Math.round(nextDisplay * 10));
-        fetch(cartChangeUrl(), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ line: line, quantity: tenths }),
-        })
-          .then(function (res) {
-            if (res.ok) {
-              return fetch(cartJsUrl()).then(function (r) {
-                return r.json();
-              });
-            }
-            return replaceWeightLineQuantity(line, nextDisplay).then(function () {
-              return null;
-            });
-          })
-          .then(function (cart) {
-            if (cart) updateCartUI(cart);
-          })
-          .catch(function () {
-            fetch(cartJsUrl())
-              .then(function (r) {
-                return r.json();
-              })
-              .then(updateCartUI);
-          })
-          .finally(function () {
-            setDrawerQtyLineLocked(line, false);
-          });
-        return;
-      }
+      var payload = scaledTenths
+        ? { line: line, quantity: Math.max(1, Math.round(nextDisplay * 10)) }
+        : { line: line, quantity: nextDisplay };
 
-      var apiQty = nextDisplay;
-
-      fetch(cartChangeUrl(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line: line, quantity: apiQty }),
-      })
-        .then(function (res) {
-          if (res.ok) {
-            return fetch(cartJsUrl()).then(function (r) {
-              return r.json();
-            });
-          }
-          if (isWeight) {
-            return replaceWeightLineQuantity(line, nextDisplay).then(function () {
-              return null;
-            });
-          }
-          throw new Error('cart change failed');
-        })
+      postCartChangePayload(payload)
         .then(function (cart) {
-          if (cart) updateCartUI(cart);
+          updateCartUI(cart);
         })
         .catch(function () {
-          fetch(cartJsUrl())
+          if (isWeight) {
+            return replaceWeightLineQuantity(line, nextDisplay);
+          }
+          return fetch(cartJsUrl())
+            .then(function (r) {
+              return r.json();
+            })
+            .then(updateCartUI);
+        })
+        .catch(function () {
+          return fetch(cartJsUrl())
             .then(function (r) {
               return r.json();
             })
