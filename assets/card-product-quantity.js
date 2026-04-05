@@ -259,13 +259,11 @@
     }
     weightKg = Math.round(weightKg * 1000) / 1000;
 
+    /*
+     * אין שורה בעגלה לוריאנט הזה — לא מאפסים את הכרטיס.
+     * אחרת כל הוספת מוצר (cart-update) הייתה דורסת בחירת ק״ג/מתג של מוצרים שלא בעגלה.
+     */
     if (items.length === 0) {
-      if (hasDualMode && unitRadio) unitRadio.checked = true;
-      const uIn = form.querySelector('.js-card-qty-unit');
-      if (uIn) setInputValueNotify(uIn, String(min));
-      const kgIn = form.querySelector('.js-card-qty-kg');
-      if (kgIn) setInputValueNotify(kgIn, formatKgDisplayString(1));
-      syncPanels(root);
       return;
     }
 
