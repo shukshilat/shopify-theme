@@ -34,6 +34,14 @@
   color: rgb(var(--color-foreground));
 }
 
+/* כרטיס: רק מחיר ליחידת מידה (ק״ג / יחידה) — בולט כמו מחיר ראשי לשעבר */
+.product-card-wrapper--premium-card-qty .price--unit-price-only .unit-price-custom {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: rgb(var(--color-foreground));
+}
+
 /* כותרת ומחיר רק מתחת למסגרת — לא כפילות מעל התמונה (רק כשיש .card--media) */
 .product-card-wrapper--premium-card-qty .card--media .card__inner > .card__content > .card__information {
   display: none !important;

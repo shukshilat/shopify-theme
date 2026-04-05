@@ -8,6 +8,7 @@
   - show_badges: {Boolean} Renders 'Sale' and 'Sold Out' tags if the product matches the condition (optional)
   - price_class: {String} Adds a price class to the price element (optional)
   - show_compare_at_price: {Boolean} Renders the compare at price if the product matches the condition (optional)
+  - unit_price_only: {Boolean} On product cards: show only unit price (e.g. ₪20 / ק״ג) when variant has unit pricing; otherwise full price
 
   Usage:
   {% render 'price', product: product %}
@@ -19,6 +20,14 @@
     assign target = null
   else
     assign target = product
+  endif
+
+  assign v_unit = nil
+  if product != blank
+    assign v_unit = product.selected_or_first_available_variant
+    if use_variant
+      assign v_unit = target
+    endif
   endif
 
   assign compare_at_price = target.compare_at_price
@@ -38,9 +47,41 @@
   if target == product and product.price_varies
     assign money_price = 'products.product.price.from_price_html' | t: price: money_price
   endif
+
+  assign unit_price_only_flag = unit_price_only | default: false
+  assign show_only_unit_price = false
+  if unit_price_only_flag and placeholder == null and v_unit != blank and v_unit.unit_price_measurement != blank and v_unit.unit_price != blank
+    assign show_only_unit_price = true
+  endif
 -%}
 
 {%- unless target == null and placeholder == null -%}
+  {%- if show_only_unit_price -%}
+    <div
+      class="
+        price
+        price--unit-price-only
+        {%- if price_class %} {{ price_class }}{% endif -%}
+        {%- if available == false %} price--sold-out{% endif -%}
+        {%- if compare_at_price > price and product.quantity_price_breaks_configured? != true %} price--on-sale{% endif -%}
+        {%- if compare_at_price > price and product.quantity_price_breaks_configured? %} volume-pricing--sale-badge{% endif -%}
+        {%- if product.price_varies == false and product.compare_at_price_varies %} price--no-compare{% endif -%}
+        {%- if show_badges %} price--show-badge{% endif -%}
+      "
+    >
+      <div class="price__container price__container--unit-only">
+        <span class="visually-hidden">
+          {{- 'products.product.price.regular_price' | t }}:
+          {%- if settings.currency_code_enabled -%}
+            {{- v_unit.price | money_with_currency -}}
+          {%- else -%}
+            {{- v_unit.price | money -}}
+          {%- endif -%}
+        </span>
+        {% render 'unit-price', price: v_unit.unit_price, measurement: v_unit.unit_price_measurement %}
+      </div>
+    </div>
+  {%- else -%}
   <div
     class="
       price
@@ -108,8 +149,8 @@
           {{ money_price }}
         </span>
       </div>
-      {%- if product.selected_or_first_available_variant.unit_price_measurement -%}
-        {% render 'unit-price', price: product.selected_or_first_available_variant.unit_price, measurement: product.selected_or_first_available_variant.unit_price_measurement %}
+      {%- if v_unit != blank and v_unit.unit_price_measurement != blank and v_unit.unit_price != blank -%}
+        {% render 'unit-price', price: v_unit.unit_price, measurement: v_unit.unit_price_measurement %}
       {%- endif -%}
     </div>
     {%- if show_badges -%}
@@ -122,4 +163,5 @@
       </span>
     {%- endif -%}
   </div>
+  {%- endif -%}
 {% endunless %}
