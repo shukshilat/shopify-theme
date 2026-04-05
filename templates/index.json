@@ -24,6 +24,42 @@
     "collection_list_ek6WUC": {
       "type": "collection-list",
       "blocks": {
+        "featured_collection_jEVHU6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "ביצים"
+          }
+        },
+        "featured_collection_VFKDaG": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "ירק"
+          }
+        },
+        "featured_collection_AVag9t": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "ירקות-ארוזים"
+          }
+        },
+        "featured_collection_WWEi3j": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "מוצרי-מרכול"
+          }
+        },
+        "featured_collection_yWDjAe": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "שמן-זית"
+          }
+        },
+        "featured_collection_raBYxH": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "תבליני-פרג"
+          }
+        },
         "featured_collection_b3xXkj": {
           "type": "featured_collection",
           "settings": {
@@ -44,13 +80,19 @@
         }
       },
       "block_order": [
+        "featured_collection_jEVHU6",
+        "featured_collection_VFKDaG",
+        "featured_collection_AVag9t",
+        "featured_collection_WWEi3j",
+        "featured_collection_yWDjAe",
+        "featured_collection_raBYxH",
         "featured_collection_b3xXkj",
         "featured_collection_DwDdbc",
         "featured_collection_fF3p6V"
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
-        "list_source": "menu",
+        "list_source": "blocks",
         "menu": "main-menu",
         "title": "המוצרים שלנו",
         "heading_size": "hxl",
