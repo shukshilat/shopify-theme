@@ -395,4 +395,10 @@
   window.addEventListener('pageshow', (ev) => {
     if (ev.persisted) refreshAllCardsFromServerCart();
   });
+
+  window.themeRefreshAllCardLinePricing = function () {
+    document.querySelectorAll('[data-card-quantity-root]').forEach((root) => {
+      updatePricing(root);
+    });
+  };
 })();

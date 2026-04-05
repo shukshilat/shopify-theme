@@ -91,7 +91,7 @@
                 -%}
                 <div
                   class="cart-item"
-                  id="CartDrawer-Item-{{ item.index | plus: 1 }}"
+                  id="CartDrawer-Item-{{ forloop.index }}"
                   data-purchase-mode="{{ effective_mode }}"
                   {% if weight_qty_unit_kg == '0.1' %}
                     data-weight-qty-unit-kg="0.1"
@@ -112,7 +112,7 @@
                       <button
                         type="button"
                         class="cart-remove-btn"
-                        onclick="removeItem(this, {{ item.index | plus: 1 }})"
+                        onclick="removeItem(this, {{ forloop.index }})"
                       >
                         ✕
                       </button>
@@ -122,6 +122,15 @@
                       {%- if effective_mode == 'weight' and item.unit_price != blank and item.unit_price_measurement != blank -%}
                         {%- comment -%} במשקל: רק מחיר לק״ג מהמוצר — בלי מחיר הווריאנט (למשל ₪2 ל־0.1 ק״ג) {%- endcomment -%}
                         {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                      {%- elsif effective_mode == 'weight' and weight_qty_unit_kg == '0.1' and item.quantity > 0 -%}
+                        {%- comment -%} Shopify לפעמים בלי unit_price ב-JSON — מחושב מסכום שורה ÷ ק״ג (כמות = עשיריות) {%- endcomment -%}
+                        {%- assign inferred_per_kg_cents = item.final_line_price | times: 10 | divided_by: item.quantity -%}
+                        {%- assign meas_for_unit = item.unit_price_measurement | default: item.variant.unit_price_measurement -%}
+                        {%- if meas_for_unit != blank -%}
+                          {% render 'unit-price', price: inferred_per_kg_cents, measurement: meas_for_unit %}
+                        {%- else -%}
+                          <div class="unit-price unit-price-custom" dir="rtl">{{ inferred_per_kg_cents | money }} / ק״ג</div>
+                        {%- endif -%}
                       {%- elsif effective_mode == 'weight' -%}
                         {% if item.original_price != item.final_price %}
                           <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
@@ -160,7 +169,7 @@
                         type="button"
                         class="qty-box__btn"
                         aria-label="{% if effective_mode == 'weight' %}{{ 'products.product.card_quantity.increase_kg' | t }}{% else %}{{ 'products.product.card_quantity.increase_units' | t }}{% endif %}"
-                        onclick="changeQty({{ item.index | plus: 1 }}, 1)"
+                        onclick="changeQty({{ forloop.index }}, 1)"
                       >
                         +
                       </button>
@@ -172,22 +181,22 @@
                           autocorrect="off"
                           spellcheck="false"
                           class="cart-drawer__qty-weight"
-                          onblur="if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ item.index | plus: 1 }})"
-                          onkeydown="if(event.key==='Enter'){event.preventDefault();if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ item.index | plus: 1 }});}"
+                          onblur="if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ forloop.index }})"
+                          onkeydown="if(event.key==='Enter'){event.preventDefault();if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ forloop.index }});}"
                         {% else %}
                           type="number"
                           min="1"
                           step="1"
                           autocomplete="off"
                         {% endif %}
-                        id="qty-{{ item.index | plus: 1 }}"
+                        id="qty-{{ forloop.index }}"
                         value="{{ cart_qty_display }}"
                       >
                       <button
                         type="button"
                         class="qty-box__btn"
                         aria-label="{% if effective_mode == 'weight' %}{{ 'products.product.card_quantity.decrease_kg' | t }}{% else %}{{ 'products.product.card_quantity.decrease_units' | t }}{% endif %}"
-                        onclick="changeQty({{ item.index | plus: 1 }}, -1)"
+                        onclick="changeQty({{ forloop.index }}, -1)"
                       >
                         −
                       </button>
@@ -546,6 +555,9 @@
     }
 
     function cartJsUrl() {
+      if (typeof window.Shopify !== 'undefined' && window.Shopify.routes && window.Shopify.routes.root) {
+        return window.Shopify.routes.root + 'cart.js';
+      }
       return '/cart.js';
     }
 
@@ -758,7 +770,8 @@
       });
     }
 
-    function updateCartUI(cart) {
+    function updateCartUI(cart, opts) {
+      opts = opts || {};
       var tp = cartTotalCentsForUi(cart);
       var totalEl = document.querySelector('#CartDrawer .totals strong');
       if (totalEl && tp !== null) {
@@ -778,7 +791,11 @@
 
       updateLinePricesFromCart(cart);
       syncDrawerQtyInputsFromCart(cart);
-      publishCartSync(cart);
+      if (opts.skipPublish) {
+        syncHeaderCartIcon(cart);
+      } else {
+        publishCartSync(cart);
+      }
     }
 
     window.removeItem = function (el, line) {
@@ -886,6 +903,23 @@
 
     window.updateCartUIFromCart = updateCartUI;
 
+    if (typeof subscribe !== 'undefined' && typeof PUB_SUB_EVENTS !== 'undefined') {
+      subscribe(PUB_SUB_EVENTS.cartUpdate, function (data) {
+        if (data && data.source === 'cart-drawer') return;
+        fetch(cartJsUrl())
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (cart) {
+            updateCartUI(cart, { skipPublish: true });
+            if (typeof window.themeRefreshAllCardLinePricing === 'function') {
+              window.themeRefreshAllCardLinePricing();
+            }
+          })
+          .catch(function () {});
+      });
+    }
+
     function reloadCartDrawerMarkup() {
       var base = (window.routes && window.routes.cart_url) || '/cart';
       return fetch(base + '?section_id=cart-drawer')
@@ -896,7 +930,7 @@
           var doc = new DOMParser().parseFromString(html, 'text/html');
           var next = doc.getElementById('CartDrawer');
           var cur = document.getElementById('CartDrawer');
-          if (!next || !cur) return fetch('/cart.js').then(function (r) { return r.json(); });
+          if (!next || !cur) return fetch(cartJsUrl()).then(function (r) { return r.json(); });
           cur.innerHTML = next.innerHTML;
           var overlay = document.getElementById('CartDrawer-Overlay');
           var drawer = document.querySelector('cart-drawer');
@@ -905,7 +939,7 @@
               drawer.close();
             };
           }
-          return fetch('/cart.js').then(function (r) {
+          return fetch(cartJsUrl()).then(function (r) {
             return r.json();
           });
         })

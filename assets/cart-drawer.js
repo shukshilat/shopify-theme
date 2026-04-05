@@ -171,6 +171,9 @@ class CartDrawer extends HTMLElement {
         .then((r) => r.json())
         .then((cart) => {
           window.updateCartUIFromCart(cart);
+          if (typeof window.themeRefreshAllCardLinePricing === 'function') {
+            window.themeRefreshAllCardLinePricing();
+          }
         })
         .catch(() => {})
         .finally(openAfterPaint);
