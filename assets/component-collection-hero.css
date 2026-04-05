@@ -3,7 +3,7 @@
   flex-direction: column;
 }
 
-/* כותרת אוסף בלי תמונה — רקע כמו מעטפת האתר (לא רקע מערכת הצבעים של הסקשן) */
+/* כותרת אוסף בלי תמונה — ללא .gradient כדי לא למשוך שכבות רקע; רקע = מעטפת האתר */
 .collection-hero.collection-hero--plain {
   background-color: var(--site-shell-bg, #f8dede) !important;
   background-image: none !important;

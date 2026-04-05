@@ -7,6 +7,24 @@
       padding-bottom: calc({{ settings.media_shadow_vertical_offset | at_least: 0 }}px + 2rem);
     }
   }
+
+  /* ספציפיות גבוהה (מעל Custom CSS / cache): כותרת אוסף בלי תמונה = רקע מעטפת, בלי פס לבן */
+  #shopify-section-{{ section.id }} {
+    background-color: #f8dede !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  #shopify-section-{{ section.id }} .collection-hero.collection-hero--plain,
+  #shopify-section-{{ section.id }} .collection-hero.collection-hero--plain .collection-hero__inner,
+  #shopify-section-{{ section.id }} .collection-hero.collection-hero--plain .collection-hero__text-wrapper,
+  #shopify-section-{{ section.id }} .collection-hero.collection-hero--plain .collection-hero__title {
+    background-color: #f8dede !important;
+    background-image: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -17,8 +35,8 @@
     assign hero_color_class = ' color-' | append: section.settings.color_scheme
   endif
 -%}
-<div class="collection-hero {{ hero_modifier }}{{ hero_color_class }} gradient">
-  <div class="collection-hero__inner page-width {% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+<div class="collection-hero {{ hero_modifier }}{{ hero_color_class }}{% if hero_modifier == 'collection-hero--with-image' %} gradient{% endif %}">
+  <div class="collection-hero__inner page-width{% if hero_modifier == 'collection-hero--with-image' and settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
     <div class="collection-hero__text-wrapper">
       <h1 class="collection-hero__title">
         <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
