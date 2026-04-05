@@ -42,10 +42,14 @@ class CartDrawer extends HTMLElement {
       'transitionend',
       () => {
         const containerToTrapFocusOn = this.classList.contains('is-empty')
-          ? this.querySelector('.drawer__inner-empty')
+          ? this.querySelector('.drawer__inner-empty') ||
+            this.querySelector('.drawer__inner.cart-drawer__panel') ||
+            document.getElementById('CartDrawer')
           : document.getElementById('CartDrawer');
-        const focusElement = this.querySelector('.drawer__inner') || this.querySelector('.drawer__close');
-        trapFocus(containerToTrapFocusOn, focusElement);
+        const focusElement = this.querySelector('.drawer__close') || this.querySelector('.drawer__inner');
+        if (containerToTrapFocusOn && focusElement) {
+          trapFocus(containerToTrapFocusOn, focusElement);
+        }
       },
       { once: true }
     );
@@ -116,7 +120,7 @@ class CartDrawer extends HTMLElement {
     this._boundOnScroll = null;
 
     this.clearPanelInlinePosition();
-    this.classList.remove('active');
+    this.classList.remove('active', 'animate');
     removeTrapFocus(this.activeElement);
     document.body.classList.remove('overflow-hidden');
   }
@@ -213,12 +217,12 @@ window.themeRefreshCartDrawerFromSection = function () {
       return fetch(themeCartJsUrl()).then((res) => res.json());
     })
     .then((cart) => {
-      if (cart && typeof window.updateCartUIFromCart === 'function') {
-        window.updateCartUIFromCart(cart);
-      }
       const drawer = document.querySelector('cart-drawer');
       if (drawer && cart && Array.isArray(cart.items)) {
         drawer.classList.toggle('is-empty', cart.items.length === 0);
+      }
+      if (cart && typeof window.updateCartUIFromCart === 'function') {
+        window.updateCartUIFromCart(cart);
       }
     })
     .catch(() => {});

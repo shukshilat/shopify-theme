@@ -185,3 +185,54 @@ cart-drawer.drawer .cart-remove-btn {
 cart-drawer.drawer .cart-remove-btn:hover {
   opacity: 1;
 }
+
+/*
+ * פריסת שורות בעגלה — ה-snippet משתמש ב-DOM מותאם (תמונה ישירה, לא .cart-item__media),
+ * ולכן כללי base.css על .cart-item__media לא חלים. כאן גריד RTL ברור + תמיכה במחיר/שורה.
+ */
+cart-drawer.drawer .cart-item {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto 7rem !important;
+  gap: 1rem !important;
+  align-items: start !important;
+  direction: rtl;
+}
+
+cart-drawer.drawer .cart-item > .cart-item__image {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  width: 7rem !important;
+  height: 7rem !important;
+  min-width: 7rem !important;
+  max-width: 7rem !important;
+  object-fit: contain !important;
+  border-radius: 1.2rem !important;
+  display: block !important;
+}
+
+cart-drawer.drawer .cart-item > .cart-item__body {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+}
+
+cart-drawer.drawer .cart-item > .cart-item__line-total {
+  grid-column: 2 !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  align-self: center !important;
+  font-size: 1.5rem !important;
+}
+
+cart-drawer.drawer .cart-item .cart-item__price {
+  margin-top: 0.35rem !important;
+  font-size: 1.35rem !important;
+}
+
+cart-drawer.drawer .cart-item .qty-box {
+  direction: ltr;
+  justify-content: flex-end;
+}
+
+cart-drawer.drawer .cart-item .cart-item__unit-original {
+  margin-inline-end: 0.35rem;
+}

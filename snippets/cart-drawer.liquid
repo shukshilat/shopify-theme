@@ -32,15 +32,13 @@
 
       {% if cart.items.size > 0 %}
         {%- liquid
+          comment
+            final_line_price של Shopify כבר סכום שורה נכון (כמות × מחיר וריאנט).
+            כשהווריאנט מחויר לפי 0.1 ק״ג והכמות בעשיריות — אין לחלק ב-10 (זה שבר תצוגה וסה״כ).
+          endcomment
           assign drawer_total_cents = 0
           for item in cart.items
-            assign wk_row = item.properties['_weight_qty_unit_kg'] | default: '' | strip
-            if wk_row == '0.1'
-              assign line_part = item.final_line_price | divided_by: 10
-            else
-              assign line_part = item.final_line_price
-            endif
-            assign drawer_total_cents = drawer_total_cents | plus: line_part
+            assign drawer_total_cents = drawer_total_cents | plus: item.final_line_price
           endfor
         -%}
         <form class="cart-drawer__form" action="{{ routes.cart_url }}" method="post" id="CartDrawer-Form">
@@ -78,11 +76,10 @@
 
                   if weight_qty_unit_kg == '0.1'
                     assign cart_qty_display = item.quantity | divided_by: 10.0
-                    assign line_display_cents = item.final_line_price | divided_by: 10
                   else
                     assign cart_qty_display = item.quantity
-                    assign line_display_cents = item.final_line_price
                   endif
+                  assign line_display_cents = item.final_line_price
                 -%}
                 <div
                   class="cart-item"
@@ -101,7 +98,7 @@
                     alt="{{ item.image.alt | escape }}"
                   >
 
-                  <div>
+                  <div class="cart-item__body">
                     <div style="display:flex;justify-content:space-between;gap:8px;">
                       <span>{{ item.product.title }}</span>
                       <button
@@ -242,11 +239,10 @@
       return p._weight_qty_unit_kg === '0.1' || p['_weight_qty_unit_kg'] === '0.1';
     }
 
-    /** Legacy lines: cart qty was tenths (12) but variant price is per kg — Shopify line total is 10× too high. */
+    /** סכום שורה מ-Shopify; עם תמחור לפי 0.1 ק״ג final_line_price כבר נכון — בלי חלוקה ב-10. */
     function adjustedLineCents(item) {
       var raw = cents(item.final_line_price);
       if (raw === null) return null;
-      if (cartItemHasTenthsWeightProp(item)) return Math.round(raw / 10);
       return raw;
     }
 
@@ -580,7 +576,13 @@
           });
         })
         .then(function (cart) {
-          if (cart) updateCartUI(cart);
+          if (cart) {
+            var drawer = document.querySelector('cart-drawer');
+            if (drawer) {
+              drawer.classList.toggle('is-empty', !cart.items || cart.items.length === 0);
+            }
+            updateCartUI(cart);
+          }
         })
         .catch(function () {});
     }

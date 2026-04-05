@@ -64,10 +64,18 @@
     return Math.max(1, q);
   }
 
+  /** תצוגת ק״ג בלי אפסים עשרוניים מיותרים (0.7, 12.5, 1) — מתאים ל-type=number */
+  function formatKgDisplayString(kg) {
+    const v = Math.round(Number(kg) * 1000) / 1000;
+    if (!Number.isFinite(v) || v < 0.001) return '0.1';
+    const s = v.toFixed(3).replace(/\.?0+$/, '');
+    return s.length ? s : String(v);
+  }
+
   function getKg(form) {
     const inp = form.querySelector('.js-card-qty-kg');
     if (!inp) return 1;
-    let kg = parseFloat(inp.value);
+    let kg = parseFloat(String(inp.value).replace(',', '.'));
     if (Number.isNaN(kg)) kg = 0.1;
     return Math.max(0.1, Math.round(kg * 1000) / 1000);
   }
@@ -150,7 +158,7 @@
 
       const setValue = (next) => {
         const v = Math.round(next * 1000) / 1000;
-        input.value = String(v);
+        input.value = formatKgDisplayString(v);
         input.dispatchEvent(new Event('change', { bubbles: true }));
         onChange();
       };
@@ -195,6 +203,13 @@
 
     syncPanels(root);
     initKgStepper(root, refresh);
+    const kgIn = form.querySelector('.js-card-qty-kg');
+    if (kgIn) {
+      const parsed = parseFloat(String(kgIn.value).replace(',', '.'));
+      if (!Number.isNaN(parsed)) {
+        kgIn.value = formatKgDisplayString(parsed);
+      }
+    }
     refresh();
   }
 

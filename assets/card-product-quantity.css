@@ -102,7 +102,9 @@
 .card-product-qty--media-bar .card-product-qty__panels {
   margin: 0;
   width: 100%;
-  max-width: 14rem;
+  max-width: min(100%, 18.5rem);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .card-product-qty--media-bar .card-product-qty__panel {
@@ -112,6 +114,7 @@
 /* מצב יחידה/משקל — פיל קומפקטי */
 .card-product-qty__mode--compact {
   flex: 0 0 auto;
+  flex-shrink: 0;
   display: flex;
   flex-wrap: nowrap;
   gap: 0;
@@ -122,20 +125,26 @@
   border: 1px solid rgba(var(--color-foreground), 0.08);
 }
 
+.card-product-qty--media-bar .card-product-qty__mode--compact {
+  flex-shrink: 0;
+}
+
 .card-product-qty__mode--compact .card-product-qty__mode-label {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0;
-  padding: 0.35rem 0.55rem;
-  min-width: 2.6rem;
+  padding: 0.35rem 0.65rem;
+  min-width: 2.85rem;
   font-size: 1.05rem;
   font-weight: 700;
   line-height: 1.2;
   border-radius: 999px;
   cursor: pointer;
   color: rgba(127, 29, 29, 0.75);
+  white-space: nowrap;
+  overflow: visible;
   transition:
     background var(--duration-short) ease,
     color var(--duration-short) ease;
