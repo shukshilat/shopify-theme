@@ -351,6 +351,52 @@
         background-image: none !important;
       }
 
+      /* מעטפת אחידה — בלי קופסאות לבנות: כרטיסים, הירו, תיבות תוכן */
+      .hero-asset-carousel__frame {
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .hero-asset-carousel__viewport {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+      }
+
+      #MainContent .card__inner[class*='color-scheme-'],
+      #MainContent .card--card[class*='color-scheme-'] {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      #MainContent .card--standard .card__inner:after,
+      #MainContent .card--card:after {
+        box-shadow: none !important;
+      }
+
+      #MainContent .card--standard .card__inner,
+      #MainContent .card--card {
+        border-width: 0 !important;
+        border-color: transparent !important;
+      }
+
+      /* כולל color_scheme ריק (מחלקה color- בלי מספר) */
+      #MainContent .content-container.gradient {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+        border-color: transparent !important;
+        border-width: 0 !important;
+      }
+
+      #MainContent .content-container:after {
+        box-shadow: none !important;
+      }
+
+      /* עמודות/כרטיסים בסקשנים — בלי רקע לבן נפרד */
+      #MainContent .multicolumn:not(.background-none) .multicolumn-card,
+      #MainContent .multicolumn.background-primary .multicolumn-card {
+        background: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
       /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
       .section-header.shopify-section-group-header-group,
       .section-header.shopify-section-header-sticky,
