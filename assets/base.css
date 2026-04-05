@@ -3843,7 +3843,10 @@ cart-drawer .cart__checkout-button:hover {
 }
 
 .qty-box input {
-  width: 40px;
+  min-width: 4.8rem;
+  width: auto;
+  max-width: 6rem;
+  padding: 0.2rem 0.4rem;
   text-align: center;
   border: 1px solid #ddd;
   border-radius: 6px;
