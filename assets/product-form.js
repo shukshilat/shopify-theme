@@ -35,15 +35,21 @@ function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
   if (maxKg != null) {
     kgQty = Math.min(maxKg, kgQty);
   }
-  // Shopify Ajax cart only accepts integer quantities. One cart unit = 0.1 kg; variant price in Admin must be per 0.1 kg (e.g. ₪2 when ₪20/kg).
-  const minTenths = minKg > 0 ? Math.max(1, Math.round(minKg * 10)) : 1;
-  let tenths = Math.round(kgQty * 10);
-  tenths = Math.max(minTenths, tenths);
-  if (maxKg != null && !Number.isNaN(maxKg)) {
-    const maxTenths = Math.max(minTenths, Math.round(maxKg * 10));
-    tenths = Math.min(maxTenths, tenths);
+
+  // kg_tenths: integer cart qty = tenths of kg (12 = 1.2 kg). Variant price in Admin must be per 0.1 kg (e.g. ₪2 when shelf price is ₪20/kg).
+  if (behavior === 'kg_tenths') {
+    const minTenths = minKg > 0 ? Math.max(1, Math.round(minKg * 10)) : 1;
+    let tenths = Math.round(kgQty * 10);
+    tenths = Math.max(minTenths, tenths);
+    if (maxKg != null && !Number.isNaN(maxKg)) {
+      const maxTenths = Math.max(minTenths, Math.round(maxKg * 10));
+      tenths = Math.min(maxTenths, tenths);
+    }
+    return String(Math.max(1, tenths));
   }
-  return String(Math.max(1, tenths));
+
+  // kg (default): decimal kg in cart — matches “price per kg” variant pricing when Shopify accepts fractional qty.
+  return String(kgQty);
 }
 
 /**
@@ -168,7 +174,7 @@ if (!customElements.get('product-form')) {
           el.remove()
         );
         const needsWeightScaleProp =
-          behavior === 'kg' &&
+          behavior === 'kg_tenths' &&
           (mode === 'weight' || (mode === 'unit' && sellByWeightAndUnit));
         if (needsWeightScaleProp) {
           const p = document.createElement('input');
