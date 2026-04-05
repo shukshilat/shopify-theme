@@ -30,9 +30,57 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  #shopify-section-{{ section.id }} .collection-page-heading,
+  #shopify-section-{{ section.id }} .collection-page-heading__title {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  #shopify-section-{{ section.id }} .collection-page-heading {
+    text-align: center;
+    margin: 0;
+    padding: 0 0 0.6rem;
+  }
+
+  #shopify-section-{{ section.id }} .collection-page-heading__title {
+    margin: 0 0 0.4rem;
+    font-size: clamp(2.8rem, 4vw, 4.2rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    color: rgb(var(--color-foreground));
+  }
+
+  #shopify-section-{{ section.id }} .collection-page-heading__description {
+    margin: 0.4rem 0 0;
+    text-align: center;
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
+  {%- liquid
+    assign heading_label = section.settings.collection_heading | strip
+    if heading_label == blank
+      assign heading_label = 'מוצרים'
+    endif
+  -%}
+  {%- if section.settings.show_collection_heading -%}
+    <div class="collection-page-heading page-width">
+      <h1 class="collection-page-heading__title">
+        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
+        {{- heading_label | escape -}}
+      </h1>
+      {%- if section.settings.show_heading_collection_description and collection.description != blank -%}
+        <div class="collection-page-heading__description rte">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
   {%- paginate collection.products by section.settings.products_per_page -%}
     {% comment %} Sort is the first tabbable element when filter type is vertical {% endcomment %}
     {%- if section.settings.enable_sorting and section.settings.filter_type == 'vertical' -%}
@@ -236,6 +284,28 @@
       "label": "t:sections.all.colors.label",
       "info": "t:sections.all.colors.has_cards_info",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Collection heading"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_heading",
+      "default": true,
+      "label": "Show title above filters and products"
+    },
+    {
+      "type": "text",
+      "id": "collection_heading",
+      "label": "Title text",
+      "default": "מוצרים"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading_collection_description",
+      "default": true,
+      "label": "Show collection description under title"
     },
     {
       "type": "header",

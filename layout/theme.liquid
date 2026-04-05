@@ -345,6 +345,12 @@
         background: transparent !important;
       }
 
+      /* דף אוסף: כל מעטפת .gradient של סקשן = רקע מעטפת (בלי פס שונה מערכת הצבעים) */
+      body.template-collection .shopify-section .gradient[class*='color-scheme'] {
+        background-color: #f8dede !important;
+        background-image: none !important;
+      }
+
       /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
       .section-header.shopify-section-group-header-group,
       .section-header.shopify-section-header-sticky,
@@ -365,7 +371,7 @@
     </script>
   </head>
 
-  <body class="gradient site-body-scroll-context{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient site-body-scroll-context{% if template.name == 'collection' %} template-collection{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
