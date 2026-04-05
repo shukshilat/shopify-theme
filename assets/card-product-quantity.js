@@ -235,6 +235,112 @@
     el.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  const CARD_QTY_SS_PREFIX = 'theme_card_qty_v1:';
+
+  function cardQtyStorageKey(variantId) {
+    return CARD_QTY_SS_PREFIX + String(variantId);
+  }
+
+  /** שומר בחירת ק״ג/יח׳ בין עמודים (מעבר קטלוג / הוספה מעמוד אחר — ה-HTML נטען מחדש מהשרת). */
+  function saveCardQtyState(root) {
+    const form = root.querySelector('form.card-product-qty__form');
+    if (!form) return;
+    const vid = form.querySelector('[name="id"]')?.value;
+    if (!vid) return;
+    const mode =
+      form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+      form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+      'unit';
+    const kg = form.querySelector('.js-card-qty-kg')?.value ?? '';
+    const unit = form.querySelector('.js-card-qty-unit')?.value ?? '';
+    try {
+      sessionStorage.setItem(cardQtyStorageKey(vid), JSON.stringify({ mode, kg, unit }));
+    } catch (e) {
+      /* private mode / quota */
+    }
+  }
+
+  function restoreCardQtyState(root) {
+    const form = root.querySelector('form.card-product-qty__form');
+    if (!form) return;
+    const vid = form.querySelector('[name="id"]')?.value;
+    if (!vid) return;
+    let raw;
+    try {
+      raw = sessionStorage.getItem(cardQtyStorageKey(vid));
+    } catch (e) {
+      return;
+    }
+    if (!raw) return;
+    let s;
+    try {
+      s = JSON.parse(raw);
+    } catch (e) {
+      return;
+    }
+    if (!s || typeof s !== 'object') return;
+
+    const hiddenMode = form.querySelector('input[name="purchase_mode"][type="hidden"]');
+    if (hiddenMode) {
+      const forced = hiddenMode.value;
+      if (forced === 'weight') {
+        const kgIn = form.querySelector('.js-card-qty-kg');
+        if (kgIn && s.kg != null && String(s.kg).trim() !== '') {
+          const v = parseFloat(String(s.kg).replace(',', '.'));
+          if (Number.isFinite(v) && v >= 0.05) {
+            kgIn.value = formatKgDisplayString(v);
+          }
+        }
+      } else if (forced === 'unit') {
+        const uIn = form.querySelector('.js-card-qty-unit');
+        if (uIn && s.unit != null && String(s.unit).trim() !== '') {
+          const u = parseInt(String(s.unit), 10);
+          if (!Number.isNaN(u) && u >= 1) {
+            uIn.value = String(u);
+          }
+        }
+      }
+      syncPanels(root);
+      return;
+    }
+
+    const weightRadio = form.querySelector('input[name="purchase_mode"][value="weight"]');
+    const unitRadio = form.querySelector('input[name="purchase_mode"][value="unit"]');
+    if (s.mode === 'weight' && weightRadio) {
+      weightRadio.checked = true;
+      if (unitRadio) {
+        unitRadio.checked = false;
+      }
+    } else if (s.mode === 'unit' && unitRadio) {
+      unitRadio.checked = true;
+      if (weightRadio) {
+        weightRadio.checked = false;
+      }
+    }
+
+    const kgIn = form.querySelector('.js-card-qty-kg');
+    if (kgIn && s.kg != null && String(s.kg).trim() !== '') {
+      const v = parseFloat(String(s.kg).replace(',', '.'));
+      if (Number.isFinite(v) && v >= 0.05) {
+        kgIn.value = formatKgDisplayString(v);
+      }
+    }
+    const uIn = form.querySelector('.js-card-qty-unit');
+    if (uIn && s.unit != null && String(s.unit).trim() !== '') {
+      const u = parseInt(String(s.unit), 10);
+      if (!Number.isNaN(u) && u >= 1) {
+        uIn.value = String(u);
+      }
+    }
+    syncPanels(root);
+  }
+
+  function persistAllCardQtyStates() {
+    document.querySelectorAll('[data-card-quantity-root]').forEach((root) => {
+      saveCardQtyState(root);
+    });
+  }
+
   /**
    * אחרי ריענון דף / חזרה לקטלוג — משחזר מתג יחידה/משקל וכמויות לפי העגלה (Shopify כבר שומרת properties).
    */
@@ -288,6 +394,7 @@
         if (uIn) setInputValueNotify(uIn, String(uVal));
       }
       syncPanels(root);
+      saveCardQtyState(root);
       return;
     }
 
@@ -306,6 +413,7 @@
     }
 
     syncPanels(root);
+    saveCardQtyState(root);
   }
 
   function syncAllCardRootsFromCart(cart) {
@@ -317,9 +425,12 @@
   window.themeSyncCardQuantityRootFromCart = syncOneCardRootFromCart;
 
   function refreshAllCardsFromServerCart() {
-    fetch(themeCartJsUrl())
+    return fetch(themeCartJsUrl())
       .then((r) => r.json())
-      .then((cart) => syncAllCardRootsFromCart(cart))
+      .then((cart) => {
+        syncAllCardRootsFromCart(cart);
+        persistAllCardQtyStates();
+      })
       .catch(() => {});
   }
 
@@ -360,19 +471,33 @@
     const form = root.querySelector('form');
     if (!form) return;
 
+    const persist = () => saveCardQtyState(root);
     const refresh = () => updatePricing(root);
 
     form.querySelectorAll('input[name="purchase_mode"]').forEach((input) => {
-      input.addEventListener('change', () => syncPanels(root));
+      input.addEventListener('change', () => {
+        syncPanels(root);
+        persist();
+      });
     });
 
-    form.querySelector('.js-card-qty-unit')?.addEventListener('change', refresh);
+    form.querySelector('.js-card-qty-unit')?.addEventListener('change', () => {
+      refresh();
+      persist();
+    });
     form.querySelector('.js-card-qty-unit')?.addEventListener('input', refresh);
-    form.querySelector('.js-card-qty-kg')?.addEventListener('change', refresh);
+    form.querySelector('.js-card-qty-kg')?.addEventListener('change', () => {
+      refresh();
+      persist();
+    });
     form.querySelector('.js-card-qty-kg')?.addEventListener('input', refresh);
+    form.querySelector('.js-card-qty-kg')?.addEventListener('blur', persist);
 
     form.querySelectorAll('quantity-input').forEach((qi) => {
-      qi.addEventListener('change', refresh);
+      qi.addEventListener('change', () => {
+        refresh();
+        persist();
+      });
     });
 
     syncPanels(root);
@@ -389,11 +514,15 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-card-quantity-root]').forEach(init);
+    document.querySelectorAll('[data-card-quantity-root]').forEach(restoreCardQtyState);
     refreshAllCardsFromServerCart();
   });
 
   window.addEventListener('pageshow', (ev) => {
-    if (ev.persisted) refreshAllCardsFromServerCart();
+    if (ev.persisted) {
+      document.querySelectorAll('[data-card-quantity-root]').forEach(restoreCardQtyState);
+      refreshAllCardsFromServerCart();
+    }
   });
 
   window.themeRefreshAllCardLinePricing = function () {
@@ -401,4 +530,6 @@
       updatePricing(root);
     });
   };
+
+  window.themePersistAllCardQtyStates = persistAllCardQtyStates;
 })();

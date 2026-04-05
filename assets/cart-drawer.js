@@ -174,6 +174,9 @@ class CartDrawer extends HTMLElement {
           if (typeof window.themeRefreshAllCardLinePricing === 'function') {
             window.themeRefreshAllCardLinePricing();
           }
+          if (typeof window.themePersistAllCardQtyStates === 'function') {
+            window.themePersistAllCardQtyStates();
+          }
         })
         .catch(() => {})
         .finally(openAfterPaint);
