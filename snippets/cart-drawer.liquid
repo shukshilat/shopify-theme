@@ -316,7 +316,9 @@
 
     function appendCartDrawerUnitPriceRow(priceWrap, item) {
       var props = lineItemProps(item);
-      var mode = props._purchase_mode || props['_purchase_mode'];
+      var wkProp = String(props._weight_qty_unit_kg || props['_weight_qty_unit_kg'] || '').trim();
+      /* עשיריות = תמיד מסלול משקל — לא "בחירה לפי יחידה" בגלל _purchase_mode שגוי */
+      var mode = wkProp === '0.1' ? '' : props._purchase_mode || props['_purchase_mode'];
       var m = item.unit_price_measurement;
 
       if (mode === 'unit') {
@@ -355,9 +357,10 @@
     function resolveDrawerRowMode(row, item) {
       if (!item) return 'unit';
       var p = lineItemProps(item);
+      /* כמו Liquid: עשיריות ק״ג קודם — לא _purchase_mode=unit לפני זה (אחרת cart.js מציג "1" יח׳ + ₪2 + ₪20/ק״ג). */
+      if (String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim() === '0.1') return 'weight';
       var ex = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
       if (ex === 'weight' || ex === 'unit') return ex;
-      if (String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim() === '0.1') return 'weight';
       var liquid = row && row.getAttribute('data-purchase-mode');
       if (liquid === 'weight' || liquid === 'unit') return liquid;
       return purchaseModeFromCartItem(item);
@@ -401,13 +404,8 @@
       var p = lineItemProps(item);
       var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
       if (wk === '0.1') return q / 10;
-      if (
-        row &&
-        row.getAttribute('data-weight-qty-unit-kg') === '0.1' &&
-        String(p._purchase_mode || p['_purchase_mode'] || '').trim() !== 'unit'
-      ) {
-        return q / 10;
-      }
+      /* Liquid שם data-weight-qty-unit-kg רק לשורת עשיריות — תמיד לחלק ב-10 גם אם JSON מכיל _purchase_mode שגוי */
+      if (row && row.getAttribute('data-weight-qty-unit-kg') === '0.1') return q / 10;
       return q;
     }
 
@@ -448,10 +446,10 @@
       var mode = resolveDrawerRowMode(row, item);
       row.setAttribute('data-purchase-mode', mode);
       var p = lineItemProps(item);
-      var explicitUnit = String(p._purchase_mode || p['_purchase_mode'] || '').trim() === 'unit';
       var propTenths = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim() === '0.1';
       var liquidTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
-      if (propTenths || (liquidTenths && !explicitUnit)) {
+      /* אל תסיר עשיריות בגלל _purchase_mode שגוי ב-cart.js — שומרים תאימות ל-HTML מהשרת */
+      if (propTenths || liquidTenths) {
         row.setAttribute('data-weight-qty-unit-kg', '0.1');
       } else {
         row.removeAttribute('data-weight-qty-unit-kg');
@@ -555,9 +553,7 @@
       var q = Number(item.quantity);
       if (!isFinite(q)) return '1';
       var tenthsDom = row && row.getAttribute('data-weight-qty-unit-kg') === '0.1';
-      var useTenths =
-        wk === '0.1' ||
-        (tenthsDom && String(p._purchase_mode || p['_purchase_mode'] || '').trim() !== 'unit');
+      var useTenths = wk === '0.1' || tenthsDom;
       if (useTenths) {
         var kg = Math.round((q / 10) * 1000) / 1000;
         var s = kg.toFixed(3).replace(/\.?0+$/, '');
@@ -623,7 +619,12 @@
           if (vid == null) throw new Error('no variant');
           var props = cloneCartItemProperties(item.properties);
           var wk = String(props._weight_qty_unit_kg || props['_weight_qty_unit_kg'] || '').trim();
-          var hadTenths = wk === '0.1';
+          var rowEl = document.getElementById('CartDrawer-Item-' + line);
+          var domTenths = rowEl && rowEl.getAttribute('data-weight-qty-unit-kg') === '0.1';
+          var hadTenths = wk === '0.1' || domTenths;
+          if (hadTenths && wk !== '0.1') {
+            props._weight_qty_unit_kg = '0.1';
+          }
           if (options.stripTenthsWeightProp) {
             delete props._weight_qty_unit_kg;
             delete props['_weight_qty_unit_kg'];
