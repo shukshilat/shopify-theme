@@ -24,11 +24,17 @@ function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
     kgQty = Math.round(kgQty / 0.1) * 0.1;
     kgQty = Math.round(kgQty * 1000) / 1000;
   }
-  // Shopify min/max are often in grams (≥100); if min is small (e.g. 1), treat as kg already.
+  // Shopify min/max are often in grams (≥100). מספרים קטנים (<100) בכללי וריאנט הם בדרך כלל "יחידות מכירה", לא ק״ג גולמיים.
   const boundsInGrams = min >= 100 || (max != null && !Number.isNaN(max) && max >= 100);
-  const minKg = min > 0 ? (boundsInGrams ? min / 1000 : min) : 0;
-  const maxKg =
+  let minKg = min > 0 ? (boundsInGrams ? min / 1000 : min) : 0;
+  let maxKg =
     max != null && !Number.isNaN(max) ? (boundsInGrams ? max / 1000 : max) : null;
+
+  // kg_tenths: min=1 בניהול = לרוב "מינימום יחידה אחת" (= 0.1 ק״ג), לא 1 ק״ג — אחרת 0.6 נכפה ל-1.0.
+  if (behavior === 'kg_tenths' && !boundsInGrams && min > 0) {
+    minKg = min * 0.1;
+  }
+
   if (minKg > 0) {
     kgQty = Math.max(minKg, kgQty);
   }
