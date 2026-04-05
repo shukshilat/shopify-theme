@@ -111,21 +111,32 @@ function buildCardCartAddJsonPayload(form, cart, modeForCart) {
 
   const sectionIds = cart.getSectionsToRender().map((section) => section.id);
   const item = { id: Number(variantId), quantity, properties };
-  if (wb === 'kg') {
-    if (variantPricedPerTenthKg(form)) {
-      const kg = Number(item.quantity);
-      if (Number.isFinite(kg) && kg > 0) {
-        item.quantity = Math.max(1, Math.round(kg * 10));
-        item.properties._weight_qty_unit_kg = '0.1';
+
+  /*
+   * כרטיסים נכפים ל־kg_tenths בליקוויד, אבל הבלוק הישן רץ רק על wb==='kg'.
+   * בלי זה: כמות עשרונית (0.6) או בלי מאפיין — Shopify מעגל ל־1 והמחיר "מתאפס" אחרי הוספת מוצר נוסף.
+   */
+  const weightUsesTenthKgCart =
+    modeForCart === 'weight' && (wb === 'kg_tenths' || variantPricedPerTenthKg(form));
+
+  if (weightUsesTenthKgCart) {
+    let q = Number(item.quantity);
+    if (Number.isFinite(q) && q > 0) {
+      if (Math.abs(q - Math.round(q)) > 1e-9) {
+        item.quantity = Math.max(1, Math.round(q * 10));
+      } else {
+        item.quantity = Math.max(1, Math.round(q));
       }
-    } else if (variantAppearsPricedPerGram(form)) {
-      const kg = Number(item.quantity);
-      if (Number.isFinite(kg) && kg > 0) {
-        item.quantity = Math.max(1, Math.round(kg * 1000));
-        delete item.properties._weight_qty_unit_kg;
-      }
+      item.properties._weight_qty_unit_kg = '0.1';
+    }
+  } else if (modeForCart === 'weight' && wb === 'kg' && variantAppearsPricedPerGram(form)) {
+    const kg = Number(item.quantity);
+    if (Number.isFinite(kg) && kg > 0) {
+      item.quantity = Math.max(1, Math.round(kg * 1000));
+      delete item.properties._weight_qty_unit_kg;
     }
   }
+
   return {
     items: [item],
     sections: sectionIds,

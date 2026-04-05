@@ -345,11 +345,6 @@
       );
     }
 
-    function cartItemHasTenthsWeightProp(item) {
-      var p = lineItemProps(item);
-      return p._weight_qty_unit_kg === '0.1' || p['_weight_qty_unit_kg'] === '0.1';
-    }
-
     /**
      * cart.js לעיתים בלי properties / בלי unit_price_measurement — ה-HTML מהשרת עדיין נכון.
      * סדר: מאפיינים מפורשים → data מהדף (Liquid) → היוריסטיקה על ה-JSON.
@@ -660,38 +655,6 @@
         });
     }
 
-    var weightTenthsMigrateAttempts = 0;
-    function migrateCartTenthsWeightLines() {
-      return fetch(cartJsUrl())
-        .then(function (r) {
-          return r.json();
-        })
-        .then(function (cart) {
-          if (!cart.items || !cart.items.length) return;
-          var idx = -1;
-          for (var i = cart.items.length - 1; i >= 0; i--) {
-            if (cartItemHasTenthsWeightProp(cart.items[i])) {
-              idx = i;
-              break;
-            }
-          }
-          if (idx < 0) {
-            weightTenthsMigrateAttempts = 0;
-            return;
-          }
-          if (weightTenthsMigrateAttempts >= 15) return;
-          weightTenthsMigrateAttempts++;
-          var line = idx + 1;
-          var item = cart.items[idx];
-          var kg = Math.round((Number(item.quantity) / 10) * 1000) / 1000;
-          if (kg < 0.001) return;
-          return replaceWeightLineQuantity(line, kg, { stripTenthsWeightProp: true }).then(function () {
-            return migrateCartTenthsWeightLines();
-          });
-        })
-        .catch(function () {});
-    }
-
     function cartTotalCentsForUi(cart) {
       if (!cart) return null;
       var fromApi = cents(cart.total_price);
@@ -998,10 +961,5 @@
         .catch(function () {});
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
-        migrateCartTenthsWeightLines();
-      }, 400);
-    });
   })();
 </script>
