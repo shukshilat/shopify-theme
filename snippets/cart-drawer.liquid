@@ -126,8 +126,15 @@
                       {%- endif -%}
                     </div>
 
-                    <div class="qty-box">
-                      <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, 1)">+</button>
+                    <div class="qty-box qty-box--drawer" data-qty-stepper>
+                      <button
+                        type="button"
+                        class="qty-box__btn"
+                        aria-label="{% if effective_mode == 'weight' %}{{ 'products.product.card_quantity.increase_kg' | t }}{% else %}{{ 'products.product.card_quantity.increase_units' | t }}{% endif %}"
+                        onclick="changeQty({{ item.index | plus: 1 }}, 1)"
+                      >
+                        +
+                      </button>
                       <input
                         {% if effective_mode == 'weight' %}
                           type="text"
@@ -147,7 +154,14 @@
                         id="qty-{{ item.index | plus: 1 }}"
                         value="{{ cart_qty_display }}"
                       >
-                      <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, -1)">−</button>
+                      <button
+                        type="button"
+                        class="qty-box__btn"
+                        aria-label="{% if effective_mode == 'weight' %}{{ 'products.product.card_quantity.decrease_kg' | t }}{% else %}{{ 'products.product.card_quantity.decrease_units' | t }}{% endif %}"
+                        onclick="changeQty({{ item.index | plus: 1 }}, -1)"
+                      >
+                        −
+                      </button>
                     </div>
                   </div>
 
@@ -305,6 +319,38 @@
       });
     }
 
+    function formatDrawerQtyValueForItem(item) {
+      if (!item) return '1';
+      var p = item.properties || {};
+      var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+      var q = Number(item.quantity);
+      if (!isFinite(q)) return '1';
+      if (wk === '0.1') {
+        var kg = Math.round((q / 10) * 1000) / 1000;
+        var s = kg.toFixed(3).replace(/\.?0+$/, '');
+        return s.length ? s : String(kg);
+      }
+      if (Math.abs(q - Math.round(q)) > 1e-6) {
+        var w = Math.round(q * 1000) / 1000;
+        var sw = w.toFixed(3).replace(/\.?0+$/, '');
+        return sw.length ? sw : String(w);
+      }
+      return String(Math.round(q));
+    }
+
+    /** סנכרון שדות כמות מהעגלה בלי fetch של section — מהיר אחרי cart/change.js */
+    function syncDrawerQtyInputsFromCart(cart) {
+      if (!cart || !Array.isArray(cart.items)) return;
+      var active = document.activeElement;
+      cart.items.forEach(function (item, index) {
+        var line = index + 1;
+        var inp = document.getElementById('qty-' + line);
+        if (!inp) return;
+        if (active === inp) return;
+        inp.value = formatDrawerQtyValueForItem(item);
+      });
+    }
+
     function cartChangeUrl() {
       return (window.routes && window.routes.cart_change_url) || '/cart/change.js';
     }
@@ -427,6 +473,7 @@
       }
 
       updateLinePricesFromCart(cart);
+      syncDrawerQtyInputsFromCart(cart);
     }
 
     window.removeItem = function (el, line) {
@@ -456,7 +503,25 @@
       var scaledTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
       setDrawerQtyLineLocked(line, true);
       if (scaledTenths) {
-        replaceWeightLineQuantity(line, v)
+        var tenthsCommit = Math.max(1, Math.round(v * 10));
+        fetch(cartChangeUrl(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line: line, quantity: tenthsCommit }),
+        })
+          .then(function (res) {
+            if (res.ok) {
+              return fetch(cartJsUrl()).then(function (r) {
+                return r.json();
+              });
+            }
+            return replaceWeightLineQuantity(line, v).then(function () {
+              return null;
+            });
+          })
+          .then(function (cart) {
+            if (cart) updateCartUI(cart);
+          })
           .catch(function () {
             fetch(cartJsUrl())
               .then(function (r) {
@@ -523,7 +588,25 @@
       setDrawerQtyLineLocked(line, true);
 
       if (scaledTenths) {
-        replaceWeightLineQuantity(line, nextDisplay)
+        var tenths = Math.max(1, Math.round(nextDisplay * 10));
+        fetch(cartChangeUrl(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ line: line, quantity: tenths }),
+        })
+          .then(function (res) {
+            if (res.ok) {
+              return fetch(cartJsUrl()).then(function (r) {
+                return r.json();
+              });
+            }
+            return replaceWeightLineQuantity(line, nextDisplay).then(function () {
+              return null;
+            });
+          })
+          .then(function (cart) {
+            if (cart) updateCartUI(cart);
+          })
           .catch(function () {
             fetch(cartJsUrl())
               .then(function (r) {
@@ -558,11 +641,7 @@
           throw new Error('cart change failed');
         })
         .then(function (cart) {
-          if (cart) {
-            var inpAfter = document.getElementById('qty-' + line);
-            if (inpAfter) inpAfter.value = isWeight ? String(nextDisplay) : String(apiQty);
-            updateCartUI(cart);
-          }
+          if (cart) updateCartUI(cart);
         })
         .catch(function () {
           fetch(cartJsUrl())

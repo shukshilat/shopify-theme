@@ -233,8 +233,78 @@ cart-drawer.drawer .cart-item .qty-box {
   justify-content: flex-end;
 }
 
-cart-drawer.drawer .cart-item .qty-box input.cart-drawer__qty-weight {
+/* בורר כמות בעגלה — פס עדין, מספר “שקוע” בלי מסגרת */
+cart-drawer.drawer .qty-box--drawer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.45rem;
+  padding: 0.2rem 0.35rem;
+  background: rgba(var(--color-foreground), 0.06);
+  border-radius: 999px;
+  border: none;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+cart-drawer.drawer .qty-box--drawer .qty-box__btn {
+  width: 2.15rem;
+  height: 2.15rem;
+  min-width: 2.15rem;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(var(--color-background), 0.92);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--color-foreground));
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+cart-drawer.drawer .qty-box--drawer .qty-box__btn:hover {
+  background: rgb(var(--color-background));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+cart-drawer.drawer .qty-box--drawer .qty-box__btn:active {
+  transform: scale(0.96);
+}
+
+cart-drawer.drawer .qty-box--drawer input,
+cart-drawer.drawer .qty-box--drawer input.cart-drawer__qty-weight {
+  flex: 1 1 auto;
+  min-width: 2.25rem;
+  max-width: 5.5rem;
+  margin: 0;
+  padding: 0.2rem 0.35rem;
+  border: none !important;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.05rem;
   font-variant-numeric: tabular-nums;
+  color: rgb(var(--color-foreground));
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+cart-drawer.drawer .qty-box--drawer input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+cart-drawer.drawer .qty-box--drawer input::placeholder {
+  color: rgba(var(--color-foreground), 0.35);
 }
 
 /*
@@ -243,7 +313,8 @@ cart-drawer.drawer .cart-item .qty-box input.cart-drawer__qty-weight {
  */
 cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box,
 cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box input,
-cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button {
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button,
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box .qty-box__btn {
   pointer-events: auto !important;
 }
 
@@ -251,7 +322,8 @@ cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box input.ca
   cursor: text;
 }
 
-cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button {
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button,
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box .qty-box__btn {
   cursor: pointer;
 }
 
