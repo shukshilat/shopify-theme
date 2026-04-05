@@ -80,11 +80,214 @@ function buildCardCartAddJsonPayload(form, cart, modeForCart) {
   }
 
   const sectionIds = cart.getSectionsToRender().map((section) => section.id);
+  const item = { id: Number(variantId), quantity, properties };
+  if (wb === 'kg') {
+    if (variantPricedPerTenthKg(form)) {
+      const kg = Number(item.quantity);
+      if (Number.isFinite(kg) && kg > 0) {
+        item.quantity = Math.max(1, Math.round(kg * 10));
+        item.properties._weight_qty_unit_kg = '0.1';
+      }
+    } else if (variantAppearsPricedPerGram(form)) {
+      const kg = Number(item.quantity);
+      if (Number.isFinite(kg) && kg > 0) {
+        item.quantity = Math.max(1, Math.round(kg * 1000));
+        delete item.properties._weight_qty_unit_kg;
+      }
+    }
+  }
   return {
-    items: [{ id: Number(variantId), quantity, properties }],
+    items: [item],
     sections: sectionIds,
     sections_url: window.location.pathname,
   };
+}
+
+function themeCartJsUrl() {
+  if (typeof window.Shopify !== 'undefined' && window.Shopify.routes && window.Shopify.routes.root) {
+    return `${window.Shopify.routes.root}cart.js`;
+  }
+  return '/cart.js';
+}
+
+function lineItemQuantityAsKg(item) {
+  if (!item) return 0;
+  const p = item.properties || {};
+  const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+  const q = Number(item.quantity);
+  if (!Number.isFinite(q)) return 0;
+  if (wk === '0.1') return q / 10;
+  return q;
+}
+
+/** Sum existing cart lines as kg for same variant + _purchase_mode (before this add). */
+function findPrevQtyKgForVariantMerge(cart, variantId, properties) {
+  const wantMode = properties && properties._purchase_mode;
+  const items = cart?.items || [];
+  let sumKg = 0;
+  for (const it of items) {
+    if (Number(it.variant_id) !== Number(variantId)) continue;
+    if (wantMode != null && wantMode !== '') {
+      const p = it.properties || {};
+      if (String(p._purchase_mode || '') !== String(wantMode)) continue;
+    }
+    sumKg += lineItemQuantityAsKg(it);
+  }
+  return sumKg;
+}
+
+/** ק״ג שהלקוח ביקש בכרטיס (לפני המרה לעשיריות/גרמים ב-payload). */
+function getCardRequestedKg(form, modeForCart) {
+  if (!form || modeForCart !== 'weight') return null;
+  const root = form.closest('[data-card-quantity-root]');
+  const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
+  const mode =
+    form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+    form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+    'unit';
+  let raw;
+  if (mode === 'unit' && sellByWeightAndUnit) {
+    raw = form.querySelector('.js-card-qty-unit')?.value;
+  } else if (mode === 'weight') {
+    raw = form.querySelector('.js-card-qty-kg')?.value;
+  } else {
+    return null;
+  }
+  const kg = parseFloat(String(raw).replace(',', '.'));
+  if (!Number.isFinite(kg) || kg <= 0) return null;
+  return Math.round(kg * 1000) / 1000;
+}
+
+function pickAddedLineItem(response, variantId) {
+  const items = Array.isArray(response?.items) ? response.items : [];
+  const same = items.filter((it) => Number(it.variant_id) === Number(variantId));
+  return same.length ? same[same.length - 1] : items[items.length - 1];
+}
+
+/**
+ * Shopify often floors decimal qty on /cart/add.js. /cart/change.js requires integers.
+ * /cart/update.js keyed by line key may still accept decimal kg for weight products.
+ */
+function reconcileWeightKgLineViaCartUpdate(response, variantId, targetKg) {
+  if (!response || response.status || targetKg == null) return Promise.resolve(response);
+  const hit = pickAddedLineItem(response, variantId);
+  if (!hit || hit.key == null) return Promise.resolve(response);
+  const actualKg = lineItemQuantityAsKg(hit);
+  if (Math.abs(actualKg - targetKg) < 0.0001) return Promise.resolve(response);
+  const url = window.routes && window.routes.cart_update_url;
+  if (!url) return Promise.resolve(response);
+
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ updates: { [String(hit.key)]: targetKg } }),
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((cart) => {
+      if (!cart || !Array.isArray(cart.items)) return response;
+      const line = cart.items.find((it) => String(it.key) === String(hit.key));
+      if (!line || Math.abs(lineItemQuantityAsKg(line) - targetKg) > 0.0001) return response;
+      return {
+        ...response,
+        ...cart,
+        items: cart.items,
+        __reconciled: true,
+      };
+    })
+    .catch(() => response);
+}
+
+function mergeFreshCartSectionsIntoResponse(response) {
+  if (!response) return Promise.resolve(response);
+  const cartUrl = (window.routes && window.routes.cart_url) || '/cart';
+  const ids = ['cart-drawer', 'cart-icon-bubble'];
+  const sections = { ...(response.sections || {}) };
+  return Promise.all(
+    ids.map((id) =>
+      fetch(`${cartUrl}?section_id=${encodeURIComponent(id)}`)
+        .then((r) => (r.ok ? r.text() : ''))
+        .then((html) => {
+          if (html) sections[id] = html;
+        })
+    )
+  ).then(() => ({ ...response, sections }));
+}
+
+/** Variant price ≈ (מחיר לק״ג)/10 → כמות בעגלה בעשיריות עם _weight_qty_unit_kg */
+function variantPricedPerTenthKg(form) {
+  const vc = parseInt(form?.dataset?.variantCents, 10);
+  const cpk = parseInt(form?.dataset?.centsPerKg, 10);
+  if (!Number.isFinite(vc) || !Number.isFinite(cpk) || cpk <= 0) return false;
+  return Math.abs(vc * 10 - cpk) <= Math.max(3, Math.round(cpk * 0.02));
+}
+
+/** Variant price ≈ (מחיר לק״ג)/1000 → כמות בעגלה בגרמים שלמים */
+function variantAppearsPricedPerGram(form) {
+  const vc = parseInt(form?.dataset?.variantCents, 10);
+  const cpk = parseInt(form?.dataset?.centsPerKg, 10);
+  if (!Number.isFinite(vc) || !Number.isFinite(cpk) || cpk <= 0) return false;
+  const perGram = Math.round(cpk / 1000);
+  if (perGram < 1) return false;
+  return Math.abs(vc - perGram) <= Math.max(1, Math.round(perGram * 0.15));
+}
+
+/**
+ * אחרי add שמעגל למספר שלם: מוחקים שורה ומוסיפים עם כמות שלמה (עשיריות או גרמים)
+ * שמתאימה למחיר הווריאנט בניהול.
+ */
+function readdWeightLineWithScaledIntegerQty(response, form, cardPayload, targetKg) {
+  const variantId = Number(cardPayload.items[0].id);
+  const baseProps = { ...cardPayload.items[0].properties };
+  const hit = pickAddedLineItem(response, variantId);
+  if (!hit || hit.key == null) return Promise.resolve(response);
+
+  let nextQty = null;
+  const nextProps = { ...baseProps };
+  if (variantPricedPerTenthKg(form)) {
+    nextQty = Math.max(1, Math.round(targetKg * 10));
+    nextProps._weight_qty_unit_kg = '0.1';
+  } else if (variantAppearsPricedPerGram(form)) {
+    nextQty = Math.max(1, Math.round(targetKg * 1000));
+    delete nextProps._weight_qty_unit_kg;
+  } else {
+    return Promise.resolve(response);
+  }
+
+  const changeUrl = window.routes && window.routes.cart_change_url;
+  const addUrl = window.routes && window.routes.cart_add_url;
+  if (!changeUrl || !addUrl) return Promise.resolve(response);
+
+  return fetch(changeUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ id: hit.key, quantity: 0 }),
+  })
+    .then((r) => {
+      if (!r.ok) throw new Error('clear line');
+      return fetch(addUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          items: [{ id: variantId, quantity: nextQty, properties: nextProps }],
+          sections: cardPayload.sections,
+          sections_url: cardPayload.sections_url,
+        }),
+      });
+    })
+    .then((r) => r.json())
+    .then((addRes) => {
+      if (addRes.status) return response;
+      return fetch(themeCartJsUrl())
+        .then((rr) => rr.json())
+        .then((cart) => ({
+          ...response,
+          ...addRes,
+          ...cart,
+          items: cart.items,
+          __reconciled: true,
+        }));
+    })
+    .catch(() => response);
 }
 
 if (!customElements.get('product-form')) {
@@ -244,13 +447,12 @@ if (!customElements.get('product-form')) {
         delete config.headers['Content-Type'];
 
         let formData = null;
-        if (isCardQty && this.cart) {
-          const payload = buildCardCartAddJsonPayload(this.form, this.cart, modeForCart);
-          if (payload) {
-            config.headers['Content-Type'] = 'application/json';
-            config.headers['Accept'] = 'application/json';
-            config.body = JSON.stringify(payload);
-          }
+        const cardPayload =
+          isCardQty && this.cart ? buildCardCartAddJsonPayload(this.form, this.cart, modeForCart) : null;
+        if (cardPayload) {
+          config.headers['Content-Type'] = 'application/json';
+          config.headers['Accept'] = 'application/json';
+          config.body = JSON.stringify(cardPayload);
         }
         if (!config.body) {
           formData = new FormData(this.form);
@@ -272,6 +474,23 @@ if (!customElements.get('product-form')) {
           config.body = formData;
         }
 
+        const wb = this.form.dataset.weightBehavior || 'kg';
+        const needKgReconcile =
+          Boolean(cardPayload) && modeForCart === 'weight' && wb === 'kg';
+
+        const requestedKg = getCardRequestedKg(this.form, modeForCart);
+        const targetLineQtyPromise =
+          needKgReconcile && requestedKg != null
+            ? fetch(themeCartJsUrl())
+                .then((r) => r.json())
+                .then((cart) => {
+                  const row = cardPayload.items[0];
+                  const prevKg = findPrevQtyKgForVariantMerge(cart, row.id, row.properties);
+                  return Math.round((prevKg + requestedKg) * 1000) / 1000;
+                })
+                .catch(() => Math.round(requestedKg * 1000) / 1000)
+            : Promise.resolve(null);
+
         if (this.cart) {
           const anchorForCart =
             evt.submitter ||
@@ -281,60 +500,93 @@ if (!customElements.get('product-form')) {
           this.cart.setActiveElement(anchorForCart);
         }
 
-        fetch(`${routes.cart_add_url}`, config)
-          .then((response) => response.json())
-          .then((response) => {
-            if (response.status) {
-              publish(PUB_SUB_EVENTS.cartError, {
-                source: 'product-form',
-                productVariantId: variantIdForEvents || formData?.get?.('id'),
-                errors: response.errors || response.description,
-                message: response.message,
-              });
-              this.handleErrorMessage(response.description);
-
-              const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
-              if (!soldOutMessage) return;
-              this.submitButton.setAttribute('aria-disabled', true);
-              this.submitButtonText.classList.add('hidden');
-              soldOutMessage.classList.remove('hidden');
-              this.error = true;
-              return;
-            } else if (!this.cart) {
-              window.location = window.routes.cart_url;
-              return;
-            }
-
-            const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
-            if (!this.error)
-              publish(PUB_SUB_EVENTS.cartUpdate, {
-                source: 'product-form',
-                productVariantId: variantIdForEvents || formData?.get?.('id'),
-                cartData: response,
-              }).then(() => {
-                CartPerformance.measureFromMarker('add:wait-for-subscribers', startMarker);
-              });
-            this.error = false;
-            const quickAddModal = this.closest('quick-add-modal');
-            if (quickAddModal) {
-              document.body.addEventListener(
-                'modalClosed',
-                () => {
-                  setTimeout(() => {
-                    CartPerformance.measure("add:paint-updated-sections", () => {
-                      this.paintCartUIAfterAdd(response);
-                    });
+        targetLineQtyPromise
+          .then((targetLineQty) =>
+            fetch(`${routes.cart_add_url}`, config)
+              .then((response) => response.json())
+              .then((response) => {
+                if (response.status) {
+                  publish(PUB_SUB_EVENTS.cartError, {
+                    source: 'product-form',
+                    productVariantId: variantIdForEvents || formData?.get?.('id'),
+                    errors: response.errors || response.description,
+                    message: response.message,
                   });
-                },
-                { once: true }
-              );
-              quickAddModal.hide(true);
-            } else {
-              CartPerformance.measure("add:paint-updated-sections", () => {
-                this.paintCartUIAfterAdd(response);
-              });
-            }
-          })
+                  this.handleErrorMessage(response.description);
+
+                  const soldOutMessage = this.submitButton.querySelector('.sold-out-message');
+                  if (!soldOutMessage) return;
+                  this.submitButton.setAttribute('aria-disabled', true);
+                  this.submitButtonText.classList.add('hidden');
+                  soldOutMessage.classList.remove('hidden');
+                  this.error = true;
+                  return;
+                } else if (!this.cart) {
+                  window.location = window.routes.cart_url;
+                  return;
+                }
+
+                let pipeline = Promise.resolve(response);
+                if (needKgReconcile && targetLineQty != null && variantIdForEvents) {
+                  pipeline = pipeline
+                    .then((r) =>
+                      reconcileWeightKgLineViaCartUpdate(r, Number(variantIdForEvents), targetLineQty)
+                    )
+                    .then((fr) => {
+                      if (fr && fr.__reconciled) return fr;
+                      if (cardPayload && this.form) {
+                        return readdWeightLineWithScaledIntegerQty(
+                          fr,
+                          this.form,
+                          cardPayload,
+                          targetLineQty
+                        );
+                      }
+                      return fr;
+                    })
+                    .then((fr) => {
+                      if (fr && fr.__reconciled) {
+                        const next = { ...fr };
+                        delete next.__reconciled;
+                        return mergeFreshCartSectionsIntoResponse(next);
+                      }
+                      return fr;
+                    });
+                }
+
+                return pipeline.then((finalResponse) => {
+                  const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
+                  if (!this.error)
+                    publish(PUB_SUB_EVENTS.cartUpdate, {
+                      source: 'product-form',
+                      productVariantId: variantIdForEvents || formData?.get?.('id'),
+                      cartData: finalResponse,
+                    }).then(() => {
+                      CartPerformance.measureFromMarker('add:wait-for-subscribers', startMarker);
+                    });
+                  this.error = false;
+                  const quickAddModal = this.closest('quick-add-modal');
+                  if (quickAddModal) {
+                    document.body.addEventListener(
+                      'modalClosed',
+                      () => {
+                        setTimeout(() => {
+                          CartPerformance.measure('add:paint-updated-sections', () => {
+                            this.paintCartUIAfterAdd(finalResponse);
+                          });
+                        });
+                      },
+                      { once: true }
+                    );
+                    quickAddModal.hide(true);
+                  } else {
+                    CartPerformance.measure('add:paint-updated-sections', () => {
+                      this.paintCartUIAfterAdd(finalResponse);
+                    });
+                  }
+                });
+              })
+          )
           .catch((e) => {
             console.error(e);
           })
@@ -344,7 +596,7 @@ if (!customElements.get('product-form')) {
             if (!this.error) this.submitButton.removeAttribute('aria-disabled');
             this.querySelector('.loading__spinner').classList.add('hidden');
 
-            CartPerformance.measureFromEvent("add:user-action", evt);
+            CartPerformance.measureFromEvent('add:user-action', evt);
           });
       }
 
