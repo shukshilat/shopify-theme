@@ -31,6 +31,18 @@
       </div>
 
       {% if cart.items.size > 0 %}
+        {%- liquid
+          assign drawer_total_cents = 0
+          for item in cart.items
+            assign wk_row = item.properties['_weight_qty_unit_kg'] | default: '' | strip
+            if wk_row == '0.1'
+              assign line_part = item.final_line_price | divided_by: 10
+            else
+              assign line_part = item.final_line_price
+            endif
+            assign drawer_total_cents = drawer_total_cents | plus: line_part
+          endfor
+        -%}
         <form class="cart-drawer__form" action="{{ routes.cart_url }}" method="post" id="CartDrawer-Form">
           <div class="drawer__contents" id="CartDrawer-CartItems">
             <div class="cart-items">
@@ -46,8 +58,10 @@
                   assign weight_qty_unit_kg = item.properties['_weight_qty_unit_kg'] | default: '' | strip
                   if weight_qty_unit_kg == '0.1'
                     assign cart_qty_display = item.quantity | divided_by: 10.0
+                    assign line_display_cents = item.final_line_price | divided_by: 10
                   else
                     assign cart_qty_display = item.quantity
+                    assign line_display_cents = item.final_line_price
                   endif
                 -%}
                 <div
@@ -111,7 +125,7 @@
                   </div>
 
                   <div class="cart-item__line-total" data-line-price>
-                    {{ item.final_line_price | money }}
+                    {{ line_display_cents | money }}
                   </div>
                 </div>
               {% endfor %}
@@ -120,12 +134,12 @@
 
           <div class="cart-drawer__sticky-footer">
             <div class="free-shipping-text" style="margin:10px 0;">
-              נשאר לך {{ 15000 | minus: cart.total_price | money }} למשלוח חינם 🚚
+              נשאר לך {{ 15000 | minus: drawer_total_cents | money }} למשלוח חינם 🚚
             </div>
 
             <div class="cart-footer">
               <div class="totals">
-                <strong>{{ cart.total_price | money }}</strong>
+                <strong>{{ drawer_total_cents | money }}</strong>
               </div>
 
               <button type="submit" class="checkout-btn button" name="checkout">
@@ -200,6 +214,30 @@
       );
     }
 
+    function cartItemHasTenthsWeightProp(item) {
+      var p = item.properties || {};
+      return p._weight_qty_unit_kg === '0.1' || p['_weight_qty_unit_kg'] === '0.1';
+    }
+
+    /** Legacy lines: cart qty was tenths (12) but variant price is per kg — Shopify line total is 10× too high. */
+    function adjustedLineCents(item) {
+      var raw = cents(item.final_line_price);
+      if (raw === null) return null;
+      if (cartItemHasTenthsWeightProp(item)) return Math.round(raw / 10);
+      return raw;
+    }
+
+    function cartDisplayTotalCents(cart) {
+      if (!cart || !Array.isArray(cart.items)) return null;
+      var sum = 0;
+      for (var i = 0; i < cart.items.length; i++) {
+        var ac = adjustedLineCents(cart.items[i]);
+        if (ac === null) return null;
+        sum += ac;
+      }
+      return sum;
+    }
+
     function updateLinePricesFromCart(cart) {
       if (!cart || !Array.isArray(cart.items)) return;
 
@@ -209,7 +247,7 @@
         if (!row) return;
 
         var lineTotalEl = row.querySelector('[data-line-price]');
-        var lineCents = cents(item.final_line_price);
+        var lineCents = adjustedLineCents(item);
         if (lineTotalEl && lineCents !== null) {
           lineTotalEl.textContent = formatCartMoney(lineCents);
         }
@@ -257,7 +295,8 @@
     }
 
     /** Shopify change.js often accepts only integer qty; kg decimals fail — remove line and re-add. */
-    function replaceWeightLineQuantity(line, newQty) {
+    function replaceWeightLineQuantity(line, newQty, options) {
+      options = options || {};
       return fetch(cartJsUrl())
         .then(function (r) {
           return r.json();
@@ -268,6 +307,10 @@
           var vid = item.variant_id;
           if (vid == null) throw new Error('no variant');
           var props = cloneCartItemProperties(item.properties);
+          if (options.stripTenthsWeightProp) {
+            delete props._weight_qty_unit_kg;
+            delete props['_weight_qty_unit_kg'];
+          }
           return fetch(cartChangeUrl(), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -289,8 +332,41 @@
         });
     }
 
+    var weightTenthsMigrateAttempts = 0;
+    function migrateCartTenthsWeightLines() {
+      return fetch(cartJsUrl())
+        .then(function (r) {
+          return r.json();
+        })
+        .then(function (cart) {
+          if (!cart.items || !cart.items.length) return;
+          var idx = -1;
+          for (var i = cart.items.length - 1; i >= 0; i--) {
+            if (cartItemHasTenthsWeightProp(cart.items[i])) {
+              idx = i;
+              break;
+            }
+          }
+          if (idx < 0) {
+            weightTenthsMigrateAttempts = 0;
+            return;
+          }
+          if (weightTenthsMigrateAttempts >= 15) return;
+          weightTenthsMigrateAttempts++;
+          var line = idx + 1;
+          var item = cart.items[idx];
+          var kg = Math.round((Number(item.quantity) / 10) * 1000) / 1000;
+          if (kg < 0.001) return;
+          return replaceWeightLineQuantity(line, kg, { stripTenthsWeightProp: true }).then(function () {
+            return migrateCartTenthsWeightLines();
+          });
+        })
+        .catch(function () {});
+    }
+
     function updateCartUI(cart) {
-      var tp = cart && cents(cart.total_price);
+      var tp = cart ? cartDisplayTotalCents(cart) : null;
+      if (tp === null && cart) tp = cents(cart.total_price);
       var totalEl = document.querySelector('#CartDrawer .totals strong');
       if (totalEl && tp !== null) {
         totalEl.textContent = formatCartMoney(tp);
@@ -347,9 +423,24 @@
         if (nextDisplay < 1) return;
       }
 
-      var apiQty = scaledTenths ? Math.max(1, Math.round(nextDisplay / 0.1)) : nextDisplay;
-
       input.disabled = true;
+
+      if (scaledTenths) {
+        replaceWeightLineQuantity(line, nextDisplay, { stripTenthsWeightProp: true })
+          .catch(function () {
+            fetch(cartJsUrl())
+              .then(function (r) {
+                return r.json();
+              })
+              .then(updateCartUI);
+          })
+          .finally(function () {
+            input.disabled = false;
+          });
+        return;
+      }
+
+      var apiQty = nextDisplay;
 
       fetch(cartChangeUrl(), {
         method: 'POST',
@@ -362,13 +453,8 @@
               return r.json();
             });
           }
-          if (isWeight && !scaledTenths) {
+          if (isWeight) {
             return replaceWeightLineQuantity(line, nextDisplay).then(function () {
-              return null;
-            });
-          }
-          if (isWeight && scaledTenths) {
-            return replaceWeightLineQuantity(line, apiQty).then(function () {
               return null;
             });
           }
@@ -422,5 +508,11 @@
         })
         .catch(function () {});
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        migrateCartTenthsWeightLines();
+      }, 400);
+    });
   })();
 </script>

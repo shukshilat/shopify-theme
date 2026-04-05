@@ -74,6 +74,11 @@ function buildCardCartAddJsonPayload(form, cart, modeForCart) {
   });
   if (modeForCart) properties['_purchase_mode'] = modeForCart;
 
+  const wb = form.dataset.weightBehavior || 'kg';
+  if (wb !== 'kg_tenths') {
+    delete properties['_weight_qty_unit_kg'];
+  }
+
   const sectionIds = cart.getSectionsToRender().map((section) => section.id);
   return {
     items: [{ id: Number(variantId), quantity, properties }],
@@ -250,6 +255,10 @@ if (!customElements.get('product-form')) {
         if (!config.body) {
           formData = new FormData(this.form);
           formData.delete('purchase_mode');
+          const wbForm = this.form.dataset.weightBehavior || 'kg';
+          if (wbForm !== 'kg_tenths') {
+            formData.delete('properties[_weight_qty_unit_kg]');
+          }
           if (isCardQty && modeForCart) {
             formData.set('properties[_purchase_mode]', modeForCart);
           }
