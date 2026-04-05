@@ -121,6 +121,45 @@ body.template-collection facet-filters-form.facets details.facets__disclosure {
   padding-bottom: 0;
 }
 
+/* חלון פילטר (מחיר וכו'): גובה מותאם למסך + גלילה */
+body.template-collection .facets__display {
+  width: min(32rem, calc(100vw - 2.5rem));
+  max-height: min(52vh, 30rem);
+  left: auto !important;
+  right: auto !important;
+  inset-inline-start: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background-color: var(--site-shell-bg, #f8dede) !important;
+  border-color: rgba(var(--color-foreground), 0.12) !important;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.06);
+}
+
+body.template-collection .facets__header {
+  padding: 0.75rem 1.2rem;
+  font-size: 1.3rem;
+}
+
+body.template-collection .facets__price {
+  padding: 1rem 1.2rem 1.15rem;
+}
+
+body.template-collection .facets__sort-in-hover {
+  flex: 0 0 auto;
+  border-inline-start: 1px solid rgba(var(--color-foreground), 0.12);
+  padding-inline-start: 1.6rem;
+  margin-inline-start: 0.4rem;
+}
+
+body.template-collection .facets__form--sort-in-hover {
+  grid-template-columns: 1fr max-content;
+}
+
+body.template-collection .facets__form--sort-in-hover .product-count {
+  grid-column-start: 2;
+}
+
 /* דסקטופ + עכבר: פילטרים (זמינות, מחיר…) נפתחים בריחוף על אזור "סינון" */
 @media (hover: hover) and (pointer: fine) and (min-width: 750px) {
   body.template-collection .facets__form .facets__wrapper {

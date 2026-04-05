@@ -185,6 +185,16 @@
   gap: 0 2.4rem;
 }
 
+/* מיון בתוך hover — לא עמודת grid 2 של הטופס */
+.facets__hover-reveal .facets__sort-in-hover.facet-filters {
+  grid-column: unset;
+  grid-row: unset;
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
+  align-items: center;
+}
+
 .facets__heading {
   display: block;
   color: rgba(var(--color-foreground), 0.85);
