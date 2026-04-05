@@ -179,7 +179,11 @@
 
           <div class="cart-drawer__sticky-footer">
             <div class="free-shipping-text" style="margin:10px 0;">
-              נשאר לך {{ 15000 | minus: drawer_total_cents | money }} למשלוח חינם 🚚
+              {% if drawer_total_cents >= 15000 %}
+                🎉 יש לך משלוח חינם!
+              {% else %}
+                נשאר לך {{ 15000 | minus: drawer_total_cents | money }} למשלוח חינם 🚚
+              {% endif %}
             </div>
 
             <div class="cart-footer">
@@ -458,9 +462,15 @@
         .catch(function () {});
     }
 
+    function cartTotalCentsForUi(cart) {
+      if (!cart) return null;
+      var fromApi = cents(cart.total_price);
+      if (fromApi !== null) return fromApi;
+      return cartDisplayTotalCents(cart);
+    }
+
     function updateCartUI(cart) {
-      var tp = cart ? cartDisplayTotalCents(cart) : null;
-      if (tp === null && cart) tp = cents(cart.total_price);
+      var tp = cartTotalCentsForUi(cart);
       var totalEl = document.querySelector('#CartDrawer .totals strong');
       if (totalEl && tp !== null) {
         totalEl.textContent = formatCartMoney(tp);
