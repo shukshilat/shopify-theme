@@ -79,7 +79,11 @@
                   endif
 
                   if weight_qty_unit_kg == '0.1'
-                    assign cart_qty_display = item.quantity | divided_by: 10.0
+                    comment
+                      divided_by ב-Liquid מעגל למטה למספר שלם — 6 עשיריות היו הופכות ל-0, 14 ל-1 (נראה כמו ק״ג שלם).
+                      times: 0.1 נותן ק״ג אמיתי (0.6, 1.4 וכו׳).
+                    endcomment
+                    assign cart_qty_display = item.quantity | times: 0.1 | round: 3
                   else
                     assign cart_qty_display = item.quantity
                   endif
