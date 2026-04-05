@@ -130,14 +130,27 @@
                           <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
                         {% endif %}
                       {%- else -%}
-                        {% if item.original_price != item.final_price %}
-                          <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
-                          <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
-                        {% else %}
-                          <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
-                        {% endif %}
-                        {%- if effective_mode != 'unit' and item.variant.available and item.unit_price != blank and item.unit_price_measurement != blank -%}
-                          {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                        {%- comment -%} מצב יחידה: מוצר עם מחיר מדף לק״ג — מציגים רק unit_price + "בחירה לפי יחידה", לא מחיר וריאנט (למשל 3.99) {%- endcomment -%}
+                        {%- if effective_mode == 'unit' and item.unit_price != blank and item.unit_price_measurement != blank -%}
+                          {%- assign unit_ref_u = item.unit_price_measurement.reference_unit | default: '' | strip | downcase -%}
+                          {%- if unit_ref_u == 'kg' or unit_ref_u == 'g' -%}
+                            {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                            <div class="cart-drawer__purchase-mode-note" dir="rtl">בחירה לפי יחידה</div>
+                          {%- else -%}
+                            {% if item.original_price != item.final_price %}
+                              <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
+                              <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
+                            {% else %}
+                              <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
+                            {% endif %}
+                          {%- endif -%}
+                        {%- else -%}
+                          {% if item.original_price != item.final_price %}
+                            <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
+                            <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
+                          {% else %}
+                            <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
+                          {% endif %}
                         {%- endif -%}
                       {%- endif -%}
                     </div>
@@ -266,12 +279,32 @@
       return UNIT_REF_LABELS[u] || u;
     }
 
+    function unitPriceMeasurementIsKgOrG(measurement) {
+      if (!measurement || !measurement.reference_unit) return false;
+      var u = String(measurement.reference_unit).toLowerCase();
+      return u === 'kg' || u === 'g';
+    }
+
     function appendCartDrawerUnitPriceRow(priceWrap, item) {
       var props = item.properties || {};
       var mode = props._purchase_mode || props['_purchase_mode'];
-      if (mode === 'unit') return;
-      if (item.unit_price == null || item.unit_price === undefined || !item.unit_price_measurement) return;
-      var label = unitMeasurementLabel(item.unit_price_measurement);
+      var m = item.unit_price_measurement;
+
+      if (mode === 'unit') {
+        if (!unitPriceMeasurementIsKgOrG(m) || item.unit_price == null || item.unit_price === undefined || !m) return;
+        var labelU = unitMeasurementLabel(m);
+        var ucU = cents(item.unit_price);
+        if (ucU === null || !labelU) return;
+        priceWrap.insertAdjacentHTML(
+          'beforeend',
+          '<div class="unit-price unit-price-custom" dir="rtl">' + formatCartMoney(ucU) + ' / ' + labelU + '</div>' +
+            '<div class="cart-drawer__purchase-mode-note" dir="rtl">בחירה לפי יחידה</div>'
+        );
+        return;
+      }
+
+      if (item.unit_price == null || item.unit_price === undefined || !m) return;
+      var label = unitMeasurementLabel(m);
       if (!label) return;
       var uc = cents(item.unit_price);
       if (uc === null) return;
@@ -328,6 +361,17 @@
           item.unit_price != null &&
           item.unit_price !== undefined &&
           item.unit_price_measurement
+        ) {
+          priceWrap.innerHTML = '';
+          appendCartDrawerUnitPriceRow(priceWrap, item);
+          return;
+        }
+
+        if (
+          rowMode === 'unit' &&
+          item.unit_price != null &&
+          item.unit_price !== undefined &&
+          unitPriceMeasurementIsKgOrG(item.unit_price_measurement)
         ) {
           priceWrap.innerHTML = '';
           appendCartDrawerUnitPriceRow(priceWrap, item);
