@@ -237,6 +237,24 @@ cart-drawer.drawer .cart-item .qty-box input.cart-drawer__qty-weight {
   font-variant-numeric: tabular-nums;
 }
 
+/*
+ * cart.js מוסיף .cart__items--disabled (pointer-events:none) בזמן עדכון כמות Dawn.
+ * ילדים עם pointer-events:auto עדיין מקבלים קליקים — חיוני לשדה משקל מותאם.
+ */
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box,
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box input,
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button {
+  pointer-events: auto !important;
+}
+
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box input.cart-drawer__qty-weight {
+  cursor: text;
+}
+
+cart-drawer.drawer #CartDrawer-CartItems.cart__items--disabled .qty-box button {
+  cursor: pointer;
+}
+
 cart-drawer.drawer .cart-item .cart-item__unit-original {
   margin-inline-end: 0.35rem;
 }

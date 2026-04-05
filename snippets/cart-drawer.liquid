@@ -49,12 +49,16 @@
                   assign purchase_mode_prop = item.properties['_purchase_mode'] | default: '' | strip
                   assign weight_qty_unit_kg = item.properties['_weight_qty_unit_kg'] | default: '' | strip
 
-                  assign effective_mode = purchase_mode_prop
-                  if purchase_mode_prop == 'unit'
+                  comment
+                    קודם כל עשיריות ק״ג (0.1): אם נבדוק unit לפני זה, שורה עם _weight_qty_unit_kg
+                    נשארת במצב יחידות — שדה number שלם, תצוגה "1" במקום 0.1 ק״ג, בלי אפשרות לערוך עשרוניות.
+                  endcomment
+                  assign effective_mode = ''
+                  if weight_qty_unit_kg == '0.1'
+                    assign effective_mode = 'weight'
+                  elsif purchase_mode_prop == 'unit'
                     assign effective_mode = 'unit'
                   elsif purchase_mode_prop == 'weight'
-                    assign effective_mode = 'weight'
-                  elsif weight_qty_unit_kg == '0.1'
                     assign effective_mode = 'weight'
                   elsif item.unit_price_measurement != blank
                     assign ref_u = item.unit_price_measurement.reference_unit | strip | downcase
