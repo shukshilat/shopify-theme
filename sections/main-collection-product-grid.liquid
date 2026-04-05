@@ -65,9 +65,9 @@
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
   {%- liquid
-    assign heading_label = section.settings.collection_heading | strip
+    assign heading_label = section.settings.heading_custom_override | default: '' | strip
     if heading_label == blank
-      assign heading_label = 'מוצרים'
+      assign heading_label = collection.title
     endif
   -%}
   {%- if section.settings.show_collection_heading -%}
@@ -297,9 +297,10 @@
     },
     {
       "type": "text",
-      "id": "collection_heading",
-      "label": "Title text",
-      "default": "מוצרים"
+      "id": "heading_custom_override",
+      "label": "Custom title (optional)",
+      "info": "Leave empty to show the collection name (e.g. פירות). Fill only if you want a fixed title instead.",
+      "default": ""
     },
     {
       "type": "checkbox",

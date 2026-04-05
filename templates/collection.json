@@ -13,7 +13,6 @@
       "type": "main-collection-product-grid",
       "settings": {
         "show_collection_heading": true,
-        "collection_heading": "מוצרים",
         "show_heading_collection_description": true,
         "products_per_page": 20,
         "columns_desktop": 6,
