@@ -119,14 +119,26 @@
                     </div>
 
                     <div class="cart-item__price" data-unit-price>
-                      {% if item.original_price != item.final_price %}
-                        <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
-                        <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
-                      {% else %}
-                        <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
-                      {% endif %}
-                      {%- if effective_mode != 'unit' and item.variant.available and item.unit_price != blank and item.unit_price_measurement != blank -%}
+                      {%- if effective_mode == 'weight' and item.unit_price != blank and item.unit_price_measurement != blank -%}
+                        {%- comment -%} במשקל: רק מחיר לק״ג מהמוצר — בלי מחיר הווריאנט (למשל ₪2 ל־0.1 ק״ג) {%- endcomment -%}
                         {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                      {%- elsif effective_mode == 'weight' -%}
+                        {% if item.original_price != item.final_price %}
+                          <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
+                          <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
+                        {% else %}
+                          <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
+                        {% endif %}
+                      {%- else -%}
+                        {% if item.original_price != item.final_price %}
+                          <s class="cart-item__unit-original">{{ item.original_price | money }}</s>
+                          <strong class="cart-item__unit-final">{{ item.final_price | money }}</strong>
+                        {% else %}
+                          <strong class="cart-item__unit-final">{{ item.original_price | money }}</strong>
+                        {% endif %}
+                        {%- if effective_mode != 'unit' and item.variant.available and item.unit_price != blank and item.unit_price_measurement != blank -%}
+                          {% render 'unit-price', price: item.unit_price, measurement: item.unit_price_measurement %}
+                        {%- endif -%}
                       {%- endif -%}
                     </div>
 
@@ -309,6 +321,18 @@
 
         var priceWrap = row.querySelector('[data-unit-price]');
         if (!priceWrap) return;
+
+        var rowMode = row.getAttribute('data-purchase-mode');
+        if (
+          rowMode === 'weight' &&
+          item.unit_price != null &&
+          item.unit_price !== undefined &&
+          item.unit_price_measurement
+        ) {
+          priceWrap.innerHTML = '';
+          appendCartDrawerUnitPriceRow(priceWrap, item);
+          return;
+        }
 
         var orig = cents(item.original_price);
         var fin = cents(item.final_price);
