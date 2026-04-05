@@ -650,6 +650,19 @@
     "collection-list": {
       "name": "Collection list",
       "settings": {
+        "list_source": {
+          "label": "Source",
+          "options__1": {
+            "label": "Manual collection blocks"
+          },
+          "options__2": {
+            "label": "Navigation menu (same as header)"
+          }
+        },
+        "menu": {
+          "label": "Menu",
+          "info": "Used when source is “Navigation menu”. Pick the same menu as in the header to match categories."
+        },
         "title": {
           "default": "Collections",
           "label": "Heading"

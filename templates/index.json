@@ -50,10 +50,12 @@
       ],
       "name": "t:sections.collection-list.presets.name",
       "settings": {
+        "list_source": "menu",
+        "menu": "main-menu",
         "title": "המוצרים שלנו",
         "heading_size": "hxl",
         "image_ratio": "adapt",
-        "columns_desktop": 3,
+        "columns_desktop": 4,
         "color_scheme": "scheme-1",
         "show_view_all": false,
         "columns_mobile": "1",

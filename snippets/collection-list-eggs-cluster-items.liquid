@@ -1,0 +1,100 @@
+{% comment %}
+  Up to 4 collection cards for "ביצים, שמן זית ועוד" — same title resolution as header-eggs-subcats-links.
+  Params: section_id, columns, media_aspect_ratio, show_mobile_slider, animation_base (optional)
+{% endcomment %}
+{%- liquid
+  assign eggs_subcat_tavlinim_resolved = blank
+  assign eggs_subcat_olive_oil_resolved = blank
+  assign eggs_subcat_free_eggs_resolved = blank
+  assign eggs_subcat_grocery_resolved = blank
+  for c in collections
+    assign t = c.title | strip
+    if eggs_subcat_tavlinim_resolved == blank and t == 'תבליני פרג'
+      assign eggs_subcat_tavlinim_resolved = c
+    endif
+    if eggs_subcat_olive_oil_resolved == blank and t == 'שמן זית'
+      assign eggs_subcat_olive_oil_resolved = c
+    endif
+    if eggs_subcat_free_eggs_resolved == blank and t == 'ביצים'
+      assign eggs_subcat_free_eggs_resolved = c
+    endif
+    if eggs_subcat_free_eggs_resolved == blank and t == 'ביצי חופש'
+      assign eggs_subcat_free_eggs_resolved = c
+    endif
+    if eggs_subcat_grocery_resolved == blank and t == 'מוצרי מרכול'
+      assign eggs_subcat_grocery_resolved = c
+    endif
+  endfor
+  assign anim = animation_base | default: 1
+-%}
+{%- if eggs_subcat_tavlinim_resolved != blank -%}
+  <li
+    id="Slide-{{ section_id }}-egg-tavlinim"
+    class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+      style="--animation-order: {{ anim }};"
+    {% endif %}
+  >
+    {%- assign anim = anim | plus: 1 -%}
+    {% render 'card-collection',
+      card_collection: eggs_subcat_tavlinim_resolved,
+      media_aspect_ratio: media_aspect_ratio,
+      columns: columns,
+      placeholder_image: 'collection-apparel-1'
+    %}
+  </li>
+{%- endif -%}
+{%- if eggs_subcat_olive_oil_resolved != blank -%}
+  <li
+    id="Slide-{{ section_id }}-egg-oil"
+    class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+      style="--animation-order: {{ anim }};"
+    {% endif %}
+  >
+    {%- assign anim = anim | plus: 1 -%}
+    {% render 'card-collection',
+      card_collection: eggs_subcat_olive_oil_resolved,
+      media_aspect_ratio: media_aspect_ratio,
+      columns: columns,
+      placeholder_image: 'collection-apparel-2'
+    %}
+  </li>
+{%- endif -%}
+{%- if eggs_subcat_free_eggs_resolved != blank -%}
+  <li
+    id="Slide-{{ section_id }}-egg-eggs"
+    class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+      style="--animation-order: {{ anim }};"
+    {% endif %}
+  >
+    {%- assign anim = anim | plus: 1 -%}
+    {% render 'card-collection',
+      card_collection: eggs_subcat_free_eggs_resolved,
+      media_aspect_ratio: media_aspect_ratio,
+      columns: columns,
+      placeholder_image: 'collection-apparel-3'
+    %}
+  </li>
+{%- endif -%}
+{%- if eggs_subcat_grocery_resolved != blank -%}
+  <li
+    id="Slide-{{ section_id }}-egg-grocery"
+    class="collection-list__item grid__item{% if show_mobile_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+    {% if settings.animations_reveal_on_scroll %}
+      data-cascade
+      style="--animation-order: {{ anim }};"
+    {% endif %}
+  >
+    {% render 'card-collection',
+      card_collection: eggs_subcat_grocery_resolved,
+      media_aspect_ratio: media_aspect_ratio,
+      columns: columns,
+      placeholder_image: 'collection-apparel-4'
+    %}
+  </li>
+{%- endif -%}
