@@ -125,20 +125,23 @@
                     <div class="qty-box">
                       <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, 1)">+</button>
                       <input
-                        type="number"
-                        id="qty-{{ item.index | plus: 1 }}"
-                        value="{{ cart_qty_display }}"
                         {% if effective_mode == 'weight' %}
-                          min="0.001"
-                          step="0.1"
+                          type="text"
                           inputmode="decimal"
                           autocomplete="off"
+                          autocorrect="off"
+                          spellcheck="false"
+                          class="cart-drawer__qty-weight"
                           onblur="if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ item.index | plus: 1 }})"
+                          onkeydown="if(event.key==='Enter'){event.preventDefault();if(window.commitDrawerQtyLine)window.commitDrawerQtyLine({{ item.index | plus: 1 }});}"
                         {% else %}
+                          type="number"
                           min="1"
                           step="1"
                           autocomplete="off"
                         {% endif %}
+                        id="qty-{{ item.index | plus: 1 }}"
+                        value="{{ cart_qty_display }}"
                       >
                       <button type="button" onclick="changeQty({{ item.index | plus: 1 }}, -1)">−</button>
                     </div>
@@ -180,6 +183,12 @@
 <script>
   (function () {
     const FREE_SHIPPING_THRESHOLD = 15000;
+
+    /** אחרי רענון DOM (replaceWeightLineQuantity) ה-input הישן יתנתק — תמיד לפי שורה. */
+    function setDrawerQtyLineLocked(line, locked) {
+      var inp = document.getElementById('qty-' + line);
+      if (inp) inp.disabled = !!locked;
+    }
 
     function cents(v) {
       var n = Number(v);
@@ -429,7 +438,7 @@
       var v = Math.round(parseFloat(String(input.value).replace(',', '.')) * 1000) / 1000;
       if (isNaN(v) || v < 0.001) return;
       var scaledTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
-      input.disabled = true;
+      setDrawerQtyLineLocked(line, true);
       if (scaledTenths) {
         replaceWeightLineQuantity(line, v, { stripTenthsWeightProp: true })
           .catch(function () {
@@ -440,7 +449,7 @@
               .then(updateCartUI);
           })
           .finally(function () {
-            input.disabled = false;
+            setDrawerQtyLineLocked(line, false);
           });
         return;
       }
@@ -470,13 +479,13 @@
             .then(updateCartUI);
         })
         .finally(function () {
-          input.disabled = false;
+          setDrawerQtyLineLocked(line, false);
         });
     };
 
     window.changeQty = function (line, change) {
       var input = document.getElementById('qty-' + line);
-      if (!input) return;
+      if (!input || input.disabled) return;
 
       var row = input.closest('.cart-item');
       var mode = row && row.getAttribute('data-purchase-mode');
@@ -495,7 +504,7 @@
         if (nextDisplay < 1) return;
       }
 
-      input.disabled = true;
+      setDrawerQtyLineLocked(line, true);
 
       if (scaledTenths) {
         replaceWeightLineQuantity(line, nextDisplay, { stripTenthsWeightProp: true })
@@ -507,7 +516,7 @@
               .then(updateCartUI);
           })
           .finally(function () {
-            input.disabled = false;
+            setDrawerQtyLineLocked(line, false);
           });
         return;
       }
@@ -534,7 +543,8 @@
         })
         .then(function (cart) {
           if (cart) {
-            input.value = isWeight ? nextDisplay : apiQty;
+            var inpAfter = document.getElementById('qty-' + line);
+            if (inpAfter) inpAfter.value = isWeight ? String(nextDisplay) : String(apiQty);
             updateCartUI(cart);
           }
         })
@@ -546,7 +556,7 @@
             .then(updateCartUI);
         })
         .finally(function () {
-          input.disabled = false;
+          setDrawerQtyLineLocked(line, false);
         });
     };
 

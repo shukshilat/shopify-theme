@@ -233,6 +233,10 @@ cart-drawer.drawer .cart-item .qty-box {
   justify-content: flex-end;
 }
 
+cart-drawer.drawer .cart-item .qty-box input.cart-drawer__qty-weight {
+  font-variant-numeric: tabular-nums;
+}
+
 cart-drawer.drawer .cart-item .cart-item__unit-original {
   margin-inline-end: 0.35rem;
 }
