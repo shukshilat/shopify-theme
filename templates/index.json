@@ -12,7 +12,7 @@
     "hero_asset_carousel": {
       "type": "hero-asset-carousel",
       "settings": {
-        "slide_seconds": 5,
+        "slide_seconds": 3,
         "aspect_ratio": "2.4 / 1",
         "full_width": true,
         "color_scheme": "scheme-1",
