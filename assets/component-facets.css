@@ -177,6 +177,14 @@
   flex-wrap: wrap;
 }
 
+/* עוטף את שורת הפילטרים האופקית (דף אוסף: נוסף לריחוף על "סינון") */
+.facets__hover-reveal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 2.4rem;
+}
+
 .facets__heading {
   display: block;
   color: rgba(var(--color-foreground), 0.85);

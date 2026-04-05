@@ -52,6 +52,7 @@
               <h2 class="facets__heading caption-large text-body" id="verticalTitle" tabindex="-1">
                 {{ 'products.facets.filter_by_label' | t }}
               </h2>
+              <div class="facets__hover-reveal">
             {%- endif -%}
             {% comment %} Pills are right below the title for filter type vertical {% endcomment %}
             {%- if filter_type == 'vertical' -%}
@@ -336,6 +337,9 @@
                   </details>
               {% endcase %}
             {%- endfor -%}
+            {%- if filter_type == 'horizontal' and results.filters != empty -%}
+              </div>
+            {%- endif -%}
           </div>
           {% comment %} Pills after filtes on filter type horizontal {% endcomment %}
           {%- if filter_type == 'horizontal' -%}
