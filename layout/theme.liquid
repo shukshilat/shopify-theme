@@ -331,6 +331,21 @@
         background-color: #f8dede !important;
         background-image: none !important;
       }
+
+      /*
+        רקע מלא לכל בלוק סקשן בתוכן — דורס את .shopify-section { background: transparent } מ-base.css
+        שלא יישארו "חלונות" לבנים כשהילד הישיר לא מכסה או כשיש מרווחים.
+      */
+      #MainContent > .shopify-section {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      /* כל .gradient בתוך סקשן — מכסה גם מעטפות מקוננות (לא רק ילד ישיר) */
+      #MainContent .shopify-section .gradient {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
       /* כותרת אוסף: אחרי <link>/<style> הילד הישיר אינו .gradient — מאחדים רקע עם המעטפת */
       .shopify-section.collection-page-hero,
       .shopify-section.collection-page-hero .collection-hero.collection-hero--plain,
@@ -395,6 +410,18 @@
       #MainContent .multicolumn.background-primary .multicolumn-card {
         background: var(--site-shell-bg, #f8dede) !important;
         background-image: none !important;
+      }
+
+      /* רשימת קטגוריות: כרטיסים גם בלי substring במחלקה — דורס rgb(var(--color-background)) מה-head */
+      #MainContent .section-collection-list .card__inner,
+      #MainContent .section-collection-list .card--card {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      #MainContent .section-collection-list .card--standard .card__inner:after,
+      #MainContent .section-collection-list .card--card:after {
+        box-shadow: none !important;
       }
 
       /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
