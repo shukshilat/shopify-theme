@@ -525,3 +525,10 @@
   width: 1.75rem;
   height: 1.75rem;
 }
+
+.card-product-qty .card-product-qty__form-error:not([hidden]) {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #b91c1c;
+  margin: 0.2rem 0 0.35rem;
+}

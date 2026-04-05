@@ -71,7 +71,7 @@
           "weight_behavior": {
             "label": "When customers buy by weight (kg)",
             "options__1": {
-              "label": "Kilograms (decimal) — use with variant price = your per-kg price (e.g. ₪20/kg). If the cart rounds quantity to whole numbers, use “0.1 kg units” below and divide variant price by 10."
+              "label": "Kilograms (decimal) — Shopify usually rounds cart qty to whole numbers. Fix: set variant price to your per-0.1-kg price (e.g. ₪2 when shelf is ₪20/kg); the theme then auto-uses 0.1 kg cart units. Or choose “0.1 kg integer units” below and match variant prices."
             },
             "options__2": {
               "label": "Cart quantity in grams — only if variant price in Shopify is per gram"

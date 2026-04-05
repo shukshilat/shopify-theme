@@ -500,9 +500,12 @@ if (!customElements.get('product-form')) {
           this.cart.setActiveElement(anchorForCart);
         }
 
+        const cartAddUrl =
+          (typeof window.routes !== 'undefined' && window.routes.cart_add_url) || '/cart/add.js';
+
         targetLineQtyPromise
           .then((targetLineQty) =>
-            fetch(`${routes.cart_add_url}`, config)
+            fetch(cartAddUrl, config)
               .then((response) => response.json())
               .then((response) => {
                 if (response.status) {
@@ -555,6 +558,32 @@ if (!customElements.get('product-form')) {
                 }
 
                 return pipeline.then((finalResponse) => {
+                  const needsTenthHint = this.form?.dataset?.cardWeightNeedsTenth === 'true';
+                  if (
+                    needKgReconcile &&
+                    targetLineQty != null &&
+                    variantIdForEvents &&
+                    finalResponse &&
+                    !finalResponse.status &&
+                    needsTenthHint
+                  ) {
+                    const hit = pickAddedLineItem(finalResponse, Number(variantIdForEvents));
+                    if (hit) {
+                      const actualKg = lineItemQuantityAsKg(hit);
+                      if (Math.abs(actualKg - targetLineQty) > 0.0001) {
+                        const msg =
+                          'העגלה לא שומרת משקל עשרוני (מגבלת Shopify). בניהול: מחיר וריאנט = מחיר ל־0.1 ק״ג (למשל ₪2 כשהמחיר לק״ג ₪20). או בהגדרות התמה: כרטיסים → משקל בעגלה → "0.1 kg integer units" והתאמת מחירי וריאנט.';
+                        publish(PUB_SUB_EVENTS.cartError, {
+                          source: 'product-form',
+                          productVariantId: variantIdForEvents,
+                          errors: msg,
+                          message: msg,
+                        });
+                        this.handleErrorMessage(msg);
+                      }
+                    }
+                  }
+
                   const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
                   if (!this.error)
                     publish(PUB_SUB_EVENTS.cartUpdate, {

@@ -74,6 +74,21 @@
     endif
   endif
 
+  comment
+    Shopify מעגל כמויות עשרוניות ב-add לעגלה. אם מחיר הווריאנט בניהול הוא כבר "לפי 0.1 ק״ג"
+    (מחיר וריאנט × 10 ≈ מחיר לק״ג מהצגת יחידה), נשתמש בעגלה ביחידות עשיריות אוטומטית.
+  endcomment
+  if show_weight and weight_behavior == 'kg' and cents_per_kg > 0 and v.price > 0
+    assign tenth_cents = v.price | times: 10
+    assign diff_cents = tenth_cents | minus: cents_per_kg
+    if diff_cents < 0
+      assign diff_cents = diff_cents | times: -1
+    endif
+    if diff_cents <= 20
+      assign weight_behavior = 'kg_tenths'
+    endif
+  endif
+
   assign line_unit_cents = v.price | times: min_q
   assign line_weight_cents = cents_per_kg
   if line_weight_cents == 0
@@ -118,6 +133,11 @@
     assign money_fmt_initial = initial_line_cents | money
     assign money_fmt_compare = initial_compare_cents | money
   endif
+
+  assign card_weight_needs_tenth = false
+  if show_weight and weight_behavior == 'kg'
+    assign card_weight_needs_tenth = true
+  endif
 -%}
 <div
   class="card-product-qty card-product-qty--premium{% if card_qty_in_media %} card-product-qty--media-bar{% endif %}"
@@ -142,7 +162,8 @@
       data-cents-per-kg: cents_per_kg,
       data-currency-with-code: settings.currency_code_enabled,
       data-line-unit-cents: line_unit_cents,
-      data-line-weight-cents: line_weight_cents
+      data-line-weight-cents: line_weight_cents,
+      data-card-weight-needs-tenth: card_weight_needs_tenth
     -%}
       <input type="hidden" name="id" value="{{ v.id }}" class="product-variant-id" {% if v.available == false %}disabled{% endif %}>
       <input
@@ -168,6 +189,10 @@
       {%- elsif show_unit and show_weight == false -%}
         <input type="hidden" name="purchase_mode" value="unit">
       {%- endif -%}
+
+      <div class="product-form__error-message-wrapper card-product-qty__form-error" hidden>
+        <span class="product-form__error-message" role="alert"></span>
+      </div>
 
       <div class="card-product-qty__bar">
         {%- if show_unit and show_weight -%}
