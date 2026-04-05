@@ -333,17 +333,33 @@
       }
 
       /*
-        רקע מלא לכל בלוק סקשן בתוכן — דורס את .shopify-section { background: transparent } מ-base.css
-        שלא יישארו "חלונות" לבנים כשהילד הישיר לא מכסה או כשיש מרווחים.
+        בדף: רקע מעטפת מלא על main + על כל .shopify-section (גם אם יש עטיפות נוספות),
+        דורס את main#MainContent,.shopify-section { background: transparent } מ-base.css.
       */
-      #MainContent > .shopify-section {
+      main#MainContent {
         background-color: var(--site-shell-bg, #f8dede) !important;
         background-image: none !important;
       }
 
-      /* כל .gradient בתוך סקשן — מכסה גם מעטפות מקוננות (לא רק ילד ישיר) */
+      #MainContent .shopify-section {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      /* כל .gradient בתוך סקשן — מעטפות מקוננות (featured-collection, collection-list וכו') */
       #MainContent .shopify-section .gradient {
         background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      /* מיכלים פנימיים נפוצים — ללא "קופסה" לבנה */
+      #MainContent .shopify-section .collection,
+      #MainContent .shopify-section .collection-list-wrapper,
+      #MainContent .shopify-section slider-component,
+      #MainContent .shopify-section .slider-mobile-gutter,
+      #MainContent .shopify-section .product-grid,
+      #MainContent .shopify-section .collection-list {
+        background-color: transparent !important;
         background-image: none !important;
       }
       /* כותרת אוסף: אחרי <link>/<style> הילד הישיר אינו .gradient — מאחדים רקע עם המעטפת */
@@ -356,10 +372,6 @@
         border: 0 !important;
         box-shadow: none !important;
       }
-      main#MainContent {
-        background: transparent !important;
-      }
-
       /* דף אוסף: כל מעטפת .gradient של סקשן = רקע מעטפת (בלי פס שונה מערכת הצבעים) */
       body.template-collection .shopify-section .gradient[class*='color-scheme'] {
         background-color: #f8dede !important;
@@ -382,6 +394,25 @@
         background-image: none !important;
       }
 
+      /* כרטיסי מוצר/אוסף — תמיד מעטפת (גם כשאין substring במחלקה או סגנון card) */
+      #MainContent .product-card-wrapper .card__inner,
+      #MainContent .product-card-wrapper .card--card,
+      #MainContent .collection-card-wrapper .card__inner,
+      #MainContent .collection-card-wrapper .card--card {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
+      }
+
+      /*
+        הכלל body,.color-scheme-X { background: rgb(var(--color-background)) } ב-head נוגע גם ל-.card__media
+        עם gradient — משאיר "מלבן לבן" סביב תמונה; משביתים כאן.
+      */
+      #MainContent .product-card-wrapper .card__media[class*='color-scheme-'],
+      #MainContent .collection-card-wrapper .card__media[class*='color-scheme-'] {
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+
       #MainContent .card--standard .card__inner:after,
       #MainContent .card--card:after {
         box-shadow: none !important;
@@ -391,6 +422,13 @@
       #MainContent .card--card {
         border-width: 0 !important;
         border-color: transparent !important;
+      }
+
+      #MainContent .product-card-wrapper .card--standard .card__inner:after,
+      #MainContent .product-card-wrapper .card--card:after,
+      #MainContent .collection-card-wrapper .card--standard .card__inner:after,
+      #MainContent .collection-card-wrapper .card--card:after {
+        box-shadow: none !important;
       }
 
       /* כולל color_scheme ריק (מחלקה color- בלי מספר) */
@@ -422,6 +460,12 @@
       #MainContent .section-collection-list .card--standard .card__inner:after,
       #MainContent .section-collection-list .card--card:after {
         box-shadow: none !important;
+      }
+
+      /* פוטר במיזוג לדף הבית — style מהסקשן נטען ב-body ועלול לדרוס רקע */
+      footer.footer.footer--home-merged {
+        background-color: var(--site-shell-bg, #f8dede) !important;
+        background-image: none !important;
       }
 
       /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
