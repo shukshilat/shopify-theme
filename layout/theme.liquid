@@ -331,6 +331,16 @@
         background-color: #f8dede !important;
         background-image: none !important;
       }
+      /* כותרת אוסף: אחרי <link>/<style> הילד הישיר אינו .gradient — מאחדים רקע עם המעטפת */
+      .shopify-section.collection-page-hero,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__inner,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__text-wrapper {
+        background-color: #f8dede !important;
+        background-image: none !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
       main#MainContent {
         background: transparent !important;
       }

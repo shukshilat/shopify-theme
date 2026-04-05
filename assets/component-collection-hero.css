@@ -3,15 +3,17 @@
   flex-direction: column;
 }
 
-/* כותרת אוסף בלי תמונה — רציף לרקע העמוד, בלי "כרטיס" */
+/* כותרת אוסף בלי תמונה — רקע כמו מעטפת האתר (לא רקע מערכת הצבעים של הסקשן) */
 .collection-hero.collection-hero--plain {
-  background: transparent !important;
+  background-color: var(--site-shell-bg, #f8dede) !important;
+  background-image: none !important;
   box-shadow: none;
+  border: none;
 }
 
 .collection-hero.collection-hero--plain .collection-hero__inner,
 .collection-hero.collection-hero--plain .collection-hero__text-wrapper {
-  background: transparent !important;
+  background-color: transparent !important;
   border: none;
   border-radius: 0;
   box-shadow: none;
