@@ -64,15 +64,6 @@
     return Math.max(1, q);
   }
 
-  /** "יח'" on a kg-priced product: quantity field = kg (same as weight tab). */
-  function getUnitKgForWeightedProduct(form) {
-    const inp = form.querySelector('.js-card-qty-unit');
-    if (!inp) return 0.1;
-    let kg = parseFloat(String(inp.value).replace(',', '.'));
-    if (Number.isNaN(kg)) kg = 0.1;
-    return Math.max(0.001, Math.round(kg * 1000) / 1000);
-  }
-
   function getKg(form) {
     const inp = form.querySelector('.js-card-qty-kg');
     if (!inp) return 1;
@@ -81,18 +72,10 @@
     return Math.max(0.1, Math.round(kg * 1000) / 1000);
   }
 
-  function isWeightCapableProduct(root) {
-    return root?.dataset?.showWeight === 'true';
-  }
-
   function lineCents(mode, form, p) {
     if (mode === 'weight') {
       const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
       return Math.round(perKg * getKg(form));
-    }
-    if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
-      const perKg = p.centsPerKg > 0 ? p.centsPerKg : p.variantCents;
-      return Math.round(perKg * getUnitKgForWeightedProduct(form));
     }
     return Math.round(p.variantCents * getUnitQty(form));
   }
@@ -104,28 +87,7 @@
       if (p.variantCents > 0) return Math.round(line * (p.compareAtCents / p.variantCents));
       return 0;
     }
-    if (isWeightCapableProduct(form.closest('[data-card-quantity-root]'))) {
-      const kg = getUnitKgForWeightedProduct(form);
-      if (p.comparePerKg > 0) return Math.round(p.comparePerKg * kg);
-      if (p.variantCents > 0) return Math.round(line * (p.compareAtCents / p.variantCents));
-      return 0;
-    }
     return Math.round(p.compareAtCents * getUnitQty(form));
-  }
-
-  function pickMainPriceEl(cardInformation) {
-    if (!cardInformation) return null;
-    const saleBlock = cardInformation.querySelector('.price__sale');
-    const saleItem = cardInformation.querySelector('.price__sale .price-item--last');
-    if (saleBlock && saleItem) {
-      const hidden = saleBlock.hasAttribute('hidden') || saleBlock.getAttribute('aria-hidden') === 'true';
-      const style = window.getComputedStyle(saleBlock);
-      if (!hidden && style.display !== 'none' && style.visibility !== 'hidden') return saleItem;
-    }
-    return (
-      cardInformation.querySelector('.price__regular .price-item--regular') ||
-      cardInformation.querySelector('.price-item--regular')
-    );
   }
 
   function updatePricing(root) {
@@ -154,11 +116,7 @@
       }
     }
 
-    const cardInfo =
-      root.closest('.card-information') ||
-      root.closest('.product-card-wrapper')?.querySelector('.card-information');
-    const mainPrice = pickMainPriceEl(cardInfo);
-    if (mainPrice) mainPrice.textContent = lineStr;
+    /* לא מחליפים את מחיר המוצר הראשי (מחיר לק״ג מה-Liquid) — רק סה״כ שורה בווידג׳ */
   }
 
   function syncPanels(root) {

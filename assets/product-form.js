@@ -136,23 +136,15 @@ function findPrevQtyKgForVariantMerge(cart, variantId, properties) {
   return sumKg;
 }
 
-/** ק״ג שהלקוח ביקש בכרטיס (לפני המרה לעשיריות/גרמים ב-payload). */
+/** ק״ג שהלקוח ביקש בכרטיס (רק לשונית משקל). */
 function getCardRequestedKg(form, modeForCart) {
   if (!form || modeForCart !== 'weight') return null;
-  const root = form.closest('[data-card-quantity-root]');
-  const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
   const mode =
     form.querySelector('input[name="purchase_mode"]:checked')?.value ||
     form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
     'unit';
-  let raw;
-  if (mode === 'unit' && sellByWeightAndUnit) {
-    raw = form.querySelector('.js-card-qty-unit')?.value;
-  } else if (mode === 'weight') {
-    raw = form.querySelector('.js-card-qty-kg')?.value;
-  } else {
-    return null;
-  }
+  if (mode !== 'weight') return null;
+  const raw = form.querySelector('.js-card-qty-kg')?.value;
   const kg = parseFloat(String(raw).replace(',', '.'));
   if (!Number.isFinite(kg) || kg <= 0) return null;
   return Math.round(kg * 1000) / 1000;
@@ -332,9 +324,6 @@ if (!customElements.get('product-form')) {
             : null;
         const increment = parseInt(form.dataset.qtyIncrement || '1', 10) || 1;
 
-        const root = form.closest('[data-card-quantity-root]');
-        const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
-
         form.querySelectorAll('input[name^="properties["][data-card-weight-prop="true"]').forEach((el) =>
           el.remove()
         );
@@ -366,11 +355,8 @@ if (!customElements.get('product-form')) {
           qtyHidden.value = computeCardKgQuantityValue(kg, behavior, min, max, increment);
         };
 
-        // יח' על מוצר שנמכר לפי משקל: המספר בשדה = ק״ג (לא יחידות שלמות) — כמו לשונית ק״ג
-        if (mode === 'unit' && sellByWeightAndUnit) {
-          const kgRaw = form.querySelector('.js-card-qty-unit')?.value;
-          applyKgFromInput(kgRaw);
-        } else if (mode === 'unit') {
+        // יחידות = מספר שלם; משקל = ק״ג (עם לשונית משקל בלבד)
+        if (mode === 'unit') {
           const raw = form.querySelector('.js-card-qty-unit')?.value;
           qtyHidden.value = String(snapUnitQuantityInt(raw));
         } else {
@@ -381,9 +367,7 @@ if (!customElements.get('product-form')) {
         form.querySelectorAll('input[name="properties[_weight_qty_unit_kg]"][data-card-weight-scale="true"]').forEach((el) =>
           el.remove()
         );
-        const needsWeightScaleProp =
-          behavior === 'kg_tenths' &&
-          (mode === 'weight' || (mode === 'unit' && sellByWeightAndUnit));
+        const needsWeightScaleProp = behavior === 'kg_tenths' && mode === 'weight';
         if (needsWeightScaleProp) {
           const p = document.createElement('input');
           p.type = 'hidden';
@@ -424,20 +408,32 @@ if (!customElements.get('product-form')) {
 
         this.applyCardQuantityMode();
 
+        const isCardQty = this.form.classList.contains('card-product-qty__form');
+        const cardPurchaseMode =
+          this.form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+          this.form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
+          'unit';
+        if (
+          isCardQty &&
+          cardPurchaseMode === 'weight' &&
+          this.form.getAttribute('data-card-weight-price-mismatch') === 'true'
+        ) {
+          this.handleErrorMessage(
+            'מחיר הווריאנט בניהול חייב להיות לפי 0.1 ק״ג. חלקו את מחיר הק״ג ב־10 (למשל ₪20/ק״ג → ₪2 בווריאנט). אחרי השמירה ההוספה לעגלה תתאים לכמות ולמחיר בכרטיס.'
+          );
+          return;
+        }
+
         this.submitButton.setAttribute('aria-disabled', true);
         this.submitButton.classList.add('loading');
         this.querySelector('.loading__spinner').classList.remove('hidden');
-
-        const isCardQty = this.form.classList.contains('card-product-qty__form');
         let modeForCart = null;
         if (isCardQty) {
-          const root = this.form.closest('[data-card-quantity-root]');
-          const sellByWeightAndUnit = root?.dataset?.showWeight === 'true';
           const mode =
             this.form.querySelector('input[name="purchase_mode"]:checked')?.value ||
             this.form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value ||
             'unit';
-          modeForCart = sellByWeightAndUnit && mode === 'unit' ? 'weight' : mode;
+          modeForCart = mode;
         }
 
         const variantIdForEvents = this.form.querySelector('[name="id"]')?.value;
@@ -558,26 +554,6 @@ if (!customElements.get('product-form')) {
                 }
 
                 return pipeline.then((finalResponse) => {
-                  const needsTenthHint = this.form?.dataset?.cardWeightNeedsTenth === 'true';
-                  if (
-                    needKgReconcile &&
-                    targetLineQty != null &&
-                    variantIdForEvents &&
-                    finalResponse &&
-                    !finalResponse.status &&
-                    needsTenthHint
-                  ) {
-                    const hit = pickAddedLineItem(finalResponse, Number(variantIdForEvents));
-                    if (hit) {
-                      const actualKg = lineItemQuantityAsKg(hit);
-                      if (Math.abs(actualKg - targetLineQty) > 0.0001) {
-                        console.warn(
-                          '[card weight] העגלה עיגלה את המשקל. פתרון: בניהול — מחיר וריאנט = מחיר ל־0.1 ק״ג (למשל ₪2 כשמוצג ₪20/ק״ג), או בהגדרות התמה כרטיסים → משקל בעגלה → 0.1 kg integer units.'
-                        );
-                      }
-                    }
-                  }
-
                   const startMarker = CartPerformance.createStartingMarker('add:wait-for-subscribers');
                   if (!this.error)
                     publish(PUB_SUB_EVENTS.cartUpdate, {

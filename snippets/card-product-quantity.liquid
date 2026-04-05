@@ -75,18 +75,11 @@
   endif
 
   comment
-    Shopify מעגל כמויות עשרוניות ב-add לעגלה. אם מחיר הווריאנט בניהול הוא כבר "לפי 0.1 ק״ג"
-    (מחיר וריאנט × 10 ≈ מחיר לק״ג מהצגת יחידה), נשתמש בעגלה ביחידות עשיריות אוטומטית.
+    Shopify מעגל כמויות עשרוניות ב-add — חייבים יחידות שלמות בעגלה (עשיריות ק״ג + מאפיין _weight_qty_unit_kg).
+    כל עוד ההגדרה היא "kg" עשרוני, נכפה כאן kg_tenths על הכרטיס.
   endcomment
-  if show_weight and weight_behavior == 'kg' and cents_per_kg > 0 and v.price > 0
-    assign tenth_cents = v.price | times: 10
-    assign diff_cents = tenth_cents | minus: cents_per_kg
-    if diff_cents < 0
-      assign diff_cents = diff_cents | times: -1
-    endif
-    if diff_cents <= 20
-      assign weight_behavior = 'kg_tenths'
-    endif
+  if show_weight and weight_behavior == 'kg'
+    assign weight_behavior = 'kg_tenths'
   endif
 
   assign line_unit_cents = v.price | times: min_q
@@ -134,9 +127,20 @@
     assign money_fmt_compare = initial_compare_cents | money
   endif
 
-  assign card_weight_needs_tenth = false
-  if show_weight and weight_behavior == 'kg'
-    assign card_weight_needs_tenth = true
+  assign card_weight_price_mismatch = false
+  if show_weight and weight_behavior == 'kg_tenths' and cents_per_kg > 0 and v.price > 0
+    assign tenth_cents = v.price | times: 10
+    assign diff_cents = tenth_cents | minus: cents_per_kg
+    if diff_cents < 0
+      assign diff_cents = diff_cents | times: -1
+    endif
+    if diff_cents > 20
+      assign card_weight_price_mismatch = true
+    endif
+  endif
+  assign card_weight_price_mismatch_str = 'false'
+  if card_weight_price_mismatch
+    assign card_weight_price_mismatch_str = 'true'
   endif
 -%}
 <div
@@ -163,7 +167,7 @@
       data-currency-with-code: settings.currency_code_enabled,
       data-line-unit-cents: line_unit_cents,
       data-line-weight-cents: line_weight_cents,
-      data-card-weight-needs-tenth: card_weight_needs_tenth
+      data-card-weight-price-mismatch: card_weight_price_mismatch_str
     -%}
       <input type="hidden" name="id" value="{{ v.id }}" class="product-variant-id" {% if v.available == false %}disabled{% endif %}>
       <input
@@ -229,18 +233,11 @@
                     type="number"
                     class="quantity__input js-card-qty-unit"
                     aria-labelledby="CardQtyUnitLabel-{{ section_id }}-{{ product.id }}"
-                    {% if show_unit and show_weight %}
-                      min="0.1"
-                      step="0.1"
-                      value="1"
-                      data-min="0.1"
-                    {% else %}
-                      min="{{ min_q }}"
-                      {% if max_q != null %}max="{{ max_q }}"{% endif %}
-                      step="{{ inc_q }}"
-                      value="{{ min_q }}"
-                      data-min="{{ min_q }}"
-                    {% endif %}
+                    min="{{ min_q }}"
+                    {% if max_q != null %}max="{{ max_q }}"{% endif %}
+                    step="{{ inc_q }}"
+                    value="{{ min_q }}"
+                    data-min="{{ min_q }}"
                   >
                   <button
                     class="quantity__button"
