@@ -319,6 +319,47 @@
       return p._weight_qty_unit_kg === '0.1' || p['_weight_qty_unit_kg'] === '0.1';
     }
 
+    /** כמו effective_mode ב-Liquid — לא תלוי ב-data-attribute שעלול להיות לא מעודכן אחרי Section. */
+    function purchaseModeFromCartItem(item) {
+      if (!item) return 'unit';
+      var p = item.properties || {};
+      var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+      var purchase_mode_prop = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
+      var effective_mode = '';
+      if (wk === '0.1') {
+        effective_mode = 'weight';
+      } else if (purchase_mode_prop === 'unit') {
+        effective_mode = 'unit';
+      } else if (purchase_mode_prop === 'weight') {
+        effective_mode = 'weight';
+      } else if (item.unit_price_measurement) {
+        var refU = String(item.unit_price_measurement.reference_unit || '')
+          .trim()
+          .toLowerCase();
+        if ((refU === 'kg' || refU === 'g') && purchase_mode_prop !== 'unit') {
+          effective_mode = 'weight';
+        }
+      }
+      if (!effective_mode) {
+        var qtyStr = String(item.quantity != null ? item.quantity : '');
+        if (qtyStr.indexOf('.') >= 0) {
+          effective_mode = 'weight';
+        }
+      }
+      return effective_mode || 'unit';
+    }
+
+    function syncDrawerRowPurchaseModeAttrs(row, item) {
+      if (!row || !item) return;
+      var mode = purchaseModeFromCartItem(item);
+      row.setAttribute('data-purchase-mode', mode);
+      if (cartItemHasTenthsWeightProp(item)) {
+        row.setAttribute('data-weight-qty-unit-kg', '0.1');
+      } else {
+        row.removeAttribute('data-weight-qty-unit-kg');
+      }
+    }
+
     /** סכום שורה מ-Shopify; עם תמחור לפי 0.1 ק״ג final_line_price כבר נכון — בלי חלוקה ב-10. */
     function adjustedLineCents(item) {
       var raw = cents(item.final_line_price);
@@ -355,7 +396,9 @@
         var priceWrap = row.querySelector('[data-unit-price]');
         if (!priceWrap) return;
 
-        var rowMode = row.getAttribute('data-purchase-mode');
+        syncDrawerRowPurchaseModeAttrs(row, item);
+        var rowMode = purchaseModeFromCartItem(item);
+
         if (
           rowMode === 'weight' &&
           item.unit_price != null &&
@@ -364,6 +407,10 @@
         ) {
           priceWrap.innerHTML = '';
           appendCartDrawerUnitPriceRow(priceWrap, item);
+          return;
+        }
+
+        if (rowMode === 'weight') {
           return;
         }
 

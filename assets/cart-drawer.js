@@ -162,6 +162,12 @@ class CartDrawer extends HTMLElement {
         this.applyPanelAnchorPosition();
         requestAnimationFrame(() => this.applyPanelAnchorPosition());
       }, 0);
+      if (typeof window.updateCartUIFromCart === 'function') {
+        fetch(themeCartJsUrl())
+          .then((r) => r.json())
+          .then((cart) => window.updateCartUIFromCart(cart))
+          .catch(() => {});
+      }
     });
   }
 
