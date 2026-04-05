@@ -53,7 +53,7 @@
         "title": "המוצרים שלנו",
         "heading_size": "hxl",
         "image_ratio": "square",
-        "columns_desktop": 5,
+        "columns_desktop": 1,
         "color_scheme": "",
         "show_view_all": false,
         "columns_mobile": "1",
