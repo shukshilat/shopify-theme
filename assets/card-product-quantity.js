@@ -178,13 +178,22 @@
     return {};
   }
 
-  /** תואם ל־cart-drawer / product-form: איך נקבע מצב שורה בעגלה */
+  /** זהה ל־purchaseModeFromCartItem בעגלה — חובה לשורות משקל בלי מאפיינים מלאים ב־JSON */
   function linePurchaseModeFromItem(item) {
+    if (typeof window.themePurchaseModeFromCartItem === 'function') {
+      return window.themePurchaseModeFromCartItem(item);
+    }
     const p = propsFromCartItem(item);
     const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
     if (wk === '0.1') return 'weight';
     const pm = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
     if (pm === 'weight' || pm === 'unit') return pm;
+    if (item.unit_price_measurement) {
+      const refU = String(item.unit_price_measurement.reference_unit || '')
+        .trim()
+        .toLowerCase();
+      if ((refU === 'kg' || refU === 'g') && pm !== 'unit') return 'weight';
+    }
     const qtyStr = String(item.quantity ?? '');
     if (qtyStr.includes('.')) return 'weight';
     return 'unit';
@@ -305,6 +314,8 @@
     });
   }
 
+  window.themeSyncCardQuantityRootFromCart = syncOneCardRootFromCart;
+
   function refreshAllCardsFromServerCart() {
     fetch(themeCartJsUrl())
       .then((r) => r.json())
@@ -384,10 +395,4 @@
   window.addEventListener('pageshow', (ev) => {
     if (ev.persisted) refreshAllCardsFromServerCart();
   });
-
-  if (typeof subscribe !== 'undefined' && typeof PUB_SUB_EVENTS !== 'undefined') {
-    subscribe(PUB_SUB_EVENTS.cartUpdate, () => {
-      refreshAllCardsFromServerCart();
-    });
-  }
 })();

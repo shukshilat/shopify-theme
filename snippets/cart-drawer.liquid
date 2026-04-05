@@ -369,6 +369,8 @@
       return effective_mode || 'unit';
     }
 
+    window.themePurchaseModeFromCartItem = purchaseModeFromCartItem;
+
     function kgFromCartWeightItem(item) {
       var q = Number(item.quantity);
       if (!isFinite(q) || q <= 0) return null;

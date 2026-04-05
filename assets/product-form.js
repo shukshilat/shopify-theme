@@ -430,6 +430,26 @@ if (!customElements.get('product-form')) {
         }
       }
 
+      syncCardQtyFromCartResponse(finalResponse) {
+        const form = this.form;
+        if (!form || !form.classList.contains('card-product-qty__form')) return;
+        if (typeof window.themeSyncCardQuantityRootFromCart !== 'function') return;
+        const root = this.closest('[data-card-quantity-root]');
+        if (!root) return;
+        const cartLike =
+          finalResponse && Array.isArray(finalResponse.items) ? finalResponse : null;
+        if (cartLike) {
+          window.themeSyncCardQuantityRootFromCart(root, cartLike);
+          return;
+        }
+        fetch(themeCartJsUrl())
+          .then((r) => r.json())
+          .then((cart) => {
+            window.themeSyncCardQuantityRootFromCart(root, cart);
+          })
+          .catch(() => {});
+      }
+
       onSubmitHandler(evt) {
         evt.preventDefault();
         if (this.submitButton.getAttribute('aria-disabled') === 'true') return;
@@ -603,6 +623,7 @@ if (!customElements.get('product-form')) {
                           CartPerformance.measure('add:paint-updated-sections', () => {
                             this.paintCartUIAfterAdd(finalResponse);
                           });
+                          this.syncCardQtyFromCartResponse(finalResponse);
                         });
                       },
                       { once: true }
@@ -612,6 +633,7 @@ if (!customElements.get('product-form')) {
                     CartPerformance.measure('add:paint-updated-sections', () => {
                       this.paintCartUIAfterAdd(finalResponse);
                     });
+                    this.syncCardQtyFromCartResponse(finalResponse);
                   }
                 });
               })
