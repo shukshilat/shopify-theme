@@ -64,15 +64,13 @@
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}">
-  {%- liquid
-    assign heading_label = section.settings.heading_custom_override | default: '' | strip
-    if heading_label == blank
-      assign heading_label = collection.title
-    endif
-  -%}
+  {%- comment -%}
+    כותרת = תמיד שם האוסף מ-Admin (פירות, ירקות וכו'). לא משתמשים בדריסת טקסט מהעורך — נשמר שם "מוצרים" ומסתיר את שם האוסף.
+    גיבוי: page_title (SEO) אם title ריק.
+  {%- endcomment -%}
   {%- if section.settings.show_collection_heading -%}
     <div class="collection-page-heading page-width">
-      <h1 class="collection-page-heading__title">{{ heading_label | escape }}</h1>
+      <h1 class="collection-page-heading__title">{{ collection.title | default: page_title | escape }}</h1>
       {%- if section.settings.show_heading_collection_description and collection.description != blank -%}
         <div class="collection-page-heading__description rte">{{ collection.description }}</div>
       {%- endif -%}
@@ -291,13 +289,6 @@
       "id": "show_collection_heading",
       "default": true,
       "label": "Show title above filters and products"
-    },
-    {
-      "type": "text",
-      "id": "heading_custom_override",
-      "label": "Custom title (optional)",
-      "info": "Leave empty to show the collection name (e.g. פירות). Fill only if you want a fixed title instead.",
-      "default": ""
     },
     {
       "type": "checkbox",
