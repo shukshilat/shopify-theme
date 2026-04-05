@@ -181,7 +181,7 @@
       "settings": {
         "color_scheme": "scheme-1",
         "bonuses_heading": "הבונוסים שלנו",
-        "heading_size": "h1",
+        "heading_size": "h0",
         "about_label": "אודות האתר",
         "about_link": "/pages/about",
         "branches_title": "סניפים",
