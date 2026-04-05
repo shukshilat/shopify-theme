@@ -123,7 +123,7 @@
       "type": "featured-collection",
       "settings": {
         "collection": "all",
-        "products_to_show": 6,
+        "products_to_show": 10,
         "title": "המלצות השבוע",
         "heading_size": "h2",
         "description": "",
