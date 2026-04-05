@@ -133,7 +133,9 @@
     const unitPanel = root.querySelector('[data-card-panel="unit"]');
     const weightPanel = root.querySelector('[data-card-panel="weight"]');
     if (unitPanel && weightPanel) {
-      const mode = form.querySelector('input[name="purchase_mode"]:checked')?.value;
+      const mode =
+        form.querySelector('input[name="purchase_mode"]:checked')?.value ||
+        form.querySelector('input[name="purchase_mode"][type="hidden"]')?.value;
       if (mode === 'weight') {
         unitPanel.classList.add('hidden');
         unitPanel.setAttribute('hidden', '');
@@ -147,6 +149,149 @@
       }
     }
     updatePricing(root);
+  }
+
+  function themeCartJsUrl() {
+    if (typeof window.Shopify !== 'undefined' && window.Shopify.routes && window.Shopify.routes.root) {
+      return `${window.Shopify.routes.root}cart.js`;
+    }
+    return '/cart.js';
+  }
+
+  /** תואם ל־cart-drawer / product-form: איך נקבע מצב שורה בעגלה */
+  function linePurchaseModeFromItem(item) {
+    const p = item.properties || {};
+    const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+    if (wk === '0.1') return 'weight';
+    const pm = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
+    if (pm === 'weight' || pm === 'unit') return pm;
+    const qtyStr = String(item.quantity ?? '');
+    if (qtyStr.includes('.')) return 'weight';
+    return 'unit';
+  }
+
+  /** ק״ג לתצוגה בכרטיס — תואם ל־lineItemQuantityAsKg ב־product-form.js */
+  function lineItemQtyAsKgForCard(item, form) {
+    const p = item.properties || {};
+    const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+    const q = Number(item.quantity);
+    if (!Number.isFinite(q)) return 0;
+    if (wk === '0.1') return q / 10;
+    const wb = form?.dataset?.weightBehavior || '';
+    if (wb === 'grams') return q / 1000;
+    if (wb === 'kg_tenths') return q / 10;
+    return q;
+  }
+
+  function snapUnitQuantityForForm(form, raw) {
+    const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+    const inc = parseInt(form.dataset.qtyIncrement || '1', 10) || 1;
+    const maxStr = form.dataset.qtyMax;
+    const max = maxStr && maxStr !== '' ? parseInt(maxStr, 10) : null;
+    let q = parseInt(String(raw), 10);
+    if (Number.isNaN(q)) q = min;
+    q = Math.max(min, q);
+    if (inc > 1) {
+      const k = Math.ceil((q - min) / inc);
+      q = min + k * inc;
+    }
+    if (max != null && !Number.isNaN(max)) q = Math.min(q, max);
+    return Math.max(1, q);
+  }
+
+  function setInputValueNotify(el, value) {
+    if (!el) return;
+    el.value = value;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  /**
+   * אחרי ריענון דף / חזרה לקטלוג — משחזר מתג יחידה/משקל וכמויות לפי העגלה (Shopify כבר שומרת properties).
+   */
+  function syncOneCardRootFromCart(root, cart) {
+    const form = root.querySelector('form.card-product-qty__form');
+    if (!form || !cart || !Array.isArray(cart.items)) return;
+
+    const variantInput = form.querySelector('[name="id"]');
+    if (!variantInput) return;
+    const variantId = Number(variantInput.value);
+    if (!Number.isFinite(variantId)) return;
+
+    const items = cart.items.filter((it) => Number(it.variant_id) === variantId);
+    const weightRadio = form.querySelector('input[name="purchase_mode"][value="weight"]');
+    const unitRadio = form.querySelector('input[name="purchase_mode"][value="unit"]');
+    const hiddenMode = form.querySelector('input[name="purchase_mode"][type="hidden"]');
+    const hasDualMode = Boolean(weightRadio && unitRadio);
+    const min = parseInt(form.dataset.qtyMin || '1', 10) || 1;
+
+    let weightKg = 0;
+    let unitQty = 0;
+    for (const it of items) {
+      const mode = linePurchaseModeFromItem(it);
+      if (mode === 'weight') {
+        const wb = form.dataset.weightBehavior || '';
+        if (wb === 'property') continue;
+        weightKg += lineItemQtyAsKgForCard(it, form);
+      } else {
+        unitQty += Number(it.quantity) || 0;
+      }
+    }
+    weightKg = Math.round(weightKg * 1000) / 1000;
+
+    if (items.length === 0) {
+      if (hasDualMode && unitRadio) unitRadio.checked = true;
+      const uIn = form.querySelector('.js-card-qty-unit');
+      if (uIn) setInputValueNotify(uIn, String(min));
+      const kgIn = form.querySelector('.js-card-qty-kg');
+      if (kgIn) setInputValueNotify(kgIn, formatKgDisplayString(1));
+      syncPanels(root);
+      return;
+    }
+
+    if (hiddenMode) {
+      const forced = hiddenMode.value;
+      if (forced === 'weight') {
+        const kgIn = form.querySelector('.js-card-qty-kg');
+        const kgVal = weightKg > 0 ? weightKg : 0.1;
+        if (kgIn) setInputValueNotify(kgIn, formatKgDisplayString(kgVal));
+      } else {
+        const uIn = form.querySelector('.js-card-qty-unit');
+        const uVal = snapUnitQuantityForForm(form, unitQty > 0 ? unitQty : min);
+        if (uIn) setInputValueNotify(uIn, String(uVal));
+      }
+      syncPanels(root);
+      return;
+    }
+
+    if (hasDualMode) {
+      const preferWeight = weightKg > 0;
+      if (preferWeight) {
+        weightRadio.checked = true;
+        const kgIn = form.querySelector('.js-card-qty-kg');
+        if (kgIn) setInputValueNotify(kgIn, formatKgDisplayString(weightKg));
+      } else {
+        unitRadio.checked = true;
+        const uIn = form.querySelector('.js-card-qty-unit');
+        const uVal = snapUnitQuantityForForm(form, unitQty > 0 ? unitQty : min);
+        if (uIn) setInputValueNotify(uIn, String(uVal));
+      }
+    }
+
+    syncPanels(root);
+  }
+
+  function syncAllCardRootsFromCart(cart) {
+    document.querySelectorAll('[data-card-quantity-root]').forEach((root) => {
+      syncOneCardRootFromCart(root, cart);
+    });
+  }
+
+  function refreshAllCardsFromServerCart() {
+    fetch(themeCartJsUrl())
+      .then((r) => r.json())
+      .then((cart) => syncAllCardRootsFromCart(cart))
+      .catch(() => {});
   }
 
   function initKgStepper(root, onChange) {
@@ -215,5 +360,16 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-card-quantity-root]').forEach(init);
+    refreshAllCardsFromServerCart();
   });
+
+  window.addEventListener('pageshow', (ev) => {
+    if (ev.persisted) refreshAllCardsFromServerCart();
+  });
+
+  if (typeof subscribe !== 'undefined' && typeof PUB_SUB_EVENTS !== 'undefined') {
+    subscribe(PUB_SUB_EVENTS.cartUpdate, () => {
+      refreshAllCardsFromServerCart();
+    });
+  }
 })();
