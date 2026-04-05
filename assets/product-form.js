@@ -2,6 +2,30 @@
  * Cart quantity string for weight: grams (legacy) or kg decimal (matches per-kg variant price).
  * Used for both "משקל" and "יח'" when quantity means kg.
  */
+/** cart.js לפעמים מחזיר properties כמערך {name,value} — חייבים אובייקט לקריאת _purchase_mode */
+function normalizeLineItemProperties(raw) {
+  if (raw == null) return {};
+  if (Array.isArray(raw)) {
+    const o = {};
+    for (const e of raw) {
+      if (e && e.name != null) {
+        o[String(e.name)] = e.value != null && e.value !== '' ? String(e.value) : '';
+      }
+    }
+    return o;
+  }
+  if (typeof raw === 'object') return raw;
+  return {};
+}
+
+function lineItemProps(item) {
+  return normalizeLineItemProperties(item && item.properties);
+}
+
+if (typeof window !== 'undefined') {
+  window.themeLineItemProps = lineItemProps;
+}
+
 function computeCardKgQuantityValue(kg, behavior, min, max, increment) {
   const grams = Math.round(kg * 1000);
 
@@ -118,7 +142,7 @@ function themeCartJsUrl() {
 
 function lineItemQuantityAsKg(item) {
   if (!item) return 0;
-  const p = item.properties || {};
+  const p = lineItemProps(item);
   const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
   const q = Number(item.quantity);
   if (!Number.isFinite(q)) return 0;
@@ -134,7 +158,7 @@ function findPrevQtyKgForVariantMerge(cart, variantId, properties) {
   for (const it of items) {
     if (Number(it.variant_id) !== Number(variantId)) continue;
     if (wantMode != null && wantMode !== '') {
-      const p = it.properties || {};
+      const p = lineItemProps(it);
       if (String(p._purchase_mode || '') !== String(wantMode)) continue;
     }
     sumKg += lineItemQuantityAsKg(it);

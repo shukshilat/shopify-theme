@@ -158,9 +158,29 @@
     return '/cart.js';
   }
 
+  function propsFromCartItem(item) {
+    if (typeof window.themeLineItemProps === 'function') {
+      return window.themeLineItemProps(item);
+    }
+    const raw = item && item.properties;
+    if (!raw) return {};
+    if (Array.isArray(raw)) {
+      const o = {};
+      for (let i = 0; i < raw.length; i++) {
+        const e = raw[i];
+        if (e && e.name != null) {
+          o[String(e.name)] = e.value != null && e.value !== '' ? String(e.value) : '';
+        }
+      }
+      return o;
+    }
+    if (typeof raw === 'object') return raw;
+    return {};
+  }
+
   /** תואם ל־cart-drawer / product-form: איך נקבע מצב שורה בעגלה */
   function linePurchaseModeFromItem(item) {
-    const p = item.properties || {};
+    const p = propsFromCartItem(item);
     const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
     if (wk === '0.1') return 'weight';
     const pm = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
@@ -172,7 +192,7 @@
 
   /** ק״ג לתצוגה בכרטיס — תואם ל־lineItemQuantityAsKg ב־product-form.js */
   function lineItemQtyAsKgForCard(item, form) {
-    const p = item.properties || {};
+    const p = propsFromCartItem(item);
     const wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
     const q = Number(item.quantity);
     if (!Number.isFinite(q)) return 0;

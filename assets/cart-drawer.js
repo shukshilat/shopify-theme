@@ -155,20 +155,28 @@ class CartDrawer extends HTMLElement {
       if (inner != null) sectionElement.innerHTML = inner;
     });
 
-    setTimeout(() => {
-      this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
-      this.open();
+    const openAfterPaint = () => {
       setTimeout(() => {
-        this.applyPanelAnchorPosition();
-        requestAnimationFrame(() => this.applyPanelAnchorPosition());
-      }, 0);
-      if (typeof window.updateCartUIFromCart === 'function') {
-        fetch(themeCartJsUrl())
-          .then((r) => r.json())
-          .then((cart) => window.updateCartUIFromCart(cart))
-          .catch(() => {});
-      }
-    });
+        this.querySelector('#CartDrawer-Overlay').addEventListener('click', this.close.bind(this));
+        this.open();
+        setTimeout(() => {
+          this.applyPanelAnchorPosition();
+          requestAnimationFrame(() => this.applyPanelAnchorPosition());
+        }, 0);
+      });
+    };
+
+    if (typeof window.updateCartUIFromCart === 'function') {
+      fetch(themeCartJsUrl())
+        .then((r) => r.json())
+        .then((cart) => {
+          window.updateCartUIFromCart(cart);
+        })
+        .catch(() => {})
+        .finally(openAfterPaint);
+    } else {
+      openAfterPaint();
+    }
   }
 
   getSectionInnerHTML(html, selector = '.shopify-section') {

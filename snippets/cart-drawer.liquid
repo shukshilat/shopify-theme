@@ -261,6 +261,26 @@
       }
     }
 
+    function normalizeLineItemProperties(raw) {
+      if (raw == null) return {};
+      if (Array.isArray(raw)) {
+        var o = {};
+        for (var i = 0; i < raw.length; i++) {
+          var e = raw[i];
+          if (e && e.name != null) {
+            o[String(e.name)] = e.value != null && e.value !== '' ? String(e.value) : '';
+          }
+        }
+        return o;
+      }
+      if (typeof raw === 'object') return raw;
+      return {};
+    }
+
+    function lineItemProps(item) {
+      return normalizeLineItemProperties(item && item.properties);
+    }
+
     var UNIT_REF_LABELS = {
       kg: 'ק״ג',
       g: 'גרם',
@@ -286,7 +306,7 @@
     }
 
     function appendCartDrawerUnitPriceRow(priceWrap, item) {
-      var props = item.properties || {};
+      var props = lineItemProps(item);
       var mode = props._purchase_mode || props['_purchase_mode'];
       var m = item.unit_price_measurement;
 
@@ -349,6 +369,47 @@
       return effective_mode || 'unit';
     }
 
+    function kgFromCartWeightItem(item) {
+      var q = Number(item.quantity);
+      if (!isFinite(q) || q <= 0) return null;
+      var p = lineItemProps(item);
+      var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
+      if (wk === '0.1') return q / 10;
+      return q;
+    }
+
+    /** כש־cart.js בלי unit_price — מחיר מדף לק״ג מסכום שורה ומשקל (מונע הצגת ₪2 ל־0.1 ק״ג). */
+    function inferredShelfUnitPriceCents(item) {
+      var kg = kgFromCartWeightItem(item);
+      if (kg == null || kg < 0.00001) return null;
+      var lineCents = cents(item.final_line_price);
+      if (lineCents === null || lineCents < 0) return null;
+      return Math.round(lineCents / kg);
+    }
+
+    function augmentWeightLineItemForShelfPrice(item) {
+      if (!item) return item;
+      if (purchaseModeFromCartItem(item) !== 'weight') return item;
+      if (
+        item.unit_price != null &&
+        item.unit_price !== undefined &&
+        item.unit_price_measurement
+      ) {
+        return item;
+      }
+      var inferred = inferredShelfUnitPriceCents(item);
+      if (inferred === null) return item;
+      var out = {};
+      for (var k in item) {
+        if (Object.prototype.hasOwnProperty.call(item, k)) {
+          out[k] = item[k];
+        }
+      }
+      out.unit_price = inferred;
+      out.unit_price_measurement = { reference_unit: 'kg', reference_value: 1 };
+      return out;
+    }
+
     function syncDrawerRowPurchaseModeAttrs(row, item) {
       if (!row || !item) return;
       var mode = purchaseModeFromCartItem(item);
@@ -399,18 +460,17 @@
         syncDrawerRowPurchaseModeAttrs(row, item);
         var rowMode = purchaseModeFromCartItem(item);
 
-        if (
-          rowMode === 'weight' &&
-          item.unit_price != null &&
-          item.unit_price !== undefined &&
-          item.unit_price_measurement
-        ) {
-          priceWrap.innerHTML = '';
-          appendCartDrawerUnitPriceRow(priceWrap, item);
-          return;
-        }
-
         if (rowMode === 'weight') {
+          var shelfItem = augmentWeightLineItemForShelfPrice(item);
+          if (
+            shelfItem.unit_price != null &&
+            shelfItem.unit_price !== undefined &&
+            shelfItem.unit_price_measurement
+          ) {
+            priceWrap.innerHTML = '';
+            appendCartDrawerUnitPriceRow(priceWrap, shelfItem);
+            return;
+          }
           return;
         }
 
@@ -445,7 +505,7 @@
 
     function formatDrawerQtyValueForItem(item) {
       if (!item) return '1';
-      var p = item.properties || {};
+      var p = lineItemProps(item);
       var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
       var q = Number(item.quantity);
       if (!isFinite(q)) return '1';
@@ -488,9 +548,9 @@
     }
 
     function cloneCartItemProperties(props) {
-      if (!props || typeof props !== 'object') return {};
+      var n = normalizeLineItemProperties(props);
       try {
-        return JSON.parse(JSON.stringify(props));
+        return JSON.parse(JSON.stringify(n));
       } catch (e) {
         return {};
       }
