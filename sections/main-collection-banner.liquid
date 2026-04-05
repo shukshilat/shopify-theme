@@ -38,10 +38,7 @@
 <div class="collection-hero {{ hero_modifier }}{{ hero_color_class }}{% if hero_modifier == 'collection-hero--with-image' %} gradient{% endif %}">
   <div class="collection-hero__inner page-width{% if hero_modifier == 'collection-hero--with-image' and settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
     <div class="collection-hero__text-wrapper">
-      <h1 class="collection-hero__title">
-        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        מוצרים
-      </h1>
+      <h1 class="collection-hero__title">{{ collection.title | escape }}</h1>
 
       {%- if section.settings.show_collection_description -%}
         <div class="collection-hero__description rte">{{ collection.description }}</div>

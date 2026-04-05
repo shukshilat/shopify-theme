@@ -72,10 +72,7 @@
   -%}
   {%- if section.settings.show_collection_heading -%}
     <div class="collection-page-heading page-width">
-      <h1 class="collection-page-heading__title">
-        <span class="visually-hidden">{{ 'sections.collection_template.title' | t }}: </span>
-        {{- heading_label | escape -}}
-      </h1>
+      <h1 class="collection-page-heading__title">{{ heading_label | escape }}</h1>
       {%- if section.settings.show_heading_collection_description and collection.description != blank -%}
         <div class="collection-page-heading__description rte">{{ collection.description }}</div>
       {%- endif -%}

@@ -371,7 +371,7 @@
     },
     "collection_template": {
       "empty": "לא נמצאו מוצרים",
-      "title": "מוצרים",
+      "title": "אוסף",
       "use_fewer_filters_html": "השתמשו בפחות מסננים או <a class=\"{{ class }}\" href=\"{{ link }}\">הסר הכל</a>"
     },
     "video": {
