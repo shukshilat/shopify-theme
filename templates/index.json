@@ -52,8 +52,8 @@
       "settings": {
         "title": "המוצרים שלנו",
         "heading_size": "hxl",
-        "image_ratio": "square",
-        "columns_desktop": 1,
+        "image_ratio": "adapt",
+        "columns_desktop": 3,
         "color_scheme": "",
         "show_view_all": false,
         "columns_mobile": "1",
