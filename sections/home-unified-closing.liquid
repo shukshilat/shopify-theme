@@ -21,10 +21,11 @@
   }
 
   .home-unified-{{ section.id }} .home-unified__bonus {
-    padding: 0;
-    border: none;
+    padding: 1.6rem 1.4rem;
+    border: 1px solid rgba(var(--color-foreground), 0.08);
+    border-radius: 1.2rem;
     box-shadow: none;
-    background: transparent;
+    background: rgba(var(--color-foreground), 0.03);
     text-align: center;
   }
 
@@ -45,24 +46,18 @@
     margin: 0;
   }
 
-  .home-unified-{{ section.id }} .home-unified__split {
-    margin-top: 3.6rem;
-    padding-top: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2.4rem;
-    align-items: start;
+  .home-unified-{{ section.id }} .home-unified__branches-block {
+    margin-top: 2.8rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
   }
 
-  .home-unified-{{ section.id }} .home-unified__about {
+  .home-unified-{{ section.id }} .home-unified__about-block {
+    margin-top: 2.4rem;
     display: flex;
     justify-content: center;
-  }
-
-  @media screen and (min-width: 750px) {
-    .home-unified-{{ section.id }} .home-unified__about {
-      justify-content: flex-start;
-    }
+    width: 100%;
   }
 
   .home-unified-{{ section.id }} .home-unified__btn {
@@ -88,7 +83,9 @@
   }
 
   .home-unified-{{ section.id }} .home-unified__branches {
-    text-align: center;
+    text-align: start;
+    min-width: 0;
+    max-width: 52rem;
   }
 
   .home-unified-{{ section.id }} .home-unified__branches-title {
@@ -112,7 +109,7 @@
   }
 
   .home-unified-{{ section.id }} .home-unified__newsletter {
-    margin-top: 3.6rem;
+    margin-top: 2.8rem;
     padding-top: 0;
     text-align: center;
     max-width: 52rem;
@@ -140,14 +137,6 @@
       text-align: right;
     }
 
-    .home-unified-{{ section.id }} .home-unified__split {
-      grid-template-columns: 1fr 1.2fr;
-      gap: 3rem;
-    }
-
-    .home-unified-{{ section.id }} .home-unified__branches {
-      text-align: end;
-    }
   }
 {%- endstyle -%}
 
@@ -176,14 +165,7 @@
       </ul>
     {%- endif -%}
 
-    <div class="home-unified__split">
-      <div class="home-unified__about">
-        {%- if section.settings.about_label != blank -%}
-          <a class="home-unified__btn" href="{{ section.settings.about_link | default: '/pages/about' }}">
-            {{ section.settings.about_label | escape }}
-          </a>
-        {%- endif -%}
-      </div>
+    <div class="home-unified__branches-block">
       <div class="home-unified__branches">
         {%- if section.settings.branches_title != blank -%}
           <h2 class="home-unified__branches-title">{{ section.settings.branches_title | escape }}</h2>
@@ -192,6 +174,14 @@
           <div class="home-unified__branches-text rte">{{ section.settings.branches_text }}</div>
         {%- endif -%}
       </div>
+    </div>
+
+    <div class="home-unified__about-block">
+      {%- if section.settings.about_label != blank -%}
+        <a class="home-unified__btn" href="{{ section.settings.about_link | default: '/pages/about' }}">
+          {{ section.settings.about_label | escape }}
+        </a>
+      {%- endif -%}
     </div>
 
     {%- if section.settings.show_newsletter -%}
