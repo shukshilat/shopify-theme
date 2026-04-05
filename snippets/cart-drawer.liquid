@@ -344,14 +344,29 @@
     }
 
     function cartItemHasTenthsWeightProp(item) {
-      var p = item.properties || {};
+      var p = lineItemProps(item);
       return p._weight_qty_unit_kg === '0.1' || p['_weight_qty_unit_kg'] === '0.1';
+    }
+
+    /**
+     * cart.js לעיתים בלי properties / בלי unit_price_measurement — ה-HTML מהשרת עדיין נכון.
+     * סדר: מאפיינים מפורשים → data מהדף (Liquid) → היוריסטיקה על ה-JSON.
+     */
+    function resolveDrawerRowMode(row, item) {
+      if (!item) return 'unit';
+      var p = lineItemProps(item);
+      var ex = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
+      if (ex === 'weight' || ex === 'unit') return ex;
+      if (String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim() === '0.1') return 'weight';
+      var liquid = row && row.getAttribute('data-purchase-mode');
+      if (liquid === 'weight' || liquid === 'unit') return liquid;
+      return purchaseModeFromCartItem(item);
     }
 
     /** כמו effective_mode ב-Liquid — לא תלוי ב-data-attribute שעלול להיות לא מעודכן אחרי Section. */
     function purchaseModeFromCartItem(item) {
       if (!item) return 'unit';
-      var p = item.properties || {};
+      var p = lineItemProps(item);
       var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
       var purchase_mode_prop = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
       var effective_mode = '';
@@ -380,27 +395,34 @@
 
     window.themePurchaseModeFromCartItem = purchaseModeFromCartItem;
 
-    function kgFromCartWeightItem(item) {
+    function kgFromCartWeightItem(item, row) {
       var q = Number(item.quantity);
       if (!isFinite(q) || q <= 0) return null;
       var p = lineItemProps(item);
       var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
       if (wk === '0.1') return q / 10;
+      if (
+        row &&
+        row.getAttribute('data-weight-qty-unit-kg') === '0.1' &&
+        String(p._purchase_mode || p['_purchase_mode'] || '').trim() !== 'unit'
+      ) {
+        return q / 10;
+      }
       return q;
     }
 
     /** כש־cart.js בלי unit_price — מחיר מדף לק״ג מסכום שורה ומשקל (מונע הצגת ₪2 ל־0.1 ק״ג). */
-    function inferredShelfUnitPriceCents(item) {
-      var kg = kgFromCartWeightItem(item);
+    function inferredShelfUnitPriceCents(item, row) {
+      var kg = kgFromCartWeightItem(item, row);
       if (kg == null || kg < 0.00001) return null;
       var lineCents = cents(item.final_line_price);
       if (lineCents === null || lineCents < 0) return null;
       return Math.round(lineCents / kg);
     }
 
-    function augmentWeightLineItemForShelfPrice(item) {
+    function augmentWeightLineItemForShelfPrice(item, row) {
       if (!item) return item;
-      if (purchaseModeFromCartItem(item) !== 'weight') return item;
+      if (resolveDrawerRowMode(row, item) !== 'weight') return item;
       if (
         item.unit_price != null &&
         item.unit_price !== undefined &&
@@ -408,8 +430,8 @@
       ) {
         return item;
       }
-      var inferred = inferredShelfUnitPriceCents(item);
-      if (inferred === null) return item;
+      var inferred = inferredShelfUnitPriceCents(item, row);
+      if (inferred == null) return item;
       var out = {};
       for (var k in item) {
         if (Object.prototype.hasOwnProperty.call(item, k)) {
@@ -423,9 +445,13 @@
 
     function syncDrawerRowPurchaseModeAttrs(row, item) {
       if (!row || !item) return;
-      var mode = purchaseModeFromCartItem(item);
+      var mode = resolveDrawerRowMode(row, item);
       row.setAttribute('data-purchase-mode', mode);
-      if (cartItemHasTenthsWeightProp(item)) {
+      var p = lineItemProps(item);
+      var explicitUnit = String(p._purchase_mode || p['_purchase_mode'] || '').trim() === 'unit';
+      var propTenths = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim() === '0.1';
+      var liquidTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
+      if (propTenths || (liquidTenths && !explicitUnit)) {
         row.setAttribute('data-weight-qty-unit-kg', '0.1');
       } else {
         row.removeAttribute('data-weight-qty-unit-kg');
@@ -469,10 +495,10 @@
         if (!priceWrap) return;
 
         syncDrawerRowPurchaseModeAttrs(row, item);
-        var rowMode = purchaseModeFromCartItem(item);
+        var rowMode = resolveDrawerRowMode(row, item);
 
         if (rowMode === 'weight') {
-          var shelfItem = augmentWeightLineItemForShelfPrice(item);
+          var shelfItem = augmentWeightLineItemForShelfPrice(item, row);
           if (
             shelfItem.unit_price != null &&
             shelfItem.unit_price !== undefined &&
@@ -485,15 +511,23 @@
           return;
         }
 
-        if (
-          rowMode === 'unit' &&
-          item.unit_price != null &&
-          item.unit_price !== undefined &&
-          unitPriceMeasurementIsKgOrG(item.unit_price_measurement)
-        ) {
-          priceWrap.innerHTML = '';
-          appendCartDrawerUnitPriceRow(priceWrap, item);
-          return;
+        if (rowMode === 'unit') {
+          if (
+            item.unit_price != null &&
+            item.unit_price !== undefined &&
+            unitPriceMeasurementIsKgOrG(item.unit_price_measurement)
+          ) {
+            priceWrap.innerHTML = '';
+            appendCartDrawerUnitPriceRow(priceWrap, item);
+            return;
+          }
+          if (priceWrap.querySelector('.cart-drawer__purchase-mode-note')) {
+            return;
+          }
+          /* cart.js לעיתים בלי unit_price — ה-Liquid כבר הדפיס מחיר לק״ג; לא להחליף במחיר וריאנט */
+          if (priceWrap.querySelector('.unit-price-custom')) {
+            return;
+          }
         }
 
         var orig = cents(item.original_price);
@@ -514,13 +548,17 @@
       });
     }
 
-    function formatDrawerQtyValueForItem(item) {
+    function formatDrawerQtyValueForItem(item, row) {
       if (!item) return '1';
       var p = lineItemProps(item);
       var wk = String(p._weight_qty_unit_kg || p['_weight_qty_unit_kg'] || '').trim();
       var q = Number(item.quantity);
       if (!isFinite(q)) return '1';
-      if (wk === '0.1') {
+      var tenthsDom = row && row.getAttribute('data-weight-qty-unit-kg') === '0.1';
+      var useTenths =
+        wk === '0.1' ||
+        (tenthsDom && String(p._purchase_mode || p['_purchase_mode'] || '').trim() !== 'unit');
+      if (useTenths) {
         var kg = Math.round((q / 10) * 1000) / 1000;
         var s = kg.toFixed(3).replace(/\.?0+$/, '');
         return s.length ? s : String(kg);
@@ -542,7 +580,8 @@
         var inp = document.getElementById('qty-' + line);
         if (!inp) return;
         if (active === inp) return;
-        inp.value = formatDrawerQtyValueForItem(item);
+        var row = document.getElementById('CartDrawer-Item-' + line);
+        inp.value = formatDrawerQtyValueForItem(item, row);
       });
     }
 

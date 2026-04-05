@@ -199,6 +199,41 @@
     return 'unit';
   }
 
+  /**
+   * סנכרון כרטיס↔עגלה: בכרטיס עם מצב כפוי (משקל בלבד / יחידות בלבד) כל שורות הוריאנט הן באותו מצב.
+   * בלי זה, cart.js בלי properties גורם לסיווג כ"יחידה" ואז מאפסים ק״ג ל־0.1 אחרי הוספת מוצר אחר.
+   */
+  function linePurchaseModeFromItemForCard(item, form) {
+    if (!item) return 'unit';
+    if (form) {
+      const hiddenMode = form.querySelector('input[name="purchase_mode"][type="hidden"]');
+      const forced = hiddenMode && String(hiddenMode.value || '').trim();
+      if (forced === 'weight' || forced === 'unit') return forced;
+    }
+    const p = propsFromCartItem(item);
+    const explicitPm = String(p._purchase_mode || p['_purchase_mode'] || '').trim();
+    if (!explicitPm && form) {
+      const weightRadio = form.querySelector('input[name="purchase_mode"][value="weight"]');
+      const unitRadio = form.querySelector('input[name="purchase_mode"][value="unit"]');
+      if (weightRadio && unitRadio) {
+        try {
+          const vid = form.querySelector('[name="id"]')?.value;
+          if (vid) {
+            const raw = sessionStorage.getItem(cardQtyStorageKey(vid));
+            if (raw) {
+              const s = JSON.parse(raw);
+              if (s && s.mode === 'weight') return 'weight';
+              if (s && s.mode === 'unit') return 'unit';
+            }
+          }
+        } catch (e) {
+          /* private mode / quota */
+        }
+      }
+    }
+    return linePurchaseModeFromItem(item);
+  }
+
   /** ק״ג לתצוגה בכרטיס — תואם ל־lineItemQuantityAsKg ב־product-form.js */
   function lineItemQtyAsKgForCard(item, form) {
     const p = propsFromCartItem(item);
@@ -363,7 +398,7 @@
     let weightKg = 0;
     let unitQty = 0;
     for (const it of items) {
-      const mode = linePurchaseModeFromItem(it);
+      const mode = linePurchaseModeFromItemForCard(it, form);
       if (mode === 'weight') {
         const wb = form.dataset.weightBehavior || '';
         if (wb === 'property') continue;

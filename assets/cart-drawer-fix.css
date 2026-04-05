@@ -228,6 +228,12 @@ cart-drawer.drawer .cart-item .cart-item__price {
   font-size: 1.35rem !important;
 }
 
+/* גיבוי: כשיש מחיר מדף לק״ג — לא להציג גם מחיר וריאנט (למשל ₪3.99 ליד ₪39.90/ק״ג) */
+cart-drawer.drawer .cart-item__price:has(.unit-price-custom) .cart-item__unit-final,
+cart-drawer.drawer .cart-item__price:has(.unit-price-custom) .cart-item__unit-original {
+  display: none !important;
+}
+
 cart-drawer.drawer .cart-drawer__purchase-mode-note {
   margin-top: 0.25rem;
   font-size: 0.85em;
