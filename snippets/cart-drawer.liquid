@@ -339,10 +339,22 @@
           var vid = item.variant_id;
           if (vid == null) throw new Error('no variant');
           var props = cloneCartItemProperties(item.properties);
+          var wk = String(props._weight_qty_unit_kg || props['_weight_qty_unit_kg'] || '').trim();
+          var hadTenths = wk === '0.1';
           if (options.stripTenthsWeightProp) {
             delete props._weight_qty_unit_kg;
             delete props['_weight_qty_unit_kg'];
           }
+          var newQtyNum = Number(newQty);
+          if (isNaN(newQtyNum)) throw new Error('bad qty');
+          /*
+           * עם _weight_qty_unit_kg:0.1 העגלה שומרת כמות בשלמות עשיריות ק״ג (כמו product-form.js).
+           * שליחת עשרוני בק״ג בלי המאפיין גורמת ל-Shopify לאכסן 1 — נראה כאיפוס ל-0.1 ק״ג / ₪2.
+           */
+          var qtyForApi =
+            hadTenths && !options.stripTenthsWeightProp
+              ? Math.max(1, Math.round(newQtyNum * 10))
+              : newQtyNum;
           return fetch(cartChangeUrl(), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -353,7 +365,7 @@
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                items: [{ id: vid, quantity: newQty, properties: props }],
+                items: [{ id: vid, quantity: qtyForApi, properties: props }],
               }),
             });
           });
@@ -444,7 +456,7 @@
       var scaledTenths = row.getAttribute('data-weight-qty-unit-kg') === '0.1';
       setDrawerQtyLineLocked(line, true);
       if (scaledTenths) {
-        replaceWeightLineQuantity(line, v, { stripTenthsWeightProp: true })
+        replaceWeightLineQuantity(line, v)
           .catch(function () {
             fetch(cartJsUrl())
               .then(function (r) {
@@ -511,7 +523,7 @@
       setDrawerQtyLineLocked(line, true);
 
       if (scaledTenths) {
-        replaceWeightLineQuantity(line, nextDisplay, { stripTenthsWeightProp: true })
+        replaceWeightLineQuantity(line, nextDisplay)
           .catch(function () {
             fetch(cartJsUrl())
               .then(function (r) {
