@@ -632,3 +632,37 @@
   object-fit: contain !important;
   object-position: center center !important;
 }
+
+/* תווית “כחול לבן” — מוצרים בקולקציית פירות (פינה שמאלית עליונה של התמונה) */
+.card__media .card__blue-white-badge,
+.card__inner > .card__blue-white-badge--no-media {
+  position: absolute;
+  top: max(0.45rem, var(--image-padding, 0.45rem));
+  left: max(0.45rem, var(--image-padding, 0.45rem));
+  z-index: 2;
+  padding: 0.25em 0.55em 0.3em;
+  font-size: clamp(0.58rem, 1.85vw, 0.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+  background: linear-gradient(165deg, #1a56a8 0%, #0038b8 45%, #002a8a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 0.2rem;
+  box-shadow: 0 0.06rem 0.2rem rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+  max-width: min(11rem, calc(100% - 1.2rem));
+  text-align: center;
+  word-break: break-word;
+}
+
+.card__inner > .card__blue-white-badge--no-media {
+  top: 0.55rem;
+  left: 0.55rem;
+}
+
+.card--horizontal .card__media .card__blue-white-badge {
+  top: 0.4rem;
+  left: 0.4rem;
+  font-size: clamp(0.55rem, 1.6vw, 0.72rem);
+}

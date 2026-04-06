@@ -47,6 +47,14 @@
     if card_product.available and card_product.variants_count == 1 and card_quick_add_mode == 'standard'
       assign show_card_bottom_qty = true
     endif
+    assign show_blue_white_badge = false
+    for coll in card_product.collections
+      assign coll_title = coll.title | strip
+      assign coll_handle = coll.handle | strip | downcase
+      if coll_title == 'פירות' or coll_handle == 'פירות' or coll_handle == 'perot' or coll_handle == 'fruits' or coll_handle == 'fruit'
+        assign show_blue_white_badge = true
+      endif
+    endfor
   -%}
   <div class="card-wrapper product-card-wrapper underline-links-hover{% if show_card_bottom_qty %} product-card-wrapper--card-bottom-qty product-card-wrapper--premium-card-qty{% endif %}">
     <div
@@ -80,8 +88,24 @@
           endif
         -%}
         {% assign product_form_id = 'quick-add-' | append: section_id | append: card_product.id %}
+        {%- if show_blue_white_badge and card_product.featured_media == nil -%}
+          <span
+            class="card__blue-white-badge card__blue-white-badge--no-media"
+            aria-label="{{ 'products.product.blue_white_badge_label' | t }}"
+          >
+            {{- 'products.product.blue_white_badge' | t -}}
+          </span>
+        {%- endif -%}
         {%- if card_product.featured_media -%}
           <div class="card__media{% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }} gradient{% endif %}">
+            {%- if show_blue_white_badge -%}
+              <span
+                class="card__blue-white-badge"
+                aria-label="{{ 'products.product.blue_white_badge_label' | t }}"
+              >
+                {{- 'products.product.blue_white_badge' | t -}}
+              </span>
+            {%- endif -%}
             <div class="media media--transparent media--hover-effect">
               {% comment %}theme-check-disable ImgLazyLoading{% endcomment %}
               <img

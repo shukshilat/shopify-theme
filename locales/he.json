@@ -193,6 +193,8 @@
       },
       "share": "שתף מוצר זה",
       "sold_out": "אזל מהמלאי",
+      "blue_white_badge": "כחול לבן",
+      "blue_white_badge_label": "תוצרת כחול לבן",
       "unavailable": "לא זמין",
       "vendor": "ספק",
       "value_unavailable": "{{ option_value }} — לא זמין",
