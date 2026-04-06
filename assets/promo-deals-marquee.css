@@ -1,0 +1,79 @@
+.promo-deals-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.promo-deals-marquee__viewport {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 0.75rem;
+  /* אנימציה עקבית: שכבת הגלילה ב־LTR */
+  direction: ltr;
+}
+
+.promo-deals-marquee__track {
+  display: flex;
+  width: max-content;
+  animation: promo-deals-marquee-scroll var(--promo-marquee-duration, 45s) linear infinite;
+  will-change: transform;
+}
+
+.promo-deals-marquee:hover .promo-deals-marquee__track {
+  animation-play-state: paused;
+}
+
+.promo-deals-marquee__segment {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  padding-inline: 1.5rem;
+  direction: rtl;
+  white-space: nowrap;
+}
+
+.promo-deals-marquee__text {
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: rgb(var(--color-foreground));
+}
+
+.promo-deals-marquee__sep {
+  margin-inline: 1rem;
+  opacity: 0.45;
+  font-weight: 400;
+  user-select: none;
+}
+
+@keyframes promo-deals-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-deals-marquee__track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .promo-deals-marquee__segment {
+    white-space: normal;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    padding-block: 0.5rem;
+  }
+
+  .promo-deals-marquee__segment[aria-hidden='true'] {
+    display: none;
+  }
+}

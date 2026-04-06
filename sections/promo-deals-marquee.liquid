@@ -1,0 +1,145 @@
+{{ 'promo-deals-marquee.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #PromoDealsMarquee-{{ section.id }} {
+    --promo-marquee-duration: {{ section.settings.duration_seconds }}s;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign scheme = section.settings.color_scheme
+  if scheme == blank
+    assign scheme = 'scheme-1'
+  endif
+-%}
+
+<div class="isolate{% unless section.settings.full_width %} page-width{% endunless %}">
+  <div
+    id="PromoDealsMarquee-{{ section.id }}"
+    class="promo-deals-marquee color-{{ scheme }} gradient section-{{ section.id }}-padding{% if section.settings.full_width %} promo-deals-marquee--full-bleed{% endif %}"
+  >
+    <div class="{% if section.settings.full_width %}page-width{% endif %}">
+      <div
+        class="promo-deals-marquee__viewport"
+        role="region"
+        aria-label="{{ section.settings.accessibility_label | escape }}"
+      >
+        <div class="promo-deals-marquee__track">
+          {%- for copy in (1..2) -%}
+            <div class="promo-deals-marquee__segment"{% if copy == 2 %} aria-hidden="true"{% endif %}>
+              {%- if section.settings.deal_1 != blank -%}
+                <span class="promo-deals-marquee__text">{{ section.settings.deal_1 }}</span>
+              {%- endif -%}
+              {%- if section.settings.deal_1 != blank and section.settings.deal_2 != blank -%}
+                <span class="promo-deals-marquee__sep">|</span>
+              {%- endif -%}
+              {%- if section.settings.deal_2 != blank -%}
+                <span class="promo-deals-marquee__text">{{ section.settings.deal_2 }}</span>
+              {%- endif -%}
+              {%- if section.settings.deal_2 != blank and section.settings.deal_3 != blank -%}
+                <span class="promo-deals-marquee__sep">|</span>
+              {%- endif -%}
+              {%- if section.settings.deal_3 != blank -%}
+                <span class="promo-deals-marquee__text">{{ section.settings.deal_3 }}</span>
+              {%- endif -%}
+              <span class="promo-deals-marquee__sep">|</span>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "באנר מבצעים (גלילה)",
+  "tag": "section",
+  "class": "section section-promo-deals-marquee",
+  "settings": [
+    {
+      "type": "text",
+      "id": "accessibility_label",
+      "label": "תיאור לנגישות",
+      "default": "מבצעים"
+    },
+    {
+      "type": "textarea",
+      "id": "deal_1",
+      "label": "מבצע 1",
+      "default": "מבצע קילו תות ב- 25 ש\"ח"
+    },
+    {
+      "type": "textarea",
+      "id": "deal_2",
+      "label": "מבצע 2",
+      "default": "מבצע 2 חבילות אוכמניות ב- 35 ש\"ח  3 ב- 45 ש\"ח"
+    },
+    {
+      "type": "textarea",
+      "id": "deal_3",
+      "label": "מבצע 3",
+      "default": "מבצע תפוז רשת ב 9.90 לק\"ג"
+    },
+    {
+      "type": "range",
+      "id": "duration_seconds",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "label": "מהירות גלילה (שניות לסיבוב מלא)",
+      "default": 45
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "רוחב מלא",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "ערכת צבעים",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "ריווח עליון",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "max": 100,
+      "min": 0,
+      "step": 4,
+      "unit": "px",
+      "label": "ריווח תחתון",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "באנר מבצעים (גלילה)"
+    }
+  ]
+}
+{% endschema %}
