@@ -93,8 +93,8 @@
         "columns_desktop": 4,
         "color_scheme": "scheme-1",
         "show_view_all": false,
-        "columns_mobile": "1",
         "enable_carousel": true,
+        "columns_mobile": "1",
         "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 36
@@ -148,8 +148,8 @@
       "settings": {
         "collection": "all",
         "products_to_show": 10,
-        "title": "המלצות השבוע",
-        "heading_size": "hxl",
+        "title": "<em><strong>המלצות השבוע</strong></em>",
+        "heading_size": "hxxl",
         "description": "",
         "show_description": true,
         "description_style": "body",
