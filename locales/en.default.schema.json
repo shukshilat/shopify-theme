@@ -703,6 +703,10 @@
         },
         "swipe_on_mobile": {
           "label": "Carousel"
+        },
+        "enable_carousel": {
+          "label": "Category carousel (all breakpoints)",
+          "info": "Shows categories in a horizontal row with arrow buttons when there are more items than fit. Turn off to use a static grid; you can still enable “Carousel” below for mobile-only swipe."
         }
       },
       "blocks": {

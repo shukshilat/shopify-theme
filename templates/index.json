@@ -94,6 +94,7 @@
         "color_scheme": "scheme-1",
         "show_view_all": false,
         "columns_mobile": "1",
+        "enable_carousel": true,
         "swipe_on_mobile": true,
         "padding_top": 36,
         "padding_bottom": 36
