@@ -57,6 +57,17 @@ html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track
   white-space: nowrap;
 }
 
+/* כל מבצע בתוך “תג” נפרד — הפרדה ברורה ממבצע למבצע */
+.promo-deals-marquee__item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0.28em 0.95em 0.32em;
+  border-radius: 0.55em;
+  background: rgba(var(--color-foreground), 0.07);
+  box-shadow: inset 0 0 0 1px rgba(var(--color-foreground), 0.14);
+}
+
 .promo-deals-marquee__text {
   display: inline-block;
   font-size: clamp(1.35rem, 4.2vw, 2.65rem);
@@ -64,18 +75,21 @@ html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track
   line-height: 1.15;
   letter-spacing: 0.1em;
   color: rgb(var(--color-foreground));
-  /* “משוך” — הרחבה עדינה אופקית */
   transform: scaleX(1.06);
   transform-origin: center center;
 }
 
-.promo-deals-marquee__sep {
-  margin-inline: 1.35rem;
-  opacity: 0.4;
-  font-weight: 400;
-  font-size: clamp(1rem, 3vw, 1.75rem);
+/* מפריד אנכי בין מבצע למבצע */
+.promo-deals-marquee__divider {
+  flex: 0 0 auto;
+  width: 0.22rem;
+  height: clamp(1.85rem, 5vw, 3rem);
+  margin-inline: clamp(1.1rem, 3.2vw, 2rem);
+  border-radius: 999px;
+  background: rgba(var(--color-foreground), 0.38);
+  box-shadow: 0 0 0 1px rgba(var(--color-foreground), 0.08);
+  align-self: center;
   user-select: none;
-  transform: scaleX(1.06);
 }
 
 /* שלושה עותקים זהים — הזזה של שליש מרוחב המסילה = לולאה חלקה */

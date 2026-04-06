@@ -41,21 +41,29 @@
           {%- for copy in (1..3) -%}
             <div class="promo-deals-marquee__segment"{% if copy > 1 %} aria-hidden="true"{% endif %}>
               {%- if section.settings.deal_1 != blank -%}
-                <span class="promo-deals-marquee__text">{{ section.settings.deal_1 }}</span>
+                <span class="promo-deals-marquee__item">
+                  <span class="promo-deals-marquee__text">{{ section.settings.deal_1 }}</span>
+                </span>
               {%- endif -%}
               {%- if section.settings.deal_1 != blank and section.settings.deal_2 != blank -%}
-                <span class="promo-deals-marquee__sep">|</span>
+                <span class="promo-deals-marquee__divider" aria-hidden="true"></span>
               {%- endif -%}
               {%- if section.settings.deal_2 != blank -%}
-                <span class="promo-deals-marquee__text">{{ section.settings.deal_2 }}</span>
+                <span class="promo-deals-marquee__item">
+                  <span class="promo-deals-marquee__text">{{ section.settings.deal_2 }}</span>
+                </span>
               {%- endif -%}
               {%- if section.settings.deal_2 != blank and section.settings.deal_3 != blank -%}
-                <span class="promo-deals-marquee__sep">|</span>
+                <span class="promo-deals-marquee__divider" aria-hidden="true"></span>
               {%- endif -%}
               {%- if section.settings.deal_3 != blank -%}
-                <span class="promo-deals-marquee__text">{{ section.settings.deal_3 }}</span>
+                <span class="promo-deals-marquee__item">
+                  <span class="promo-deals-marquee__text">{{ section.settings.deal_3 }}</span>
+                </span>
               {%- endif -%}
-              <span class="promo-deals-marquee__sep">|</span>
+              {%- if section.settings.deal_1 != blank or section.settings.deal_2 != blank or section.settings.deal_3 != blank -%}
+                <span class="promo-deals-marquee__divider" aria-hidden="true"></span>
+              {%- endif -%}
             </div>
           {%- endfor -%}
         </div>
