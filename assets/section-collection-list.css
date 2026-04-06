@@ -194,8 +194,3 @@
 .section-collection-list .collection-list__slider-buttons--arrows-only {
   gap: 2rem;
 }
-
-/* RTL: חיצים בסדר קריאה */
-[dir='rtl'] .section-collection-list .slider-buttons {
-  flex-direction: row-reverse;
-}
