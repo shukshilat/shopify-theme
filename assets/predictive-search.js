@@ -293,7 +293,12 @@ class PredictiveSearch extends SearchForm {
         seen.add(href);
 
         const title = (link.textContent || '').trim();
-        const imgEl = li.querySelector('.card__media img[src], .card__inner img[src], img[src]');
+        /* תמונת מוצר בלבד — לא אייקון "מיוצר בישראל" שנמצא לפניה ב־.card__media */
+        const imgEl =
+          li.querySelector('.card__media .media img[src]') ||
+          li.querySelector('.card__inner .media img[src]') ||
+          li.querySelector('.card__media img[src]:not(.card__blue-white-badge__icon)') ||
+          li.querySelector('img[src]:not(.card__blue-white-badge__icon)');
         const image = imgEl ? imgEl.getAttribute('src') || '' : '';
         const priceEl = li.querySelector('.price');
         const price = priceEl ? priceEl.textContent.replace(/\s+/g, ' ').trim() : '';
