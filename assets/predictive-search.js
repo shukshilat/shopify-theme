@@ -300,8 +300,17 @@ class PredictiveSearch extends SearchForm {
           li.querySelector('.card__media img[src]:not(.card__blue-white-badge__icon)') ||
           li.querySelector('img[src]:not(.card__blue-white-badge__icon)');
         const image = imgEl ? imgEl.getAttribute('src') || '' : '';
+        const unitPriceEl = li.querySelector('.unit-price-custom');
         const priceEl = li.querySelector('.price');
-        const price = priceEl ? priceEl.textContent.replace(/\s+/g, ' ').trim() : '';
+        let price = '';
+        if (unitPriceEl) {
+          price = unitPriceEl.textContent.replace(/\s+/g, ' ').trim();
+        } else if (priceEl) {
+          const saleOnly = priceEl.querySelector('.price-item--sale.price-item--last');
+          price = saleOnly
+            ? saleOnly.textContent.replace(/\s+/g, ' ').trim()
+            : priceEl.textContent.replace(/\s+/g, ' ').trim();
+        }
 
         products.push({ title, url: href, image, price });
       });

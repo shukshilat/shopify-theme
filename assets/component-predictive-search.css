@@ -185,6 +185,12 @@ predictive-search[loading] .predictive-search__results-groups-wrapper ~ .predict
   background-color: transparent;
 }
 
+/* בחיפוש חי: אם יש מחיר לק״ג — להסתיר מחיר רגיל/מבצע ולהשאיר רק שורת היחידה */
+.predictive-search .price__container:has(.unit-price-custom) > .price__regular,
+.predictive-search .price__container:has(.unit-price-custom) > .price__sale {
+  display: none !important;
+}
+
 .predictive-search__item .price {
   color: rgba(var(--color-foreground), 0.7);
   font-size: 1.2rem;
