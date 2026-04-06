@@ -83,7 +83,14 @@ class PredictiveSearch extends SearchForm {
 
   onKeyup(event) {
     if (!this.getQuery().length) this.close(true);
-    event.preventDefault();
+
+    switch (event.code) {
+      case 'ArrowUp':
+      case 'ArrowDown':
+      case 'Enter':
+        event.preventDefault();
+        break;
+    }
 
     switch (event.code) {
       case 'ArrowUp':
@@ -168,6 +175,12 @@ class PredictiveSearch extends SearchForm {
   }
 
   getSearchResults(searchTerm) {
+    /* ביטול בקשות קודמות — בלי זה תשובות ישנות דורסות חיפוש חדש והממשק נראה “תקוע” */
+    this.abortController.abort();
+    this.abortController = new AbortController();
+    const signal = this.abortController.signal;
+    const termSnapshot = searchTerm;
+
     const queryKey = searchTerm.replace(/\s+/g, '-').toLowerCase();
     this.setLiveRegionLoadingState();
 
@@ -188,13 +201,25 @@ class PredictiveSearch extends SearchForm {
     const searchBase =
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
 
-    const signal = this.abortController.signal;
     const isHebrewLocale =
       (typeof document !== 'undefined' && /^he/i.test(document.documentElement.lang || '')) ||
       (typeof window.Shopify !== 'undefined' && window.Shopify.locale && /^he/i.test(String(window.Shopify.locale))) ||
       (typeof window.themeLocale === 'string' && /^he/i.test(window.themeLocale));
 
     const loadMarkup = async () => {
+      /* 1) JSON — הכי קטן ומהיר; מתאים גם לעברית ולאות אחת */
+      try {
+        const response = await fetch(jsonUrl, { signal });
+        if (response.ok) {
+          const data = await response.json();
+          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
+          if (built) return built;
+        }
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
+      /* 2) מקטע suggest HTML (לא עברית — היסטורית חלש ל-RTL) */
       if (!isHebrewLocale) {
         try {
           const response = await fetch(htmlUrl, { signal });
@@ -212,28 +237,18 @@ class PredictiveSearch extends SearchForm {
         }
       }
 
-      /* suggest.json — גם בעברית; מחזיר מוצרים/שאילתות מהר גם לאות אחת כשהחנות תומכת */
-      try {
-        const response = await fetch(jsonUrl, { signal });
-        if (response.ok) {
-          const data = await response.json();
-          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
-          if (built) return built;
-        }
-      } catch (error) {
-        if (error?.name === 'AbortError' || error?.code === 20) throw error;
-      }
-
-      try {
-        const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
-        if (fromPage.includes('id="predictive-search-results"')) return fromPage;
-      } catch (error) {
-        if (error?.name === 'AbortError' || error?.code === 20) throw error;
-      }
-
+      /* 3) סקשן חיפוש — קל יותר מדף מלא */
       try {
         const extracted = await PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal);
         if (extracted.includes('id="predictive-search-results"')) return extracted;
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
+      /* 4) דף חיפוש מלא — כבד; רק אם אין תוצאות לפני */
+      try {
+        const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
+        if (fromPage.includes('id="predictive-search-results"')) return fromPage;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -243,6 +258,7 @@ class PredictiveSearch extends SearchForm {
 
     loadMarkup()
       .then((resultsMarkup) => {
+        if (this.getQuery() !== termSnapshot) return;
         this.allPredictiveSearchInstances.forEach((predictiveSearchInstance) => {
           predictiveSearchInstance.cachedResults[queryKey] = resultsMarkup;
         });

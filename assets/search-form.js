@@ -6,12 +6,12 @@ class SearchForm extends HTMLElement {
 
     if (this.input) {
       this.input.form.addEventListener('reset', this.onFormReset.bind(this));
-      /* חיפוש חי: עיכוב קצר כדי שההצעות יופיעו כבר מהאות הראשונה בלי עומס כפול */
+      /* חיפוש חי: עיכוב מינימלי; ביטול fetch ב-predictive-search מונע סערת בקשות */
       this.input.addEventListener(
         'input',
         debounce((event) => {
           this.onChange(event);
-        }, 60).bind(this)
+        }, 20).bind(this)
       );
     }
   }
