@@ -6,9 +6,20 @@
 .promo-deals-marquee__viewport {
   overflow: hidden;
   width: 100%;
-  border-radius: 0.75rem;
+  max-width: 100%;
+  border-radius: 0.35rem;
   /* אנימציה עקבית: שכבת הגלילה ב־LTR */
   direction: ltr;
+  /* עמעום איטי בקצוות — הכיתוב נכנס ויוצא “נמס” */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  padding-block: 0.35rem;
 }
 
 .promo-deals-marquee__track {
@@ -16,7 +27,7 @@
   width: max-content;
   flex-shrink: 0;
   /* מימין לשמאל במסך: התוכן זז שמאלה (כניסה מימין) */
-  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 45s) linear infinite;
+  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 65s) linear infinite;
   will-change: transform;
 }
 
@@ -25,7 +36,7 @@
  * ב-prefers-reduced-motion: אותה גלילה במהירות כפולה (חייב לבוא אחרי הכלל עם html כדי לנצח כששניהם פעילים).
  */
 html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track {
-  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 45s) linear infinite !important;
+  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 65s) linear infinite !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -41,30 +52,38 @@ html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track
   align-items: center;
   gap: 0;
   flex-shrink: 0;
-  padding-inline: 1.5rem;
+  padding-inline: 2.5rem;
   direction: rtl;
   white-space: nowrap;
 }
 
 .promo-deals-marquee__text {
-  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: inline-block;
+  font-size: clamp(1.35rem, 4.2vw, 2.65rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.1em;
   color: rgb(var(--color-foreground));
+  /* “משוך” — הרחבה עדינה אופקית */
+  transform: scaleX(1.06);
+  transform-origin: center center;
 }
 
 .promo-deals-marquee__sep {
-  margin-inline: 1rem;
-  opacity: 0.45;
+  margin-inline: 1.35rem;
+  opacity: 0.4;
   font-weight: 400;
+  font-size: clamp(1rem, 3vw, 1.75rem);
   user-select: none;
+  transform: scaleX(1.06);
 }
 
+/* שלושה עותקים זהים — הזזה של שליש מרוחב המסילה = לולאה חלקה */
 @keyframes promo-deals-marquee-rtl {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-33.333333%, 0, 0);
   }
 }
