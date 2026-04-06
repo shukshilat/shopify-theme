@@ -15,6 +15,7 @@
 
   #PromoDealsMarquee-{{ section.id }} {
     --promo-marquee-duration: {{ section.settings.duration_seconds }}s;
+    --promo-marquee-duration-reduced: {{ section.settings.duration_seconds | times: 2 }}s;
   }
 {%- endstyle -%}
 

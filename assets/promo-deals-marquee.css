@@ -14,12 +14,25 @@
 .promo-deals-marquee__track {
   display: flex;
   width: max-content;
-  animation: promo-deals-marquee-scroll var(--promo-marquee-duration, 45s) linear infinite;
+  flex-shrink: 0;
+  /* מימין לשמאל במסך: התוכן זז שמאלה (כניסה מימין) */
+  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 45s) linear infinite;
   will-change: transform;
 }
 
-.promo-deals-marquee:hover .promo-deals-marquee__track {
-  animation-play-state: paused;
+/*
+ * ווידג'ט נגישות (html.a11y-reduce-motion *) מכריח animation-duration כמעט אפס על כל האלמנטים — כאן משחזרים לולאה אינסופית.
+ * ב-prefers-reduced-motion: אותה גלילה במהירות כפולה (חייב לבוא אחרי הכלל עם html כדי לנצח כששניהם פעילים).
+ */
+html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track {
+  animation: promo-deals-marquee-rtl var(--promo-marquee-duration, 45s) linear infinite !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-promo-deals-marquee .promo-deals-marquee__track,
+  html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track {
+    animation: promo-deals-marquee-rtl var(--promo-marquee-duration-reduced, 90s) linear infinite !important;
+  }
 }
 
 .promo-deals-marquee__segment {
@@ -47,33 +60,11 @@
   user-select: none;
 }
 
-@keyframes promo-deals-marquee-scroll {
+@keyframes promo-deals-marquee-rtl {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
     transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .promo-deals-marquee__track {
-    animation: none;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .promo-deals-marquee__segment {
-    white-space: normal;
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-    padding-block: 0.5rem;
-  }
-
-  .promo-deals-marquee__segment[aria-hidden='true'] {
-    display: none;
   }
 }
