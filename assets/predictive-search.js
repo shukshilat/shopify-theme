@@ -181,7 +181,7 @@ class PredictiveSearch extends SearchForm {
     const htmlUrl = `${suggestBase}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`;
     const jsonUrl = `${suggestBase.replace(/\/$/, '')}.json?${new URLSearchParams({
       q: searchTerm,
-      'resources[type]': 'query,product,collection,page,article',
+      'resources[type]': 'product,query,collection,page,article',
       'resources[limit]': '10',
       'resources[limit_scope]': 'each',
     }).toString()}`;
@@ -212,6 +212,18 @@ class PredictiveSearch extends SearchForm {
         }
       }
 
+      /* suggest.json — גם בעברית; מחזיר מוצרים/שאילתות מהר גם לאות אחת כשהחנות תומכת */
+      try {
+        const response = await fetch(jsonUrl, { signal });
+        if (response.ok) {
+          const data = await response.json();
+          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
+          if (built) return built;
+        }
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
       try {
         const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
         if (fromPage.includes('id="predictive-search-results"')) return fromPage;
@@ -224,18 +236,6 @@ class PredictiveSearch extends SearchForm {
         if (extracted.includes('id="predictive-search-results"')) return extracted;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
-      }
-
-      if (!isHebrewLocale) {
-        try {
-          const response = await fetch(jsonUrl, { signal });
-          if (!response.ok) throw new Error('json');
-          const data = await response.json();
-          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
-          if (built) return built;
-        } catch (error) {
-          if (error?.name === 'AbortError' || error?.code === 20) throw error;
-        }
       }
 
       return PredictiveSearch.buildMinimalFallbackMarkup(searchTerm);
