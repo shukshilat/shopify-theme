@@ -633,36 +633,39 @@
   object-position: center center !important;
 }
 
-/* תווית “כחול לבן” — מוצרים בקולקציית פירות (פינה שמאלית עליונה של התמונה) */
+/* אייקון “מיוצר בישראל” — מוצרים בקולקציית פירות (פינה שמאלית עליונה, קטן כדי לא להסתיר את המוצר) */
 .card__media .card__blue-white-badge,
 .card__inner > .card__blue-white-badge--no-media {
   position: absolute;
-  top: max(0.45rem, var(--image-padding, 0.45rem));
-  left: max(0.45rem, var(--image-padding, 0.45rem));
+  top: max(0.35rem, var(--image-padding, 0.35rem));
+  left: max(0.35rem, var(--image-padding, 0.35rem));
   z-index: 2;
-  padding: 0.25em 0.55em 0.3em;
-  font-size: clamp(0.58rem, 1.85vw, 0.75rem);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: 0.06em;
-  color: #ffffff;
-  background: linear-gradient(165deg, #1a56a8 0%, #0038b8 45%, #002a8a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 0.2rem;
-  box-shadow: 0 0.06rem 0.2rem rgba(0, 0, 0, 0.22);
+  display: block;
+  width: clamp(2.65rem, 8.5vw, 4rem);
+  max-width: min(26%, 4rem);
   pointer-events: none;
-  max-width: min(11rem, calc(100% - 1.2rem));
-  text-align: center;
-  word-break: break-word;
+  line-height: 0;
+  border-radius: 50%;
+  box-shadow: 0 0.06rem 0.28rem rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+
+.card__blue-white-badge__icon {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
 }
 
 .card__inner > .card__blue-white-badge--no-media {
-  top: 0.55rem;
-  left: 0.55rem;
+  top: 0.5rem;
+  left: 0.5rem;
 }
 
 .card--horizontal .card__media .card__blue-white-badge {
-  top: 0.4rem;
-  left: 0.4rem;
-  font-size: clamp(0.55rem, 1.6vw, 0.72rem);
+  top: 0.35rem;
+  left: 0.35rem;
+  width: clamp(2.4rem, 7vw, 3.5rem);
+  max-width: min(22%, 3.5rem);
 }
