@@ -1,7 +1,7 @@
 {% comment %}
   Predictive Search API does not support Hebrew — the storefront search still works.
   search.results must be iterated inside {% paginate %} or the array may be empty.
-  Section Rendering: GET /search?q=...&type=product&options[prefix]=last&section_id=search-predictive-fallback
+  Section Rendering: GET /search?q=...&type=product&options[prefix]=none|last&section_id=search-predictive-fallback
   List this section in templates/search.json or Section Rendering returns 404.
   Output dropdown markup only when query includes search-predictive-fallback (AJAX), not on full-page search.
 {% endcomment %}
@@ -12,7 +12,7 @@
   endif
 -%}
 {%- if spf_section_render and search.terms != blank -%}
-  {% paginate search.results by 10 %}
+  {% paginate search.results by 36 %}
     {%- liquid
       assign fallback_count = 0
       for item in search.results

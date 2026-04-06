@@ -1,3 +1,6 @@
+/** מקסימום מוצרים במגש החיפוש החי אחרי מיזוג API + סקשן (דף החיפוש המלא מציג הכל) */
+const PREDICTIVE_MERGED_MAX_PRODUCTS = 24;
+
 class PredictiveSearch extends SearchForm {
   constructor() {
     super();
@@ -192,12 +195,7 @@ class PredictiveSearch extends SearchForm {
     const suggestBase =
       typeof routes !== 'undefined' && routes.predictive_search_url ? routes.predictive_search_url : '/search/suggest';
     const htmlUrl = `${suggestBase}?q=${encodeURIComponent(searchTerm)}&section_id=predictive-search`;
-    const jsonUrl = `${suggestBase.replace(/\/$/, '')}.json?${new URLSearchParams({
-      q: searchTerm,
-      'resources[type]': 'product,query,collection,page,article',
-      'resources[limit]': '10',
-      'resources[limit_scope]': 'each',
-    }).toString()}`;
+    const suggestJsonRoot = suggestBase.replace(/\/$/, '');
     const searchBase =
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
 
@@ -207,19 +205,62 @@ class PredictiveSearch extends SearchForm {
       (typeof window.themeLocale === 'string' && /^he/i.test(window.themeLocale));
 
     const loadMarkup = async () => {
-      /* 1) JSON — הכי קטן ומהיר; מתאים גם לעברית ולאות אחת */
+      const jsonProductUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
+        q: searchTerm,
+        'resources[type]': 'product',
+        'resources[limit]': '10',
+        'resources[limit_scope]': 'each',
+      }).toString()}`;
+      const jsonMetaUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
+        q: searchTerm,
+        'resources[type]': 'query,collection',
+        'resources[limit]': '8',
+        'resources[limit_scope]': 'each',
+      }).toString()}`;
+
+      /* במקביל: עד 10 מוצרים מ-API + הצעות + עד 36 מוצרים מסקשן החנות (מיזוג ללא כפילויות) */
+      let rProd = null;
+      let rMeta = null;
+      let sectionHtml = '';
       try {
-        const response = await fetch(jsonUrl, { signal });
-        if (response.ok) {
-          const data = await response.json();
-          const built = PredictiveSearch.buildMarkupFromSuggestJson(data, searchTerm);
-          if (built) return built;
-        }
+        const results = await Promise.all([
+          fetch(jsonProductUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
+          fetch(jsonMetaUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
+          PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal).catch((err) => {
+            if (err?.name === 'AbortError' || err?.code === 20) throw err;
+            return '';
+          }),
+        ]);
+        rProd = results[0];
+        rMeta = results[1];
+        sectionHtml = typeof results[2] === 'string' ? results[2] : '';
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
-      /* 2) מקטע suggest HTML (לא עברית — היסטורית חלש ל-RTL) */
+      const sectionProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(sectionHtml);
+      const apiProducts = rProd?.resources?.results?.products || [];
+      const mergedProducts = PredictiveSearch.mergeProductListsForPreview(
+        apiProducts,
+        sectionProducts,
+        PREDICTIVE_MERGED_MAX_PRODUCTS
+      );
+      const qr = rMeta?.resources?.results || {};
+      const combinedData = {
+        resources: {
+          results: {
+            queries: qr.queries || [],
+            collections: qr.collections || [],
+            products: mergedProducts,
+            pages: [],
+            articles: [],
+          },
+        },
+      };
+
+      const fromMerge = PredictiveSearch.buildMarkupFromSuggestJson(combinedData, searchTerm);
+      if (fromMerge) return fromMerge;
+
       if (!isHebrewLocale) {
         try {
           const response = await fetch(htmlUrl, { signal });
@@ -237,15 +278,6 @@ class PredictiveSearch extends SearchForm {
         }
       }
 
-      /* 3) סקשן חיפוש — קל יותר מדף מלא */
-      try {
-        const extracted = await PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal);
-        if (extracted.includes('id="predictive-search-results"')) return extracted;
-      } catch (error) {
-        if (error?.name === 'AbortError' || error?.code === 20) throw error;
-      }
-
-      /* 4) דף חיפוש מלא — כבד; רק אם אין תוצאות לפני */
       try {
         const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
         if (fromPage.includes('id="predictive-search-results"')) return fromPage;
@@ -277,7 +309,7 @@ class PredictiveSearch extends SearchForm {
     const url = `${searchBase}?${new URLSearchParams({
       q: searchTerm,
       type: 'product',
-      'options[prefix]': 'last',
+      'options[prefix]': 'none',
     }).toString()}`;
     const response = await fetch(url, { signal, credentials: 'same-origin' });
     if (!response.ok) return '';
@@ -338,7 +370,7 @@ class PredictiveSearch extends SearchForm {
           results: {
             queries: [],
             collections: [],
-            products: products.slice(0, 10),
+            products: products.slice(0, PREDICTIVE_MERGED_MAX_PRODUCTS),
             pages: [],
             articles: [],
           },
@@ -354,7 +386,7 @@ class PredictiveSearch extends SearchForm {
     const params = {
       q: searchTerm,
       type: 'product',
-      'options[prefix]': 'last',
+      'options[prefix]': 'none',
     };
     const urlSectionId = `${searchBase}?${new URLSearchParams({
       ...params,
@@ -410,6 +442,87 @@ class PredictiveSearch extends SearchForm {
     let html = results.outerHTML;
     if (live && !results.contains(live)) html += live.outerHTML;
     return html;
+  }
+
+  static normalizeSuggestApiProduct(p) {
+    if (!p || !p.url) return null;
+    return {
+      title: p.title || '',
+      url: p.url,
+      image:
+        p.image ||
+        p.featured_image?.url ||
+        (typeof p.featured_image === 'string' ? p.featured_image : '') ||
+        '',
+      price: typeof p.price === 'string' ? p.price : p.price ? String(p.price) : '',
+    };
+  }
+
+  static productUrlKey(url) {
+    if (!url) return '';
+    try {
+      const origin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'https://shop.example';
+      const u = new URL(url, origin);
+      return u.pathname.replace(/\/$/, '').toLowerCase();
+    } catch {
+      return String(url).split('?')[0].replace(/\/$/, '').toLowerCase();
+    }
+  }
+
+  static mergeProductListsForPreview(fromApi, fromHtml, maxLen) {
+    const seen = new Set();
+    const out = [];
+    const push = (p) => {
+      if (!p || !p.url || !String(p.url).includes('/products/')) return;
+      const k = PredictiveSearch.productUrlKey(p.url);
+      if (!k || seen.has(k)) return;
+      seen.add(k);
+      out.push({
+        title: p.title || '',
+        url: p.url,
+        image: p.image || '',
+        price: p.price || '',
+      });
+    };
+    (fromApi || []).forEach((raw) => {
+      const n = PredictiveSearch.normalizeSuggestApiProduct(raw);
+      if (n) push(n);
+    });
+    (fromHtml || []).forEach((p) => push(p));
+    return out.slice(0, maxLen);
+  }
+
+  static parseProductsFromPredictiveHtmlFragment(htmlFragment) {
+    if (!htmlFragment || typeof htmlFragment !== 'string') return [];
+    if (!htmlFragment.includes('predictive-search-results-products-list')) return [];
+    try {
+      const doc = new DOMParser().parseFromString(htmlFragment, 'text/html');
+      const list =
+        doc.getElementById('predictive-search-results-products-list') ||
+        doc.querySelector('[id="predictive-search-results-products-list"]');
+      if (!list) return [];
+      const products = [];
+      list.querySelectorAll('li.predictive-search__list-item').forEach((li) => {
+        const a = li.querySelector('a[href*="/products/"]');
+        if (!a) return;
+        const url = a.getAttribute('href') || '';
+        const titleEl = li.querySelector('.predictive-search__item-heading');
+        const title = titleEl ? titleEl.textContent.trim() : '';
+        const img = li.querySelector('img.predictive-search__image');
+        const image = img ? img.getAttribute('src') || '' : '';
+        const unit = li.querySelector('.unit-price-custom');
+        let price = '';
+        if (unit) price = unit.textContent.replace(/\s+/g, ' ').trim();
+        else {
+          const pe = li.querySelector('.predictive-search__item-price .price, .price');
+          if (pe) price = pe.textContent.replace(/\s+/g, ' ').trim();
+        }
+        products.push({ title, url, image, price });
+      });
+      return products;
+    } catch (e) {
+      return [];
+    }
   }
 
   static escapeHtml(str) {
