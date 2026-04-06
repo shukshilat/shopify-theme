@@ -49,11 +49,23 @@
     endif
     assign show_blue_white_badge = false
     for coll in card_product.collections
-      assign coll_title = coll.title | strip
-      assign coll_handle_raw = coll.handle | strip
-      assign coll_handle = coll_handle_raw | downcase
-      if coll_title == 'פירות' or coll_handle_raw == 'פירות' or coll_handle == 'perot' or coll_handle == 'fruits' or coll_handle == 'fruit'
+      assign t = coll.title | strip
+      assign h = coll.handle | strip
+      assign hl = h | downcase
+      if t == 'פירות' or h == 'פירות' or hl == 'perot' or hl == 'fruits' or hl == 'fruit'
         assign show_blue_white_badge = true
+      elsif t == 'ירקות' or h == 'ירקות' or hl == 'vegetables' or hl == 'vegetable'
+        assign show_blue_white_badge = true
+      elsif t == 'ירק' or h == 'ירק'
+        assign show_blue_white_badge = true
+      elsif t == 'ירקות ארוזים' or h == 'ירקות-ארוזים' or h == 'ירקות ארוזים' or hl == 'packaged-vegetables'
+        assign show_blue_white_badge = true
+      elsif t == 'ביצים' or h == 'ביצים' or hl == 'eggs' or hl == 'egg'
+        assign show_blue_white_badge = true
+      elsif t == 'שמן זית' or h == 'שמן-זית' or h == 'שמן זית' or hl == 'olive-oil' or hl == 'olive_oil'
+        assign show_blue_white_badge = true
+      endif
+      if show_blue_white_badge
         break
       endif
     endfor

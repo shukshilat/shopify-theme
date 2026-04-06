@@ -633,7 +633,7 @@
   object-position: center center !important;
 }
 
-/* אייקון “מיוצר בישראל” — מוצרים בקולקציית פירות (פינה שמאלית עליונה, קטן כדי לא להסתיר את המוצר) */
+/* אייקון “מיוצר בישראל” — פירות, ירקות, ירק, ירקות ארוזים, ביצים, שמן זית (פינה שמאלית עליונה) */
 .card__media .card__blue-white-badge,
 .card__inner > .card__blue-white-badge--no-media {
   position: absolute;
