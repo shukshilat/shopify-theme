@@ -6,13 +6,15 @@ class SearchForm extends HTMLElement {
 
     if (this.input) {
       this.input.form.addEventListener('reset', this.onFormReset.bind(this));
-      /* חיפוש חי: עיכוב מינימלי; ביטול fetch ב-predictive-search מונע סערת בקשות */
-      this.input.addEventListener(
-        'input',
-        debounce((event) => {
-          this.onChange(event);
-        }, 20).bind(this)
-      );
+      /* חיפוש חי מהתו הראשון, כולל IME/עברית */
+      const triggerChange = () => this.onChange();
+      const debouncedTrigger = debounce(triggerChange, 10).bind(this);
+      this.input.addEventListener('input', debouncedTrigger);
+      this.input.addEventListener('keyup', (event) => {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter') return;
+        triggerChange();
+      });
+      this.input.addEventListener('compositionend', triggerChange);
     }
   }
 
