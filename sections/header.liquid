@@ -269,9 +269,24 @@
       display: block !important;
     }
 
+    /* Hamburger in this theme is the first inline SVG (no .icon-hamburger class) */
+    details:not([open]) > .header__icon--menu > span > svg:first-child {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      width: 2.2rem !important;
+      height: 2.2rem !important;
+      stroke: #1c1917 !important;
+      color: #1c1917 !important;
+    }
+
     details:not([open]) > .header__icon--menu .icon-close {
       visibility: hidden !important;
       opacity: 0 !important;
+      display: none !important;
+    }
+
+    details[open] > .header__icon--menu > span > svg:first-child {
       display: none !important;
     }
   }
