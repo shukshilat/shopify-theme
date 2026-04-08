@@ -817,6 +817,9 @@ class PredictiveSearch extends SearchForm {
   static normalizeForSearch(value) {
     return String(value || '')
       .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0591-\u05C7]/g, '')
+      .replace(/["'`׳״]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -825,23 +828,34 @@ class PredictiveSearch extends SearchForm {
     if (PredictiveSearch.productCatalogPromise) return PredictiveSearch.productCatalogPromise;
     const base = typeof window.routes !== 'undefined' && window.routes.root_url ? window.routes.root_url : '/';
     const root = String(base).endsWith('/') ? String(base).slice(0, -1) : String(base);
-    const url = `${root}/products.json?limit=250`;
-    PredictiveSearch.productCatalogPromise = fetch(url, { signal, credentials: 'same-origin' })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((payload) => {
+    PredictiveSearch.productCatalogPromise = (async () => {
+      const pageSize = 250;
+      const maxPages = 20;
+      const allProducts = [];
+
+      for (let page = 1; page <= maxPages; page += 1) {
+        const url = `${root}/products.json?limit=${pageSize}&page=${page}`;
+        const response = await fetch(url, { signal, credentials: 'same-origin' }).catch(() => null);
+        if (!response || !response.ok) break;
+        const payload = await response.json().catch(() => null);
         const products = Array.isArray(payload?.products) ? payload.products : [];
-        return products.map((p) => ({
-          title: p.title || '',
-          url: p.handle ? `/products/${p.handle}` : '',
-          image: p?.images?.[0]?.src || '',
-          price:
-            typeof p.price === 'string'
-              ? p.price
-              : typeof p.price_min === 'string'
-                ? p.price_min
-                : p.variants?.[0]?.price || '',
-        }));
-      })
+        if (!products.length) break;
+        allProducts.push(...products);
+        if (products.length < pageSize) break;
+      }
+
+      return allProducts.map((p) => ({
+        title: p.title || '',
+        url: p.handle ? `/products/${p.handle}` : '',
+        image: p?.images?.[0]?.src || '',
+        price:
+          typeof p.price === 'string'
+            ? p.price
+            : typeof p.price_min === 'string'
+              ? p.price_min
+              : p.variants?.[0]?.price || '',
+      }));
+    })()
       .catch(() => []);
     return PredictiveSearch.productCatalogPromise;
   }
