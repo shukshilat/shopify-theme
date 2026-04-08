@@ -278,8 +278,8 @@
       justify-content: center;
     }
 
-    /* Hardest fallback: draw bars on summary itself so child-level blockers cannot hide it */
-    details:not([open]) > .header__icon--menu::before {
+    /* Draw bars on ::after (not ::before) to avoid collision with drawer overlay pseudo-element. */
+    details:not([open]) > .header__icon--menu::after {
       content: '' !important;
       position: absolute !important;
       top: 50% !important;
@@ -292,26 +292,6 @@
       box-shadow: 0 -0.65rem 0 #1c1917, 0 0.65rem 0 #1c1917 !important;
       z-index: 50 !important;
       pointer-events: none !important;
-    }
-
-    /* Force a single hamburger icon on live mobile via pure CSS bars (independent of SVG). */
-    .header__menu-force-icon {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 2.2rem;
-      height: 0.2rem;
-      transform: translate(-50%, -50%);
-      border-radius: 999px;
-      background: #1c1917;
-      box-shadow: 0 -0.7rem 0 #1c1917, 0 0.7rem 0 #1c1917;
-      z-index: 4;
-      pointer-events: none;
-    }
-
-    details:not([open]) > .header__icon--menu .header__menu-force-icon {
-      display: block !important;
     }
 
     /* Hide inline hamburger while closed; CSS-bars become the only icon. */
@@ -332,11 +312,7 @@
       display: none !important;
     }
 
-    details[open] > .header__icon--menu .header__menu-force-icon {
-      display: none !important;
-    }
-
-    details[open] > .header__icon--menu::before {
+    details[open] > .header__icon--menu::after {
       content: none !important;
     }
   }
