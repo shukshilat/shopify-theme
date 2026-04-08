@@ -245,6 +245,36 @@
       flex-wrap: wrap;
     }
   }
+
+  /* Mobile: force hamburger icon visible */
+  @media screen and (max-width: 989px) {
+    header-drawer {
+      display: block !important;
+      visibility: visible !important;
+    }
+
+    .header__icon--menu,
+    .header__icon--menu .svg-wrapper {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    details:not([open]) > .header__icon--menu .icon-hamburger {
+      visibility: visible !important;
+      opacity: 1 !important;
+      transform: none !important;
+      display: block !important;
+    }
+
+    details:not([open]) > .header__icon--menu .icon-close {
+      visibility: hidden !important;
+      opacity: 0 !important;
+      display: none !important;
+    }
+  }
 </style>
 
 {%- style -%}
