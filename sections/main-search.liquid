@@ -82,6 +82,7 @@
       align-items: flex-start;
       gap: 0 1.2rem;
       min-height: 2.8rem;
+      overflow: visible !important;
     }
 
     .template-search .facets__form .facets__heading {
@@ -95,7 +96,8 @@
     .template-search .facets__form .facets__hover-reveal {
       display: none !important;
       position: absolute;
-      inset-inline-start: 0;
+      inset-inline-start: auto;
+      inset-inline-end: 0;
       top: 100%;
       flex-wrap: wrap;
       align-items: center;
@@ -112,6 +114,7 @@
       visibility: hidden;
       pointer-events: none;
       transition: opacity 0.2s ease, visibility 0.2s ease;
+      overflow: visible !important;
     }
 
     .template-search .facets__form .facets__wrapper:hover .facets__hover-reveal,
@@ -135,14 +138,17 @@
     .template-search .facets__form .facets__disclosure {
       position: relative;
       margin-right: 1.2rem;
+      overflow: visible !important;
     }
 
     .template-search .facets__form .facets__display {
       left: auto !important;
-      right: auto !important;
+      right: 0 !important;
       inset-inline-start: auto !important;
-      inset-inline-end: 0 !important;
-      width: min(32rem, calc(100vw - 3rem)) !important;
+      inset-inline-end: auto !important;
+      min-width: 26rem !important;
+      width: 28rem !important;
+      max-width: calc(100vw - 2rem) !important;
       max-height: min(44rem, calc(100vh - 18rem)) !important;
       overflow-y: auto !important;
       z-index: 35;
