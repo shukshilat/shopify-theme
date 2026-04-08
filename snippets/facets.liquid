@@ -24,7 +24,7 @@
     assign results_url = results.url
   else
     assign terms = results.terms | escape
-    assign results_url = '?q=' | append: terms | append: '&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+    assign results_url = '?q=' | append: terms | append: '&type=product&options%5Bprefix%5D=last&sort_by=' | append: sort_by
   endif
 -%}
 
@@ -37,6 +37,7 @@
       >
         {%- if results.terms -%}
           <input type="hidden" name="q" value="{{ results.terms | escape }}">
+          <input type="hidden" name="type" value="product">
           <input name="options[prefix]" type="hidden" value="last">
         {%- endif -%}
 
@@ -817,6 +818,7 @@
 
             {%- if results.terms -%}
               <input type="hidden" name="q" value="{{ results.terms | escape }}">
+              <input type="hidden" name="type" value="product">
               <input name="options[prefix]" type="hidden" value="last">
             {%- endif -%}
           </div>
@@ -906,6 +908,7 @@
 
         {%- if results.terms -%}
           <input type="hidden" name="q" value="{{ results.terms | escape }}">
+          <input type="hidden" name="type" value="product">
           <input name="options[prefix]" type="hidden" value="last">
         {%- endif -%}
       </form>
