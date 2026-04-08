@@ -554,10 +554,7 @@
                   </button>
                 </modal-opener>
               {%- when 'share' -%}
-                {% liquid
-                  assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
-                  render 'share-button', block: block, share_link: share_url
-                %}
+                {%- comment -%} Share removed by request {%- endcomment -%}
 
               {%- when 'variant_picker' -%}
                 {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
@@ -636,7 +633,7 @@
                             assign complementary_heading = 'You may also like'
                           endif
                           assign complementary_heading_key = complementary_heading | downcase
-                          if complementary_heading_key == 'you may also like'
+                          if complementary_heading_key == 'you may also like' or complementary_heading_key contains 'you may also like'
                             assign complementary_heading = 'אולי תאהב גם-'
                           endif
                         -%}
