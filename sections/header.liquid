@@ -280,6 +280,30 @@
       color: #1c1917 !important;
     }
 
+    /* Hard fallback for live mobile: draw hamburger with CSS even if SVG is hidden by external CSS */
+    details:not([open]) > .header__icon--menu > span {
+      position: relative;
+      width: 2.4rem;
+      height: 2.4rem;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+
+    details:not([open]) > .header__icon--menu > span::before {
+      content: '';
+      position: absolute;
+      width: 2.2rem;
+      height: 0.2rem;
+      background: #1c1917;
+      border-radius: 999px;
+      top: 0.6rem;
+      left: 0.1rem;
+      box-shadow: 0 0.7rem 0 #1c1917, 0 1.4rem 0 #1c1917;
+      z-index: 5;
+      pointer-events: none;
+    }
+
     details:not([open]) > .header__icon--menu .icon-close {
       visibility: hidden !important;
       opacity: 0 !important;
@@ -288,6 +312,10 @@
 
     details[open] > .header__icon--menu > span > svg:first-child {
       display: none !important;
+    }
+
+    details[open] > .header__icon--menu > span::before {
+      content: none !important;
     }
   }
 </style>
