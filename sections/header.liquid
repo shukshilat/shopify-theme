@@ -262,25 +262,6 @@
       opacity: 1 !important;
     }
 
-    details:not([open]) > .header__icon--menu .icon-hamburger {
-      visibility: visible !important;
-      opacity: 1 !important;
-      transform: none !important;
-      display: block !important;
-    }
-
-    /* Hamburger in this theme is the first inline SVG (no .icon-hamburger class) */
-    details:not([open]) > .header__icon--menu > span > svg:first-child {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      width: 2.2rem !important;
-      height: 2.2rem !important;
-      stroke: #1c1917 !important;
-      color: #1c1917 !important;
-    }
-
-    /* Ultra-safe fallback glyph for live mobile even if SVG is blocked */
     details:not([open]) > .header__icon--menu > span {
       position: relative;
       width: 2.4rem;
@@ -290,37 +271,13 @@
       justify-content: center;
     }
 
-    .header__hamburger-fallback {
-      display: none !important;
-      align-items: center;
-      justify-content: center;
-      color: #1c1917 !important;
-      font-size: 2.8rem;
-      line-height: 1;
-      font-weight: 700;
-      visibility: visible !important;
-      opacity: 1 !important;
-      position: absolute;
-      inset: 0;
-      z-index: 6;
-      pointer-events: none;
-    }
-
-    .header__icon--menu.has-fallback-glyph .header__hamburger-fallback {
-      display: inline-flex !important;
-    }
-
     details:not([open]) > .header__icon--menu .icon-close {
       visibility: hidden !important;
       opacity: 0 !important;
       display: none !important;
     }
 
-    details[open] > .header__icon--menu > span > svg:first-child {
-      display: none !important;
-    }
-
-    details[open] > .header__icon--menu > span .header__hamburger-fallback {
+    details[open] > .header__icon--menu .icon-hamburger {
       display: none !important;
     }
   }
@@ -750,39 +707,6 @@
   })();
 </script>
 
-<script>
-  (function () {
-    function shouldUseFallback(menuIcon) {
-      var svg = menuIcon && menuIcon.querySelector('span > svg:first-child');
-      if (!svg) return true;
-      var cs = window.getComputedStyle(svg);
-      var rect = svg.getBoundingClientRect();
-      var hidden =
-        cs.display === 'none' ||
-        cs.visibility === 'hidden' ||
-        Number(cs.opacity) === 0 ||
-        rect.width < 6 ||
-        rect.height < 6;
-      return hidden;
-    }
-
-    function syncHamburgerFallback() {
-      if (!window.matchMedia('(max-width: 989px)').matches) return;
-      var menuIcon = document.querySelector('.header__icon--menu');
-      if (!menuIcon) return;
-
-      if (shouldUseFallback(menuIcon)) {
-        menuIcon.classList.add('has-fallback-glyph');
-      } else {
-        menuIcon.classList.remove('has-fallback-glyph');
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', syncHamburgerFallback);
-    window.addEventListener('load', syncHamburgerFallback);
-    window.addEventListener('resize', syncHamburgerFallback);
-  })();
-</script>
 
 <script>
   (function () {
