@@ -84,6 +84,36 @@
           class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
         >
           {%- assign product_form_id = 'product-form-' | append: section.id -%}
+          {%- liquid
+            assign vq = product.selected_or_first_available_variant
+            assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
+            assign ref_unit = ''
+            if vq != blank and vq.unit_price_measurement != blank
+              assign ref_unit = vq.unit_price_measurement.reference_unit | default: ''
+            endif
+            assign sell_modes = 'unit_only'
+            if ref_unit == 'kg' or ref_unit == 'g'
+              assign sell_modes = 'both'
+            endif
+            if sell_modes_raw != blank
+              assign sell_modes_try = sell_modes_raw | strip | downcase
+              if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
+                assign sell_modes = sell_modes_try
+              else
+                for sell_modes_entry in sell_modes_raw
+                  assign sell_modes = sell_modes_entry | strip | downcase
+                  break
+                endfor
+              endif
+            endif
+            unless sell_modes == 'both' or sell_modes == 'unit_only' or sell_modes == 'weight_only'
+              assign sell_modes = 'unit_only'
+            endunless
+            assign show_weight_mode = false
+            if sell_modes == 'both' or sell_modes == 'weight_only'
+              assign show_weight_mode = true
+            endif
+          -%}
 
           {%- for block in section.blocks -%}
             {%- case block.type -%}
@@ -271,11 +301,21 @@
                   </details>
                 </div>
               {%- when 'quantity_selector' -%}
-                <div
-                  id="Quantity-Form-{{ section.id }}"
-                  class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
-                  {{ block.shopify_attributes }}
-                >
+                {%- if show_weight_mode -%}
+                  <div {{ block.shopify_attributes }}>
+                    {% render 'card-product-quantity',
+                      product: product,
+                      section_id: section.id,
+                      section: section,
+                      card_qty_in_media: false
+                    %}
+                  </div>
+                {%- else -%}
+                  <div
+                    id="Quantity-Form-{{ section.id }}"
+                    class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
+                    {{ block.shopify_attributes }}
+                  >
                   {% comment %} TODO: enable theme-check once `item_count_for_variant` is accepted as valid filter {% endcomment %}
                   {% # theme-check-disable %}
                   {%- assign cart_qty = cart
@@ -496,7 +536,8 @@
                       {%- endif -%}
                     </volume-pricing>
                   {%- endif -%}
-                </div>
+                  </div>
+                {%- endif -%}
               {%- when 'popup' -%}
                 <modal-opener
                   class="product-popup-modal__opener quick-add-hidden"
@@ -521,14 +562,16 @@
               {%- when 'variant_picker' -%}
                 {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
               {%- when 'buy_buttons' -%}
-                {%- render 'buy-buttons',
-                  block: block,
-                  product: product,
-                  product_form_id: product_form_id,
-                  section_id: section.id,
-                  show_pickup_availability: true,
-                  force_disable_dynamic_checkout: true
-                -%}
+                {%- unless show_weight_mode -%}
+                  {%- render 'buy-buttons',
+                    block: block,
+                    product: product,
+                    product_form_id: product_form_id,
+                    section_id: section.id,
+                    show_pickup_availability: true,
+                    force_disable_dynamic_checkout: true
+                  -%}
+                {%- endunless -%}
               {%- when 'rating' -%}
                 {%- if product.metafields.reviews.rating.value != blank -%}
                   <div class="rating-wrapper">
