@@ -42,6 +42,25 @@
     return image;
   }
 
+  function bindSafeLinkOpen(gridEl) {
+    if (!gridEl || gridEl.dataset.instagramClickBound === 'true') return;
+    gridEl.dataset.instagramClickBound = 'true';
+
+    gridEl.addEventListener('click', function (event) {
+      var link = event.target.closest('.instagram-feed__media-link[href]');
+      if (!link || !gridEl.contains(link)) return;
+
+      var href = safeExternalUrl(link.getAttribute('href'));
+      if (!href) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      var opened = window.open(href, '_blank', 'noopener,noreferrer');
+      if (!opened) window.location.href = href;
+    });
+  }
+
   async function loadFeed(root) {
     var accessToken = root.dataset.accessToken || '';
     var limit = Number(root.dataset.limit || '9');
@@ -74,6 +93,7 @@
 
       if (statusEl) statusEl.hidden = true;
       gridEl.innerHTML = '';
+      bindSafeLinkOpen(gridEl);
 
       items.forEach(function (item) {
         var article = document.createElement('article');
