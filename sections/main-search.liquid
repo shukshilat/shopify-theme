@@ -41,6 +41,25 @@
   .search__button .icon {
     height: 1.8rem;
   }
+
+  /* Search page filters: match collection hover style (no white panel/border) */
+  .template-search .facets-container,
+  .template-search .facets,
+  .template-search .facets__form,
+  .template-search .facets__wrapper,
+  .template-search .facet-filters,
+  .template-search .product-count,
+  .template-search .product-count-vertical {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .template-search .facets__hover-reveal {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
 </style>
 
 {%- liquid

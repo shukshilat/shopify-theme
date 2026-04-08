@@ -20,6 +20,10 @@
   assign sort_by = results.sort_by | default: results.default_sort_by
   assign total_active_values = 0
   assign default_presentation = 'text'
+  assign is_collection_or_search_page = false
+  if request.page_type == 'collection' or request.page_type == 'search'
+    assign is_collection_or_search_page = true
+  endif
   if results.url
     assign results_url = results.url
   else
@@ -33,7 +37,7 @@
     <facet-filters-form class="facets small-hide">
       <form
         id="FacetFiltersForm"
-        class="{% if filter_type == 'horizontal' %}facets__form{% else %}facets__form-vertical{% endif %}{% if filter_type == 'horizontal' and request.page_type == 'collection' and results.filters != empty and enable_sorting %} facets__form--sort-in-hover{% endif %}"
+        class="{% if filter_type == 'horizontal' %}facets__form{% else %}facets__form-vertical{% endif %}{% if filter_type == 'horizontal' and results.filters != empty and enable_sorting and is_collection_or_search_page %} facets__form--sort-in-hover{% endif %}"
       >
         {%- if results.terms -%}
           <input type="hidden" name="q" value="{{ results.terms | escape }}">
@@ -339,7 +343,7 @@
               {% endcase %}
             {%- endfor -%}
             {%- if filter_type == 'horizontal' and results.filters != empty -%}
-              {%- if enable_sorting and request.page_type == 'collection' -%}
+              {%- if enable_sorting and is_collection_or_search_page -%}
                 <div class="facets__sort-in-hover facet-filters sorting caption">
                   <div class="facet-filters__field">
                     <h2 class="facet-filters__label caption-large text-body">
@@ -428,7 +432,7 @@
             בלי פילטרים / דף חיפוש — המיון נשאר כאן.
           {% endcomment %}
           {%- if enable_sorting -%}
-            {%- unless request.page_type == 'collection' and results.filters != empty -%}
+            {%- unless results.filters != empty and is_collection_or_search_page -%}
               <div class="facet-filters sorting caption">
                 <div class="facet-filters__field">
                   <h2 class="facet-filters__label caption-large text-body">
