@@ -254,6 +254,20 @@ class PredictiveSearch extends SearchForm {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
+      const sectionHasProducts =
+        typeof sectionHtml === 'string' &&
+        sectionHtml.includes('id="predictive-search-results"') &&
+        sectionHtml.includes('predictive-search-results-products-list') &&
+        sectionHtml.includes('predictive-search__list-item');
+      if (sectionHasProducts) return sectionHtml;
+
+      const fullPageHasProducts =
+        typeof fullPageMarkup === 'string' &&
+        fullPageMarkup.includes('id="predictive-search-results"') &&
+        fullPageMarkup.includes('predictive-search-results-products-list') &&
+        fullPageMarkup.includes('predictive-search__list-item');
+      if (fullPageHasProducts) return fullPageMarkup;
+
       /* עדיפות 1: markup רשמי של Shopify (כולל מחיר unit_price כמו בכרטיס מוצר) */
       try {
         const response = await fetch(htmlUrl, { signal, credentials: 'same-origin' });
