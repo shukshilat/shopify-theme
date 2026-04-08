@@ -28,8 +28,15 @@
     data-product-id="{{ product.id }}"
   >
     {% if recommendations.performed and recommendations.products_count > 0 %}
+      {%- liquid
+        assign related_heading = section.settings.heading | strip
+        assign related_heading_key = related_heading | downcase
+        if related_heading_key == blank or related_heading_key == 'you may also like' or related_heading_key contains 'you may also like'
+          assign related_heading = 'אולי תאהב גם-'
+        endif
+      -%}
       <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
-        {{ section.settings.heading }}
+        {{ related_heading }}
       </h2>
       <ul
         class="grid product-grid grid--{{ section.settings.columns_desktop }}-col-desktop grid--{{ section.settings.columns_mobile }}-col-tablet-down"
