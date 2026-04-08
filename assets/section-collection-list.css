@@ -78,6 +78,9 @@
 
 .section-collection-list .collection-list__item .card-wrapper {
   margin-inline: auto;
+  width: 100%;
+  height: auto !important;
+  align-self: flex-start;
 }
 
 .section-collection-list .collection-list__item .card {
@@ -201,10 +204,6 @@
   align-items: flex-start;
 }
 
-.section-collection-list .collection-list__item .card-wrapper {
-  width: 100%;
-}
-
 .section-collection-list .collection-list__item .card {
   transform: none !important;
   filter: none !important;
@@ -291,4 +290,27 @@
 .section-collection-list .collection-list__item .card--card.card--media > .card__content {
   margin-top: 0.25rem !important;
   padding-top: 0 !important;
+}
+
+/*
+ * Root cause of huge image↔title gap (not ratio alone):
+ * `.card` uses `height: 100%` in a slider row + `.card__content` has `flex-grow: 1` and a 3-row grid
+ * with `1fr` rows — the title block grows to fill slide height, so the label sits far below the image.
+ */
+.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal) {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+  grid-template-rows: none !important;
+  min-height: 0 !important;
+}
+
+/* Inner duplicate title area (information hidden by theme) still participates in flex/grid — remove it */
+.section-collection-list .collection-list__item .card--media .card__inner > .card__content {
+  display: none !important;
 }
