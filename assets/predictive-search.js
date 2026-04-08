@@ -235,7 +235,7 @@ class PredictiveSearch extends SearchForm {
       let fullPageMarkup = '';
       try {
         const results = await Promise.all([
-          fetch(jsonAllUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
+          fetch(jsonAllUrl, { signal, credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)),
           PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal).catch((err) => {
             if (err?.name === 'AbortError' || err?.code === 20) throw err;
             return '';
@@ -296,7 +296,7 @@ class PredictiveSearch extends SearchForm {
 
       /* גם בעברית — אם המיזוג ריק, ניסיון suggest הרשמי של Shopify */
       try {
-        const response = await fetch(htmlUrl, { signal });
+        const response = await fetch(htmlUrl, { signal, credentials: 'same-origin' });
         if (!response.ok) throw new Error('html');
         const text = await response.text();
         const doc = new DOMParser().parseFromString(text, 'text/html');
@@ -462,7 +462,7 @@ class PredictiveSearch extends SearchForm {
       ...params,
       section_id: 'search-predictive-fallback',
     }).toString()}`;
-    let response = await fetch(urlSectionId, { signal });
+    let response = await fetch(urlSectionId, { signal, credentials: 'same-origin' });
     if (response.ok) {
       const text = await response.text();
       const doc = new DOMParser().parseFromString(text, 'text/html');
@@ -473,7 +473,7 @@ class PredictiveSearch extends SearchForm {
       ...params,
       sections: 'search-predictive-fallback',
     }).toString()}`;
-    response = await fetch(urlSections, { signal });
+    response = await fetch(urlSections, { signal, credentials: 'same-origin' });
     if (!response.ok) return '';
     const text = await response.text();
     const contentType = response.headers.get('content-type') || '';
