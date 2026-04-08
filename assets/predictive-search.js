@@ -210,6 +210,7 @@ class PredictiveSearch extends SearchForm {
 
       let rAll = null;
       let sectionHtml = '';
+      let fullPageMarkup = '';
       try {
         const results = await Promise.all([
           fetch(jsonAllUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
@@ -217,9 +218,14 @@ class PredictiveSearch extends SearchForm {
             if (err?.name === 'AbortError' || err?.code === 20) throw err;
             return '';
           }),
+          PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal).catch((err) => {
+            if (err?.name === 'AbortError' || err?.code === 20) throw err;
+            return '';
+          }),
         ]);
         rAll = results[0];
         sectionHtml = typeof results[1] === 'string' ? results[1] : '';
+        fullPageMarkup = typeof results[2] === 'string' ? results[2] : '';
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -227,11 +233,29 @@ class PredictiveSearch extends SearchForm {
       const res = rAll?.resources?.results || {};
       const apiProducts = res.products || [];
       const sectionProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(sectionHtml);
-      const mergedProducts = PredictiveSearch.mergeProductListsForPreview(
-        apiProducts,
-        sectionProducts,
-        PREDICTIVE_MERGED_MAX_PRODUCTS
-      );
+      const fullPageProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(fullPageMarkup);
+      const mergedProducts = [];
+      const seenProductKeys = new Set();
+      const pushMerged = (p) => {
+        if (!p) return;
+        const normalized = PredictiveSearch.normalizeSuggestApiProduct(p) || p;
+        if (!normalized?.url) return;
+        const key = PredictiveSearch.productUrlKey(normalized.url);
+        if (!key || seenProductKeys.has(key)) return;
+        seenProductKeys.add(key);
+        mergedProducts.push({
+          title: normalized.title || '',
+          url: normalized.url,
+          image: normalized.image || '',
+          price: normalized.price || '',
+        });
+      };
+      apiProducts.forEach(pushMerged);
+      sectionProducts.forEach(pushMerged);
+      fullPageProducts.forEach(pushMerged);
+      if (mergedProducts.length > PREDICTIVE_MERGED_MAX_PRODUCTS) {
+        mergedProducts.length = PREDICTIVE_MERGED_MAX_PRODUCTS;
+      }
       const combinedData = {
         resources: {
           results: {
@@ -246,6 +270,7 @@ class PredictiveSearch extends SearchForm {
 
       const fromMerge = PredictiveSearch.buildMarkupFromSuggestJson(combinedData, searchTerm);
       if (fromMerge) return fromMerge;
+      if (fullPageMarkup) return fullPageMarkup;
 
       /* גם בעברית — אם המיזוג ריק, ניסיון suggest הרשמי של Shopify */
       try {
