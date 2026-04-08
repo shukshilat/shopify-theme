@@ -60,12 +60,26 @@
     border: 0 !important;
     box-shadow: none !important;
   }
+
+  .template-search #main-search-filters,
+  .template-search #main-search-filters .facets-container,
+  .template-search #main-search-filters .facets__wrapper,
+  .template-search #main-search-filters .facets__form,
+  .template-search #main-search-filters .facets__form-vertical,
+  .template-search #main-search-filters .facet-filters,
+  .template-search #main-search-filters .product-count,
+  .template-search #main-search-filters .product-count-vertical {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
 </style>
 
 {%- liquid
   assign sort_by = search.sort_by | default: search.default_sort_by
   assign terms = search.terms | escape
   assign search_url = '?q=' | append: terms | append: '&type=product&options%5Bprefix%5D=last&sort_by=' | append: sort_by
+  assign search_filter_type = 'horizontal'
 -%}
 
 {%- style -%}
@@ -167,7 +181,7 @@
     </div>
     {%- if search.performed -%}
       {%- if section.settings.enable_sorting
-        and section.settings.filter_type == 'vertical'
+        and search_filter_type == 'vertical'
         and search.filters != empty
       -%}
         <facet-filters-form class="facets facets-vertical-sort page-width small-hide">
@@ -224,7 +238,7 @@
         </facet-filters-form>
       {%- endif -%}
       <div
-        {% if section.settings.filter_type == 'vertical' %}
+        {% if search_filter_type == 'vertical' %}
           class="facets-vertical page-width"
         {% endif %}
       >
@@ -232,7 +246,7 @@
           {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
             <aside
               aria-labelledby="verticalTitle"
-              class="facets-wrapper{% unless section.settings.enable_filtering %} facets-wrapper--no-filters{% endunless %}{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
+              class="facets-wrapper{% unless section.settings.enable_filtering %} facets-wrapper--no-filters{% endunless %}{% if search_filter_type != 'vertical' %} page-width{% endif %}"
               id="main-search-filters"
               data-id="{{ section.id }}"
             >
@@ -240,7 +254,7 @@
                 results: search,
                 enable_filtering: section.settings.enable_filtering,
                 enable_sorting: section.settings.enable_sorting,
-                filter_type: section.settings.filter_type,
+                filter_type: search_filter_type,
                 paginate: paginate
               %}
             </aside>
@@ -249,7 +263,7 @@
         <div class="product-grid-container" id="ProductGridContainer">
           {%- if search.results.size == 0 and search.filters != empty -%}
             <div
-              class="template-search__results collection collection--empty{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
+              class="template-search__results collection collection--empty{% if search_filter_type != 'vertical' %} page-width{% endif %}"
               id="product-grid"
               data-id="{{ section.id }}"
             >
@@ -267,7 +281,7 @@
             </div>
           {%- else -%}
             <div
-              class="template-search__results collection{% if section.settings.filter_type != 'vertical' %} page-width{% endif %}"
+              class="template-search__results collection{% if search_filter_type != 'vertical' %} page-width{% endif %}"
               id="product-grid"
               data-id="{{ section.id }}"
             >
