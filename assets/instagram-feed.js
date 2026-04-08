@@ -1,4 +1,21 @@
 (function () {
+  function safeExternalUrl(value) {
+    if (!value || typeof value !== 'string') return '';
+    var trimmed = value.trim();
+    if (!trimmed) return '';
+    try {
+      var parsed = new URL(trimmed, window.location.origin);
+      if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+      return parsed.href;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function postTargetUrl(item) {
+    return safeExternalUrl(item && item.permalink) || safeExternalUrl(item && item.media_url) || '';
+  }
+
   function truncate(text, maxLen) {
     if (!text) return '';
     if (text.length <= maxLen) return text;
@@ -61,14 +78,23 @@
       items.forEach(function (item) {
         var article = document.createElement('article');
         article.className = 'instagram-feed__item';
+        var targetUrl = postTargetUrl(item);
+        var mediaNode = createMediaNode(item);
 
-        var link = document.createElement('a');
-        link.className = 'instagram-feed__media-link';
-        link.href = item.permalink;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.appendChild(createMediaNode(item));
-        article.appendChild(link);
+        if (targetUrl) {
+          var link = document.createElement('a');
+          link.className = 'instagram-feed__media-link';
+          link.href = targetUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.appendChild(mediaNode);
+          article.appendChild(link);
+        } else {
+          var mediaWrapper = document.createElement('div');
+          mediaWrapper.className = 'instagram-feed__media-link instagram-feed__media-link--static';
+          mediaWrapper.appendChild(mediaNode);
+          article.appendChild(mediaWrapper);
+        }
 
         if (item.caption) {
           var caption = document.createElement('p');
