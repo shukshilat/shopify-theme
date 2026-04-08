@@ -262,6 +262,13 @@
       opacity: 1 !important;
     }
 
+    details:not([open]) > .header__icon--menu {
+      position: relative !important;
+      min-width: 2.8rem !important;
+      min-height: 2.8rem !important;
+      overflow: visible !important;
+    }
+
     details:not([open]) > .header__icon--menu > span {
       position: relative;
       width: 2.4rem;
@@ -269,6 +276,22 @@
       display: inline-flex !important;
       align-items: center;
       justify-content: center;
+    }
+
+    /* Hardest fallback: draw bars on summary itself so child-level blockers cannot hide it */
+    details:not([open]) > .header__icon--menu::before {
+      content: '' !important;
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      width: 2rem !important;
+      height: 0.2rem !important;
+      transform: translate(-50%, -50%) !important;
+      border-radius: 999px !important;
+      background: #1c1917 !important;
+      box-shadow: 0 -0.65rem 0 #1c1917, 0 0.65rem 0 #1c1917 !important;
+      z-index: 50 !important;
+      pointer-events: none !important;
     }
 
     /* Force a single hamburger icon on live mobile via pure CSS bars (independent of SVG). */
@@ -311,6 +334,10 @@
 
     details[open] > .header__icon--menu .header__menu-force-icon {
       display: none !important;
+    }
+
+    details[open] > .header__icon--menu::before {
+      content: none !important;
     }
   }
 </style>
