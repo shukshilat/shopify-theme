@@ -349,36 +349,50 @@ class PredictiveSearch extends SearchForm {
   static buildMarkupFromSearchPageHtml(htmlText, searchTerm) {
     try {
       const doc = new DOMParser().parseFromString(htmlText, 'text/html');
-      const root =
+      const strictRoot =
         doc.getElementById('product-grid') ||
         doc.querySelector('.template-search__results.collection') ||
         doc.querySelector('#ProductGridContainer');
+      const root =
+        strictRoot ||
+        doc.querySelector('#MainContent .template-search') ||
+        doc.querySelector('#MainContent') ||
+        doc.querySelector('main');
       if (!root) return '';
 
-      const items = root.querySelectorAll('li.grid__item');
       const products = [];
       const seen = new Set();
+      const pushProduct = ({ url, title, image, price }) => {
+        const key = PredictiveSearch.productUrlKey(url);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        products.push({
+          title: title || '',
+          url,
+          image: image || '',
+          price: price || '',
+        });
+      };
 
-      items.forEach((li) => {
+      const parseCardLikeContainer = (container) => {
         const link =
-          li.querySelector('.card__heading a[href*="/products/"]') ||
-          li.querySelector('a.full-unstyled-link[href*="/products/"]') ||
-          li.querySelector('a[href*="/products/"]');
+          container.querySelector('.card__heading a[href*="/products/"]') ||
+          container.querySelector('a.full-unstyled-link[href*="/products/"]') ||
+          container.querySelector('a[href*="/products/"]');
         if (!link) return;
-        const href = link.getAttribute('href');
-        if (!href || seen.has(href)) return;
-        seen.add(href);
+        const href = link.getAttribute('href') || '';
+        if (!href) return;
 
-        const title = (link.textContent || '').trim();
-        /* תמונת מוצר בלבד — לא אייקון "מיוצר בישראל" שנמצא לפניה ב־.card__media */
+        const title =
+          (container.querySelector('.card__heading')?.textContent || link.textContent || '').replace(/\s+/g, ' ').trim();
         const imgEl =
-          li.querySelector('.card__media .media img[src]') ||
-          li.querySelector('.card__inner .media img[src]') ||
-          li.querySelector('.card__media img[src]:not(.card__blue-white-badge__icon)') ||
-          li.querySelector('img[src]:not(.card__blue-white-badge__icon)');
-        const image = imgEl ? imgEl.getAttribute('src') || '' : '';
-        const unitPriceEl = li.querySelector('.unit-price-custom');
-        const priceEl = li.querySelector('.price');
+          container.querySelector('.card__media .media img[src]') ||
+          container.querySelector('.card__inner .media img[src]') ||
+          container.querySelector('.card__media img[src]:not(.card__blue-white-badge__icon)') ||
+          container.querySelector('img[src]:not(.card__blue-white-badge__icon)');
+        const image = imgEl ? imgEl.getAttribute('src') || imgEl.getAttribute('data-src') || '' : '';
+        const unitPriceEl = container.querySelector('.unit-price-custom');
+        const priceEl = container.querySelector('.price');
         let price = '';
         if (unitPriceEl) {
           price = unitPriceEl.textContent.replace(/\s+/g, ' ').trim();
@@ -389,8 +403,27 @@ class PredictiveSearch extends SearchForm {
             : priceEl.textContent.replace(/\s+/g, ' ').trim();
         }
 
-        products.push({ title, url: href, image, price });
-      });
+        pushProduct({ url: href, title, image, price });
+      };
+
+      root.querySelectorAll('li.grid__item, .card-wrapper, .card-product-quantity').forEach((node) =>
+        parseCardLikeContainer(node)
+      );
+
+      if (products.length === 0) {
+        /* Fallback גנרי: מבנים חלופיים בדף חיפוש מותאם */
+        root.querySelectorAll('a[href*="/products/"]').forEach((a) => {
+          const href = a.getAttribute('href') || '';
+          if (!href) return;
+          const card = a.closest('li, article, .card-wrapper, .grid__item, .card, .product-card') || a.parentElement;
+          const title = (card?.querySelector('.card__heading')?.textContent || a.textContent || '').replace(/\s+/g, ' ').trim();
+          const imgEl = card?.querySelector('img[src], img[data-src]') || null;
+          const image = imgEl ? imgEl.getAttribute('src') || imgEl.getAttribute('data-src') || '' : '';
+          const priceEl = card?.querySelector('.unit-price-custom, .price');
+          const price = priceEl ? priceEl.textContent.replace(/\s+/g, ' ').trim() : '';
+          pushProduct({ url: href, title, image, price });
+        });
+      }
 
       if (products.length === 0) return '';
 
