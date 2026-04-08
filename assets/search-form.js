@@ -6,6 +6,9 @@ class SearchForm extends HTMLElement {
 
     if (this.input) {
       this.input.form.addEventListener('reset', this.onFormReset.bind(this));
+      const isPredictiveSearchHost = this.tagName && this.tagName.toLowerCase() === 'predictive-search';
+      if (isPredictiveSearchHost) return;
+
       /* חיפוש חי מהתו הראשון, כולל IME/עברית */
       const triggerChange = () => this.onChange();
       const debouncedTrigger = debounce(triggerChange, 10).bind(this);
