@@ -221,6 +221,7 @@ class PredictiveSearch extends SearchForm {
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
 
     const loadMarkup = async () => {
+      let officialSuggestMarkup = '';
       /* בקשת JSON אחת (כל סוגי המשאבים) — יציבה יותר משני נתיבים נפרדים */
       const jsonAllUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
         q: searchTerm,
@@ -248,6 +249,24 @@ class PredictiveSearch extends SearchForm {
         rAll = results[0];
         sectionHtml = typeof results[1] === 'string' ? results[1] : '';
         fullPageMarkup = typeof results[2] === 'string' ? results[2] : '';
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
+      /* עדיפות 1: markup רשמי של Shopify (כולל מחיר unit_price כמו בכרטיס מוצר) */
+      try {
+        const response = await fetch(htmlUrl, { signal, credentials: 'same-origin' });
+        if (response.ok) {
+          const text = await response.text();
+          const doc = new DOMParser().parseFromString(text, 'text/html');
+          const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
+          const inner = sectionRoot?.innerHTML?.trim() ?? '';
+          if (inner.includes('id="predictive-search-results"')) {
+            officialSuggestMarkup = inner;
+            const hasProductSuggestions = sectionRoot.querySelector('#predictive-search-results-products-list .predictive-search__list-item');
+            if (hasProductSuggestions) return officialSuggestMarkup;
+          }
+        }
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -337,19 +356,15 @@ class PredictiveSearch extends SearchForm {
 
       const fromMerge = PredictiveSearch.buildMarkupFromSuggestJson(combinedData, searchTerm);
       if (fromMerge) return fromMerge;
+      if (officialSuggestMarkup) return officialSuggestMarkup;
       if (fullPageMarkup) return fullPageMarkup;
 
       /* גם בעברית — אם המיזוג ריק, ניסיון suggest הרשמי של Shopify */
       try {
-        const response = await fetch(htmlUrl, { signal, credentials: 'same-origin' });
-        if (!response.ok) throw new Error('html');
-        const text = await response.text();
-        const doc = new DOMParser().parseFromString(text, 'text/html');
-        const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
-        const inner = sectionRoot?.innerHTML?.trim() ?? '';
-        if (inner.includes('id="predictive-search-results"')) {
-          const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
-          if (hasSuggestions) return inner;
+        if (officialSuggestMarkup.includes('id="predictive-search-results"')) {
+          const doc = new DOMParser().parseFromString(officialSuggestMarkup, 'text/html');
+          const hasSuggestions = doc.querySelector('.predictive-search__list-item');
+          if (hasSuggestions) return officialSuggestMarkup;
         }
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
