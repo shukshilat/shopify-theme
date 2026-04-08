@@ -41,7 +41,6 @@
 
   <script src="{{ 'product-info.js' | asset_url }}" defer="defer"></script>
   <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
-  <script src="{{ 'main-product-quantity-mode.js' | asset_url }}" defer="defer"></script>
   {%- if product.quantity_price_breaks_configured? -%}
     <script src="{{ 'show-more.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
@@ -272,41 +271,6 @@
                   </details>
                 </div>
               {%- when 'quantity_selector' -%}
-                {%- liquid
-                  assign vq = product.selected_or_first_available_variant
-                  assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
-                  assign ref_unit = ''
-                  if vq != blank and vq.unit_price_measurement != blank
-                    assign ref_unit = vq.unit_price_measurement.reference_unit | default: ''
-                  endif
-                  assign sell_modes = 'unit_only'
-                  if ref_unit == 'kg' or ref_unit == 'g'
-                    assign sell_modes = 'both'
-                  endif
-                  if sell_modes_raw != blank
-                    assign sell_modes_try = sell_modes_raw | strip | downcase
-                    if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
-                      assign sell_modes = sell_modes_try
-                    else
-                      for sell_modes_entry in sell_modes_raw
-                        assign sell_modes = sell_modes_entry | strip | downcase
-                        break
-                      endfor
-                    endif
-                  endif
-                  unless sell_modes == 'both' or sell_modes == 'unit_only' or sell_modes == 'weight_only'
-                    assign sell_modes = 'unit_only'
-                  endunless
-                  assign show_weight_mode = false
-                  assign show_unit_mode = true
-                  if sell_modes == 'weight_only'
-                    assign show_weight_mode = true
-                    assign show_unit_mode = false
-                  elsif sell_modes == 'both'
-                    assign show_weight_mode = true
-                    assign show_unit_mode = true
-                  endif
-                -%}
                 <div
                   id="Quantity-Form-{{ section.id }}"
                   class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
@@ -340,87 +304,41 @@
                       >
                     </span>
                   </label>
-                  {%- if show_weight_mode and show_unit_mode -%}
-                    <div class="main-product-qty-mode__switch">
-                      <label class="form__label" id="MainPurchaseModeLabel-{{ section.id }}">
-                        {{ 'products.product.card_quantity.mode_group' | t }}
-                      </label>
-                      <div class="main-product-qty-mode__tabs" role="tablist" aria-labelledby="MainPurchaseModeLabel-{{ section.id }}">
-                        <button type="button" class="main-product-qty-mode__tab is-active" data-main-mode-btn="unit" aria-pressed="true">
-                          {{ 'products.product.card_quantity.by_units' | t }}
-                        </button>
-                        <button type="button" class="main-product-qty-mode__tab" data-main-mode-btn="weight" aria-pressed="false">
-                          {{ 'products.product.card_quantity.by_weight' | t }}
-                        </button>
-                      </div>
-                    </div>
-                  {%- endif -%}
                   <div class="price-per-item__container">
-                    <div
-                      class="main-product-qty-mode"
-                      data-main-qty-root
-                      data-product-form-id="{{ product_form_id }}"
-                      data-weight-behavior="kg_tenths"
-                      data-has-weight="{{ show_weight_mode }}"
-                      data-has-unit="{{ show_unit_mode }}"
-                    >
-                      <div class="main-product-qty-mode__panel" data-main-panel="unit"{% unless show_unit_mode %} hidden{% endunless %}>
-                        <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
-                          <button class="quantity__button" name="minus" type="button">
-                            <span class="visually-hidden">
-                              {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
-                            </span>
-                            <span class="svg-wrapper">
-                              {{- 'icon-minus.svg' | inline_asset_content -}}
-                            </span>
-                          </button>
-                          <input
-                            class="quantity__input js-main-qty-unit"
-                            type="number"
-                            name="quantity"
-                            id="Quantity-{{ section.id }}"
-                            data-cart-quantity="{{ cart_qty }}"
-                            data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                            min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                            {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
-                              data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
-                              max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
-                            {% endif %}
-                            step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
-                            value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
-                            form="{{ product_form_id }}"
-                          >
-                          <button class="quantity__button" name="plus" type="button">
-                            <span class="visually-hidden">
-                              {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
-                            </span>
-                            <span class="svg-wrapper">
-                              {{- 'icon-plus.svg' | inline_asset_content -}}
-                            </span>
-                          </button>
-                        </quantity-input>
-                      </div>
-                      {%- if show_weight_mode -%}
-                        <div class="main-product-qty-mode__panel{% if show_unit_mode %} hidden{% endif %}" data-main-panel="weight"{% if show_unit_mode %} hidden{% endif %}>
-                          <div class="quantity">
-                            <button class="quantity__button" type="button" name="kg-minus">
-                              <span class="svg-wrapper">{{ 'icon-minus.svg' | inline_asset_content }}</span>
-                            </button>
-                            <input
-                              class="quantity__input js-main-qty-kg"
-                              type="number"
-                              min="0.1"
-                              step="0.1"
-                              value="1"
-                              inputmode="decimal"
-                            >
-                            <button class="quantity__button" type="button" name="kg-plus">
-                              <span class="svg-wrapper">{{ 'icon-plus.svg' | inline_asset_content }}</span>
-                            </button>
-                          </div>
-                        </div>
-                      {%- endif -%}
-                    </div>
+                    <quantity-input class="quantity" data-url="{{ product.url }}" data-section="{{ section.id }}">
+                      <button class="quantity__button" name="minus" type="button">
+                        <span class="visually-hidden">
+                          {{- 'products.product.quantity.decrease' | t: product: product.title | escape -}}
+                        </span>
+                        <span class="svg-wrapper">
+                          {{- 'icon-minus.svg' | inline_asset_content -}}
+                        </span>
+                      </button>
+                      <input
+                        class="quantity__input"
+                        type="number"
+                        name="quantity"
+                        id="Quantity-{{ section.id }}"
+                        data-cart-quantity="{{ cart_qty }}"
+                        data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                        min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                        {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                          data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                          max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                        {% endif %}
+                        step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                        value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                        form="{{ product_form_id }}"
+                      >
+                      <button class="quantity__button" name="plus" type="button">
+                        <span class="visually-hidden">
+                          {{- 'products.product.quantity.increase' | t: product: product.title | escape -}}
+                        </span>
+                        <span class="svg-wrapper">
+                          {{- 'icon-plus.svg' | inline_asset_content -}}
+                        </span>
+                      </button>
+                    </quantity-input>
                     {%- liquid
                       assign volume_pricing_array = product.selected_or_first_available_variant.quantity_price_breaks | sort: 'quantity' | reverse
                       assign current_qty_for_volume_pricing = cart_qty | plus: product.selected_or_first_available_variant.quantity_rule.min
