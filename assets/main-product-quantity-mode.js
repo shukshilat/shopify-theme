@@ -38,7 +38,7 @@
 
     var unitInput = root.querySelector('.js-main-qty-unit');
     var kgInput = root.querySelector('.js-main-qty-kg');
-    var modeInputs = root.querySelectorAll('.card-product-qty__mode-input');
+    var modeSelect = root.querySelector('.main-product-qty-mode__select');
 
     var purchaseHidden = productForm.querySelector('input[name="purchase_mode"][data-main-qty-mode="true"]');
     if (!purchaseHidden) {
@@ -55,8 +55,7 @@
     }
 
     function currentMode() {
-      var checked = root.querySelector('.card-product-qty__mode-input:checked');
-      if (checked) return checked.value;
+      if (modeSelect && modeSelect.value) return modeSelect.value;
       if (!hasUnit) return 'weight';
       return 'unit';
     }
@@ -92,9 +91,9 @@
       }
     }
 
-    modeInputs.forEach(function (el) {
-      el.addEventListener('change', applyModeValues);
-    });
+    if (modeSelect) {
+      modeSelect.addEventListener('change', applyModeValues);
+    }
 
     if (kgInput) {
       kgInput.addEventListener('input', function () {

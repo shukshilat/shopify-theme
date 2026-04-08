@@ -341,15 +341,14 @@
                     </span>
                   </label>
                   {%- if show_weight_mode and show_unit_mode -%}
-                    <div class="card-product-qty__mode card-product-qty__mode--compact main-product-qty-mode__switch" role="group" aria-label="{{ 'products.product.card_quantity.mode_group' | t }}">
-                      <label class="card-product-qty__mode-label">
-                        <input type="radio" name="main_purchase_mode_{{ section.id }}" value="unit" class="card-product-qty__mode-input visually-hidden" checked>
-                        <span class="card-product-qty__mode-text">{{ 'products.product.card_quantity.by_units_short' | t }}</span>
+                    <div class="main-product-qty-mode__switch">
+                      <label class="form__label" for="MainPurchaseMode-{{ section.id }}">
+                        {{ 'products.product.card_quantity.mode_group' | t }}
                       </label>
-                      <label class="card-product-qty__mode-label">
-                        <input type="radio" name="main_purchase_mode_{{ section.id }}" value="weight" class="card-product-qty__mode-input visually-hidden">
-                        <span class="card-product-qty__mode-text">{{ 'products.product.card_quantity.by_weight_short' | t }}</span>
-                      </label>
+                      <select id="MainPurchaseMode-{{ section.id }}" class="main-product-qty-mode__select">
+                        <option value="unit">{{ 'products.product.card_quantity.by_units' | t }}</option>
+                        <option value="weight">{{ 'products.product.card_quantity.by_weight' | t }}</option>
+                      </select>
                     </div>
                   {%- endif -%}
                   <div class="price-per-item__container">
