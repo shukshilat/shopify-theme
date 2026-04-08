@@ -3,6 +3,7 @@ const PREDICTIVE_MERGED_MAX_PRODUCTS = 24;
 
 class PredictiveSearch extends SearchForm {
   static productCatalogPromise = null;
+  static productCatalogByUrlPromise = null;
 
   constructor() {
     super();
@@ -272,6 +273,7 @@ class PredictiveSearch extends SearchForm {
       }
 
       const res = rAll?.resources?.results || {};
+      const catalogByUrl = await PredictiveSearch.getProductCatalogByUrl(signal).catch(() => new Map());
       const apiProducts = res.products || [];
       const sectionProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(sectionHtml);
       const fullPageProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(fullPageMarkup);
@@ -297,6 +299,12 @@ class PredictiveSearch extends SearchForm {
           image: normalized.image || '',
           price: normalized.price || '',
         };
+        const catalogRow = catalogByUrl.get(key);
+        if (catalogRow?.unitPrice) {
+          incoming.price = catalogRow.unitPrice;
+        } else if (catalogRow?.price && !incoming.price) {
+          incoming.price = catalogRow.price;
+        }
         const existing = mergedByKey.get(key);
         if (!existing) {
           mergedByKey.set(key, incoming);
@@ -880,20 +888,61 @@ class PredictiveSearch extends SearchForm {
         if (products.length < pageSize) break;
       }
 
-      return allProducts.map((p) => ({
-        title: p.title || '',
-        url: p.handle ? `/products/${p.handle}` : '',
-        image: p?.images?.[0]?.src || '',
-        price:
-          typeof p.price === 'string'
-            ? p.price
-            : typeof p.price_min === 'string'
-              ? p.price_min
-              : p.variants?.[0]?.price || '',
-      }));
+      return allProducts.map((p) => {
+        const firstVariant = Array.isArray(p.variants) ? p.variants[0] : null;
+        const unitMeasurement = firstVariant?.unit_price_measurement || null;
+        const unitPriceRaw = firstVariant?.unit_price;
+        const isKgLike =
+          unitMeasurement &&
+          (String(unitMeasurement.reference_unit || '').toLowerCase() === 'kg' ||
+            String(unitMeasurement.reference_unit || '').toLowerCase() === 'g');
+        return {
+          title: p.title || '',
+          url: p.handle ? `/products/${p.handle}` : '',
+          image: p?.images?.[0]?.src || '',
+          price:
+            typeof p.price === 'string'
+              ? p.price
+              : typeof p.price_min === 'string'
+                ? p.price_min
+                : p.variants?.[0]?.price || '',
+          unitPrice: isKgLike ? PredictiveSearch.formatUnitPrice(unitPriceRaw, unitMeasurement) : '',
+        };
+      });
     })()
       .catch(() => []);
     return PredictiveSearch.productCatalogPromise;
+  }
+
+  static async getProductCatalogByUrl(signal) {
+    if (PredictiveSearch.productCatalogByUrlPromise) return PredictiveSearch.productCatalogByUrlPromise;
+    PredictiveSearch.productCatalogByUrlPromise = PredictiveSearch.getProductCatalog(signal).then((rows) => {
+      const map = new Map();
+      rows.forEach((row) => {
+        const key = PredictiveSearch.productUrlKey(row.url);
+        if (!key) return;
+        map.set(key, row);
+      });
+      return map;
+    });
+    return PredictiveSearch.productCatalogByUrlPromise;
+  }
+
+  static formatUnitPrice(value, measurement) {
+    if (value == null || !measurement) return '';
+    let num = Number(String(value).trim());
+    if (!Number.isFinite(num)) return '';
+    if (num > 1000) num = num / 100;
+    const refUnit = String(measurement.reference_unit || '').toLowerCase();
+    const refValue = Number(measurement.reference_value || 1);
+    let perKg = num;
+    if (refUnit === 'g') {
+      perKg = refValue > 0 ? (num * 1000) / refValue : num * 1000;
+    } else if (refUnit === 'kg') {
+      perKg = refValue > 0 ? num / refValue : num;
+    }
+    if (!Number.isFinite(perKg)) return '';
+    return `₪${perKg.toFixed(2)} / ק״ג`;
   }
 
   static async buildNameMatchFallbackMarkup(searchTerm, signal) {
