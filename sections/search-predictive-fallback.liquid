@@ -73,12 +73,63 @@
                           {%- endif -%}
                           <p class="predictive-search__item-heading h5">{{ product.title | escape }}</p>
                           {%- if settings.predictive_search_show_price -%}
-                            {% render 'price',
-                              product: product,
-                              use_variant: true,
-                              show_badges: false,
-                              unit_price_only: true
-                            %}
+                            {%- liquid
+                              assign v = product.selected_or_first_available_variant
+                              assign per_kg_cents = 0
+                              assign show_per_kg_price = false
+
+                              if v != blank and v.unit_price_measurement != blank and v.unit_price != blank
+                                assign ref_v = v.unit_price_measurement.reference_value | default: 1
+                                assign ref_u = v.unit_price_measurement.reference_unit | default: ''
+                                assign ref_grams = 0
+                                if ref_u == 'kg'
+                                  assign ref_grams = ref_v | times: 1000
+                                elsif ref_u == 'g'
+                                  assign ref_grams = ref_v
+                                endif
+                                if ref_grams > 0
+                                  assign per_kg_cents = v.unit_price | times: 1000 | divided_by: ref_grams
+                                  assign show_per_kg_price = true
+                                endif
+                              endif
+
+                              if show_per_kg_price == false and v != blank
+                                assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
+                                assign ref_unit = ''
+                                if v.unit_price_measurement != blank
+                                  assign ref_unit = v.unit_price_measurement.reference_unit | default: ''
+                                endif
+                                assign sell_modes = 'unit_only'
+                                if ref_unit == 'kg' or ref_unit == 'g'
+                                  assign sell_modes = 'both'
+                                endif
+                                if sell_modes_raw != blank
+                                  assign sell_modes_try = sell_modes_raw | strip | downcase
+                                  if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
+                                    assign sell_modes = sell_modes_try
+                                  else
+                                    for sell_modes_entry in sell_modes_raw
+                                      assign sell_modes = sell_modes_entry | strip | downcase
+                                      break
+                                    endfor
+                                  endif
+                                endif
+                                if sell_modes == 'both' or sell_modes == 'weight_only'
+                                  assign per_kg_cents = v.price | times: 10
+                                  assign show_per_kg_price = true
+                                endif
+                              endif
+                            -%}
+                            {%- if show_per_kg_price and per_kg_cents > 0 -%}
+                              <div class="unit-price-custom" dir="rtl">{{ per_kg_cents | money }} / ק״ג</div>
+                            {%- else -%}
+                              {% render 'price',
+                                product: product,
+                                use_variant: true,
+                                show_badges: false,
+                                unit_price_only: true
+                              %}
+                            {%- endif -%}
                           {%- endif -%}
                         </div>
                       </a>
