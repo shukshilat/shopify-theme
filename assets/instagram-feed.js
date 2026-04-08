@@ -54,11 +54,18 @@
       if (!href) return;
 
       event.preventDefault();
+      if (typeof event.stopImmediatePropagation === 'function') {
+        event.stopImmediatePropagation();
+      }
       event.stopPropagation();
 
-      var opened = window.open(href, '_blank', 'noopener,noreferrer');
-      if (!opened) window.location.href = href;
-    });
+      try {
+        var opened = window.open(href, '_blank', 'noopener,noreferrer');
+        if (!opened) window.location.assign(href);
+      } catch (e) {
+        window.location.assign(href);
+      }
+    }, true);
   }
 
   async function loadFeed(root) {

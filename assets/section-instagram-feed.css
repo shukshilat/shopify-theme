@@ -53,6 +53,7 @@
   display: block;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 .instagram-feed__image,
