@@ -1,0 +1,37 @@
+@media screen and (max-width: 749px) {
+  [id*="instafeed"][role="dialog"],
+  [class*="instafeed"][role="dialog"],
+  [id*="instafeed"] .lightbox,
+  [id*="instafeed"] .modal,
+  [class*="instafeed"] .lightbox,
+  [class*="instafeed"] .modal {
+    padding: 1rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  [id*="instafeed"][role="dialog"] img,
+  [class*="instafeed"][role="dialog"] img,
+  [id*="instafeed"] .lightbox img,
+  [id*="instafeed"] .modal img,
+  [class*="instafeed"] .lightbox img,
+  [class*="instafeed"] .modal img,
+  [id*="instafeed"][role="dialog"] video,
+  [class*="instafeed"][role="dialog"] video,
+  [id*="instafeed"] .lightbox video,
+  [id*="instafeed"] .modal video,
+  [class*="instafeed"] .lightbox video,
+  [class*="instafeed"] .modal video,
+  [id*="instafeed"][role="dialog"] iframe,
+  [class*="instafeed"][role="dialog"] iframe,
+  [id*="instafeed"] .lightbox iframe,
+  [id*="instafeed"] .modal iframe,
+  [class*="instafeed"] .lightbox iframe,
+  [class*="instafeed"] .modal iframe {
+    width: auto !important;
+    max-width: calc(100vw - 2rem) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 8rem) !important;
+    object-fit: contain !important;
+  }
+}
