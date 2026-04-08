@@ -271,28 +271,27 @@
       justify-content: center;
     }
 
-    /* Force a single hamburger icon on live mobile using mask (independent of inline SVG visibility). */
-    details:not([open]) > .header__icon--menu > span::before {
-      content: '';
+    /* Force a single hamburger icon on live mobile via pure CSS bars (independent of SVG). */
+    .header__menu-force-icon {
+      display: none;
       position: absolute;
-      inset: 0;
-      margin: auto;
+      top: 50%;
+      left: 50%;
       width: 2.2rem;
-      height: 2.2rem;
-      background-color: #1c1917;
-      -webkit-mask-image: url('{{ 'icon-hamburger.svg' | asset_url }}');
-      -webkit-mask-repeat: no-repeat;
-      -webkit-mask-position: center;
-      -webkit-mask-size: contain;
-      mask-image: url('{{ 'icon-hamburger.svg' | asset_url }}');
-      mask-repeat: no-repeat;
-      mask-position: center;
-      mask-size: contain;
-      z-index: 3;
+      height: 0.2rem;
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: #1c1917;
+      box-shadow: 0 -0.7rem 0 #1c1917, 0 0.7rem 0 #1c1917;
+      z-index: 4;
       pointer-events: none;
     }
 
-    /* Hide inline hamburger while closed; mask above becomes the only icon. */
+    details:not([open]) > .header__icon--menu .header__menu-force-icon {
+      display: block !important;
+    }
+
+    /* Hide inline hamburger while closed; CSS-bars become the only icon. */
     details:not([open]) > .header__icon--menu .icon-hamburger,
     details:not([open]) > .header__icon--menu > span > svg:first-child {
       display: none !important;
@@ -310,8 +309,8 @@
       display: none !important;
     }
 
-    details[open] > .header__icon--menu > span::before {
-      content: none !important;
+    details[open] > .header__icon--menu .header__menu-force-icon {
+      display: none !important;
     }
   }
 </style>
