@@ -107,3 +107,38 @@ h6,
 [dir='rtl'] body {
   letter-spacing: 0.025em;
 }
+
+/* Home/section premium headings (force override) */
+#MainContent .title-wrapper .title,
+#MainContent .title-wrapper-with-link .title,
+#MainContent .rich-text__heading,
+#MainContent h2.inline-richtext,
+#MainContent .related-products__heading,
+#MainContent .collection__title .title,
+#MainContent .multicolumn .title {
+  font-family: var(--font-heading-family) !important;
+  font-weight: 800 !important;
+  font-size: clamp(2.4rem, 2.1rem + 0.9vw, 3.6rem) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.015em !important;
+  color: #1f1a17 !important;
+  text-align: center !important;
+  margin-bottom: 1.4rem !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+#MainContent .title-wrapper .title::after,
+#MainContent .title-wrapper-with-link .title::after,
+#MainContent .rich-text__heading::after,
+#MainContent h2.inline-richtext::after,
+#MainContent .related-products__heading::after,
+#MainContent .collection__title .title::after,
+#MainContent .multicolumn .title::after {
+  content: '';
+  display: block;
+  width: min(10rem, 36%);
+  height: 0.3rem;
+  margin: 0.65rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(185, 28, 28, 0.18), rgba(185, 28, 28, 0.9), rgba(185, 28, 28, 0.18));
+}
