@@ -130,6 +130,28 @@
     .template-search .facets__form > .facet-filters.sorting.caption {
       display: none !important;
     }
+
+    /* Fix dropdown alignment/size for Availability + Price popups */
+    .template-search .facets__form .facets__disclosure {
+      position: relative;
+      margin-right: 1.2rem;
+    }
+
+    .template-search .facets__form .facets__display {
+      left: auto !important;
+      right: auto !important;
+      inset-inline-start: auto !important;
+      inset-inline-end: 0 !important;
+      width: min(32rem, calc(100vw - 3rem)) !important;
+      max-height: min(44rem, calc(100vh - 18rem)) !important;
+      overflow-y: auto !important;
+      z-index: 35;
+    }
+
+    .template-search .facets__form .facets__price {
+      padding: 1rem 1.2rem 1.2rem;
+      min-width: 0;
+    }
   }
 </style>
 
