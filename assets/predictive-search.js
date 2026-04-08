@@ -429,6 +429,7 @@ class PredictiveSearch extends SearchForm {
   static async fetchFullSearchPageMarkup(searchBase, searchTerm, signal) {
     const url = `${searchBase}?${new URLSearchParams({
       q: searchTerm,
+      type: 'product',
       'options[prefix]': 'last',
     }).toString()}`;
     const response = await fetch(url, { signal, credentials: 'same-origin' });
@@ -538,6 +539,7 @@ class PredictiveSearch extends SearchForm {
   static async fetchSearchSectionMarkup(searchBase, searchTerm, signal) {
     const params = {
       q: searchTerm,
+      type: 'product',
       'options[prefix]': 'last',
     };
     const urlSectionId = `${searchBase}?${new URLSearchParams({
