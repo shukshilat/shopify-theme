@@ -17,6 +17,7 @@ class PredictiveSearch extends SearchForm {
   setupEventListeners() {
     this.input.form.addEventListener('submit', this.onFormSubmit.bind(this));
 
+    this.input.addEventListener('input', this.onInstantInput.bind(this));
     this.input.addEventListener('focus', this.onFocus.bind(this));
     this.addEventListener('focusout', this.onFocusOut.bind(this));
     this.addEventListener('keyup', this.onKeyup.bind(this));
@@ -47,6 +48,24 @@ class PredictiveSearch extends SearchForm {
     }
 
     this.getSearchResults(this.searchTerm);
+  }
+
+  onInstantInput() {
+    super.onChange();
+    const newSearchTerm = this.getQuery();
+    if (!newSearchTerm.length) {
+      this.searchTerm = '';
+      this.close(true);
+      return;
+    }
+
+    if (!this.searchTerm || !newSearchTerm.startsWith(this.searchTerm)) {
+      this.querySelector('#predictive-search-results-groups-wrapper')?.remove();
+    }
+
+    this.updateSearchForTerm(this.searchTerm, newSearchTerm);
+    this.searchTerm = newSearchTerm;
+    this.getSearchResults(newSearchTerm);
   }
 
   onFormSubmit(event) {
