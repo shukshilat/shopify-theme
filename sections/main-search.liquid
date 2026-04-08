@@ -93,10 +93,10 @@
     }
 
     .template-search .facets__form .facets__hover-reveal {
+      display: none !important;
       position: absolute;
       inset-inline-start: 0;
       top: 100%;
-      display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 0 2.4rem;
@@ -116,6 +116,7 @@
 
     .template-search .facets__form .facets__wrapper:hover .facets__hover-reveal,
     .template-search .facets__form .facets__wrapper:focus-within .facets__hover-reveal {
+      display: flex !important;
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
@@ -123,6 +124,11 @@
 
     .template-search .facets__form .facets__hover-reveal .facets__summary {
       margin-bottom: 0;
+    }
+
+    /* Hide standalone sort block; sort appears only inside hover panel */
+    .template-search .facets__form > .facet-filters.sorting.caption {
+      display: none !important;
     }
   }
 </style>
