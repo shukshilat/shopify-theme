@@ -185,6 +185,14 @@ html.a11y-high-contrast
   filter: contrast(1.25) saturate(1.1);
 }
 
+/* Third-party Instafeed lightbox can break under global body filters. */
+html.a11y-high-contrast body > *[id*="instafeed"],
+html.a11y-high-contrast body > *[class*="instafeed"],
+html.a11y-high-contrast [id*="instafeed"][role="dialog"],
+html.a11y-high-contrast [class*="instafeed"][role="dialog"] {
+  filter: none !important;
+}
+
 html.a11y-underline-links a {
   text-decoration: underline !important;
   text-underline-offset: 0.2em;
@@ -197,6 +205,16 @@ html.a11y-reduce-motion *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.001ms !important;
   scroll-behavior: auto !important;
+}
+
+/* Keep app-based Instagram popups functional under reduce-motion mode. */
+html.a11y-reduce-motion [id*="instafeed"],
+html.a11y-reduce-motion [id*="instafeed"] *,
+html.a11y-reduce-motion [class*="instafeed"],
+html.a11y-reduce-motion [class*="instafeed"] * {
+  animation-duration: initial !important;
+  animation-iteration-count: initial !important;
+  transition-duration: initial !important;
 }
 
 html.a11y-readable-font body {
