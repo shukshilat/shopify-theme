@@ -245,3 +245,50 @@
   margin: 0 !important;
   line-height: 1.25;
 }
+
+/*
+ * Category cards: Dawn’s .ratio::before reserves vertical space from image aspect ratio.
+ * We cap image height with max-height — the box stays tall → huge gap before the title.
+ * Collapse the ratio spacer and use normal flow for media so the label sits under the image.
+ */
+.section-collection-list .collection-list__item .card--media > .card__inner.ratio::before {
+  content: none !important;
+  display: none !important;
+  padding-bottom: 0 !important;
+}
+
+.section-collection-list .collection-list__item .card--media > .card__inner {
+  display: block !important;
+}
+
+.section-collection-list .collection-list__item .card--media .card__inner > .card__media {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  height: auto !important;
+}
+
+.section-collection-list .collection-list__item .card--media .card__inner > .card__media .media {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  bottom: auto !important;
+  top: auto !important;
+}
+
+.section-collection-list .collection-list__item .card--media .card__inner > .card__media .media img {
+  display: block;
+  margin-inline: auto;
+}
+
+.section-collection-list .collection-list__item .card--standard.card--media > .card__content,
+.section-collection-list .collection-list__item .card--card.card--media > .card__content {
+  margin-top: 0.25rem !important;
+  padding-top: 0 !important;
+}
