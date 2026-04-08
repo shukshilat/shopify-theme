@@ -90,12 +90,21 @@
               {%- when '@app' -%}
                 {% render block %}
               {%- when 'text' -%}
-                <p
-                  class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
-                  {{ block.shopify_attributes }}
-                >
-                  {{- block.settings.text -}}
-                </p>
+                {%- liquid
+                  assign product_text_plain = block.settings.text | strip_html | strip | downcase
+                  assign hide_store_text = false
+                  if product_text_plain == 'my store'
+                    assign hide_store_text = true
+                  endif
+                -%}
+                {%- unless hide_store_text -%}
+                  <p
+                    class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
+                    {{ block.shopify_attributes }}
+                  >
+                    {{- block.settings.text -}}
+                  </p>
+                {%- endunless -%}
               {%- when 'title' -%}
                 <div class="product__title" {{ block.shopify_attributes }}>
                   <h1>{{ product.title | escape }}</h1>
@@ -107,30 +116,64 @@
                 </div>
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
-                  {%- render 'price',
-                    product: product,
-                    use_variant: true,
-                    show_badges: true,
-                    price_class: 'price--large'
+                  {%- liquid
+                    assign v = product.selected_or_first_available_variant
+                    assign per_kg_cents = 0
+                    assign show_per_kg_price = false
+
+                    if v != blank and v.unit_price_measurement != blank and v.unit_price != blank
+                      assign ref_v = v.unit_price_measurement.reference_value | default: 1
+                      assign ref_u = v.unit_price_measurement.reference_unit | default: ''
+                      assign ref_grams = 0
+                      if ref_u == 'kg'
+                        assign ref_grams = ref_v | times: 1000
+                      elsif ref_u == 'g'
+                        assign ref_grams = ref_v
+                      endif
+                      if ref_grams > 0
+                        assign per_kg_cents = v.unit_price | times: 1000 | divided_by: ref_grams
+                        assign show_per_kg_price = true
+                      endif
+                    endif
+
+                    if show_per_kg_price == false and v != blank
+                      assign sell_modes_raw = product.metafields.custom.card_sell_modes.value
+                      assign ref_unit = ''
+                      if v.unit_price_measurement != blank
+                        assign ref_unit = v.unit_price_measurement.reference_unit | default: ''
+                      endif
+                      assign sell_modes = 'unit_only'
+                      if ref_unit == 'kg' or ref_unit == 'g'
+                        assign sell_modes = 'both'
+                      endif
+                      if sell_modes_raw != blank
+                        assign sell_modes_try = sell_modes_raw | strip | downcase
+                        if sell_modes_try == 'both' or sell_modes_try == 'unit_only' or sell_modes_try == 'weight_only'
+                          assign sell_modes = sell_modes_try
+                        else
+                          for sell_modes_entry in sell_modes_raw
+                            assign sell_modes = sell_modes_entry | strip | downcase
+                            break
+                          endfor
+                        endif
+                      endif
+                      if sell_modes == 'both' or sell_modes == 'weight_only'
+                        assign per_kg_cents = v.price | times: 10
+                        assign show_per_kg_price = true
+                      endif
+                    endif
                   -%}
+                  {%- if show_per_kg_price and per_kg_cents > 0 -%}
+                    <div class="price price--large price--unit-price-only">
+                      <div class="price__container price__container--unit-only">
+                        <span class="price-item price-item--regular">{{ per_kg_cents | money }} / ק״ג</span>
+                      </div>
+                    </div>
+                  {%- endif -%}
                 </div>
                 {%- if product.quantity_price_breaks_configured? -%}
                   <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
                     <span>{{ 'products.product.volume_pricing.note' | t }}</span>
-                  </div>
-                {%- endif -%}
-                {%- if cart.taxes_included or cart.duties_included or shop.shipping_policy.body != blank -%}
-                  <div class="product__tax caption rte">
-                    {%- if cart.duties_included and cart.taxes_included -%}
-                      {{ 'products.product.duties_and_taxes_included' | t }}
-                    {%- elsif cart.taxes_included -%}
-                      {{ 'products.product.taxes_included' | t }}
-                    {%- elsif cart.duties_included -%}
-                      {{ 'products.product.duties_included' | t }}
-                    {%- endif -%}
-                    {%- if shop.shipping_policy.body != blank -%}
-                      {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                    {%- endif -%}
                   </div>
                 {%- endif -%}
                 <div {{ block.shopify_attributes }}>
@@ -483,7 +526,8 @@
                   product: product,
                   product_form_id: product_form_id,
                   section_id: section.id,
-                  show_pickup_availability: true
+                  show_pickup_availability: true,
+                  force_disable_dynamic_checkout: true
                 -%}
               {%- when 'rating' -%}
                 {%- if product.metafields.reviews.rating.value != blank -%}
@@ -543,12 +587,22 @@
                           <details id="Details-{{ block.id }}-{{ section.id }}" open>
                             <summary>
                         {%- endif %}
+                        {%- liquid
+                          assign complementary_heading = block.settings.block_heading | strip
+                          if complementary_heading == blank
+                            assign complementary_heading = 'You may also like'
+                          endif
+                          assign complementary_heading_key = complementary_heading | downcase
+                          if complementary_heading_key == 'you may also like'
+                            assign complementary_heading = 'אולי תאהב גם-'
+                          endif
+                        -%}
                         <div class="summary__title">
                           {%- if block.settings.make_collapsible_row -%}
                             {% render 'icon-accordion', icon: block.settings.icon %}
-                            <h2 class="h4 accordion__title">{{ block.settings.block_heading }}</h2>
+                            <h2 class="h4 accordion__title">{{ complementary_heading }}</h2>
                           {%- else -%}
-                            <h2 class="h3 accordion__title">{{ block.settings.block_heading }}</h2>
+                            <h2 class="h3 accordion__title">{{ complementary_heading }}</h2>
                           {%- endif -%}
                         </div>
                         {%- if block.settings.make_collapsible_row -%}

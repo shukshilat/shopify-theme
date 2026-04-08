@@ -22,6 +22,9 @@
       if block.settings.show_dynamic_checkout and gift_card_recipient_feature_active == false
         assign show_dynamic_checkout = true
       endif
+      if force_disable_dynamic_checkout
+        assign show_dynamic_checkout = false
+      endif
     -%}
 
     <product-form
