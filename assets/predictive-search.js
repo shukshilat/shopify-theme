@@ -72,7 +72,24 @@ class PredictiveSearch extends SearchForm {
   }
 
   onFormSubmit(event) {
-    if (!this.getQuery().length || this.querySelector('[aria-selected="true"] a')) event.preventDefault();
+    const query = this.getQuery();
+    if (!query.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const selectedOption = this.querySelector('[aria-selected="true"] a');
+    if (selectedOption && this.getAttribute('open') === 'true') {
+      event.preventDefault();
+      selectedOption.click();
+      return;
+    }
+
+    // Ensure stale predictive state never blocks next searches after navigation/back.
+    this.searchTerm = '';
+    this.removeAttribute('results');
+    this.abortController.abort();
+    this.abortController = new AbortController();
   }
 
   onFormReset(event) {
@@ -1038,7 +1055,11 @@ class PredictiveSearch extends SearchForm {
   closeResults(clearSearchTerm = false) {
     if (clearSearchTerm) {
       this.input.value = '';
+      this.searchTerm = '';
       this.removeAttribute('results');
+      this.querySelector('#predictive-search-results-groups-wrapper')?.remove();
+      this.abortController.abort();
+      this.abortController = new AbortController();
     }
     const selected = this.querySelector('[aria-selected="true"]');
 
