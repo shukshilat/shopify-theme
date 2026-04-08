@@ -256,25 +256,46 @@ class PredictiveSearch extends SearchForm {
       const apiProducts = res.products || [];
       const sectionProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(sectionHtml);
       const fullPageProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(fullPageMarkup);
-      const mergedProducts = [];
-      const seenProductKeys = new Set();
+      const mergedByKey = new Map();
+      const scorePrice = (price) => {
+        const text = String(price || '').trim();
+        if (!text) return 0;
+        let score = 1;
+        if (/[₪$€£]/.test(text)) score += 2;
+        if (/ק["']?ג|kg|קילו/i.test(text)) score += 4;
+        if (text.length >= 6) score += 1;
+        return score;
+      };
       const pushMerged = (p) => {
         if (!p) return;
         const normalized = PredictiveSearch.normalizeSuggestApiProduct(p) || p;
         if (!normalized?.url) return;
         const key = PredictiveSearch.productUrlKey(normalized.url);
-        if (!key || seenProductKeys.has(key)) return;
-        seenProductKeys.add(key);
-        mergedProducts.push({
+        if (!key) return;
+        const incoming = {
           title: normalized.title || '',
           url: normalized.url,
           image: normalized.image || '',
           price: normalized.price || '',
+        };
+        const existing = mergedByKey.get(key);
+        if (!existing) {
+          mergedByKey.set(key, incoming);
+          return;
+        }
+        mergedByKey.set(key, {
+          title: incoming.title || existing.title,
+          url: existing.url,
+          image: incoming.image || existing.image,
+          price: scorePrice(incoming.price) >= scorePrice(existing.price) ? incoming.price : existing.price,
         });
       };
-      apiProducts.forEach(pushMerged);
+      /* העדפה למחיר שמוצג בפועל בחנות (כולל מחיר לק״ג) מתוך HTML */
       sectionProducts.forEach(pushMerged);
       fullPageProducts.forEach(pushMerged);
+      apiProducts.forEach(pushMerged);
+
+      const mergedProducts = Array.from(mergedByKey.values());
 
       const normalizedTerm = PredictiveSearch.normalizeForSearch(searchTerm);
       const productNameMatches = mergedProducts.filter((p) =>
