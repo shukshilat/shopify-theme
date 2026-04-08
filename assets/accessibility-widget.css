@@ -1,38 +1,19 @@
-/* Floating accessibility toolbar — above cart drawer (z-index 1000) */
+/* Floating accessibility toolbar (bottom-right, independent from side shortcuts). */
 .a11y-widget {
   --a11y-widget-bg: #1a1a1a;
   --a11y-widget-fg: #ffffff;
   --a11y-widget-accent: #2563eb;
   position: fixed;
   bottom: 1.25rem;
+  right: max(1.25rem, env(safe-area-inset-right, 0px));
+  left: auto;
+  inset-inline-start: auto;
+  inset-inline-end: auto;
   z-index: 10001;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 1.4rem;
   line-height: 1.4;
   direction: inherit;
-}
-
-/* Stacked with Waze/WhatsApp — must not use viewport fixed (overrides base .a11y-widget) */
-.floating-side-bar .a11y-widget {
-  position: relative !important;
-  bottom: auto !important;
-  z-index: auto;
-}
-
-.floating-side-bar .a11y-widget.a11y-widget--pos-start,
-.floating-side-bar .a11y-widget.a11y-widget--pos-end {
-  inset-inline-start: auto !important;
-  inset-inline-end: auto !important;
-}
-
-.a11y-widget--pos-start {
-  inset-inline-start: 1.25rem;
-  inset-inline-end: auto;
-}
-
-.a11y-widget--pos-end {
-  inset-inline-end: 1.25rem;
-  inset-inline-start: auto;
 }
 
 .a11y-widget__toggle {
@@ -69,6 +50,10 @@
 .a11y-widget__panel {
   position: absolute;
   bottom: calc(100% + 0.8rem);
+  right: 0;
+  left: auto;
+  inset-inline-start: auto;
+  inset-inline-end: auto;
   width: min(32rem, calc(100vw - 2.5rem));
   max-height: min(70vh, 48rem);
   overflow: auto;
@@ -77,14 +62,6 @@
   background: var(--a11y-widget-bg);
   color: var(--a11y-widget-fg);
   box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.35);
-}
-
-.a11y-widget--pos-start .a11y-widget__panel {
-  inset-inline-start: 0;
-}
-
-.a11y-widget--pos-end .a11y-widget__panel {
-  inset-inline-end: 0;
 }
 
 .a11y-widget__panel[hidden] {

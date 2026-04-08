@@ -502,10 +502,10 @@
     <aside class="floating-side-bar" data-floating-side-bar aria-label="קיצורי דרך">
       {% render 'floating-waze' %}
       {% render 'floating-whatsapp' %}
-      {%- if settings.show_accessibility_widget -%}
-        {% render 'accessibility-widget' %}
-      {%- endif -%}
     </aside>
+    {%- if settings.show_accessibility_widget -%}
+      {% render 'accessibility-widget' %}
+    {%- endif -%}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}

@@ -199,61 +199,47 @@ class PredictiveSearch extends SearchForm {
     const searchBase =
       typeof routes !== 'undefined' && routes.search_url ? routes.search_url : '/search';
 
-    const isHebrewLocale =
-      (typeof document !== 'undefined' && /^he/i.test(document.documentElement.lang || '')) ||
-      (typeof window.Shopify !== 'undefined' && window.Shopify.locale && /^he/i.test(String(window.Shopify.locale))) ||
-      (typeof window.themeLocale === 'string' && /^he/i.test(window.themeLocale));
-
     const loadMarkup = async () => {
-      const jsonProductUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
+      /* בקשת JSON אחת (כל סוגי המשאבים) — יציבה יותר משני נתיבים נפרדים */
+      const jsonAllUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
         q: searchTerm,
-        'resources[type]': 'product',
+        'resources[type]': 'product,query,collection,page,article',
         'resources[limit]': '10',
         'resources[limit_scope]': 'each',
       }).toString()}`;
-      const jsonMetaUrl = `${suggestJsonRoot}.json?${new URLSearchParams({
-        q: searchTerm,
-        'resources[type]': 'query,collection',
-        'resources[limit]': '8',
-        'resources[limit_scope]': 'each',
-      }).toString()}`;
 
-      /* במקביל: עד 10 מוצרים מ-API + הצעות + עד 36 מוצרים מסקשן החנות (מיזוג ללא כפילויות) */
-      let rProd = null;
-      let rMeta = null;
+      let rAll = null;
       let sectionHtml = '';
       try {
         const results = await Promise.all([
-          fetch(jsonProductUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
-          fetch(jsonMetaUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
+          fetch(jsonAllUrl, { signal }).then((r) => (r.ok ? r.json() : null)),
           PredictiveSearch.fetchSearchSectionMarkup(searchBase, searchTerm, signal).catch((err) => {
             if (err?.name === 'AbortError' || err?.code === 20) throw err;
             return '';
           }),
         ]);
-        rProd = results[0];
-        rMeta = results[1];
-        sectionHtml = typeof results[2] === 'string' ? results[2] : '';
+        rAll = results[0];
+        sectionHtml = typeof results[1] === 'string' ? results[1] : '';
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
+      const res = rAll?.resources?.results || {};
+      const apiProducts = res.products || [];
       const sectionProducts = PredictiveSearch.parseProductsFromPredictiveHtmlFragment(sectionHtml);
-      const apiProducts = rProd?.resources?.results?.products || [];
       const mergedProducts = PredictiveSearch.mergeProductListsForPreview(
         apiProducts,
         sectionProducts,
         PREDICTIVE_MERGED_MAX_PRODUCTS
       );
-      const qr = rMeta?.resources?.results || {};
       const combinedData = {
         resources: {
           results: {
-            queries: qr.queries || [],
-            collections: qr.collections || [],
+            queries: res.queries || [],
+            collections: res.collections || [],
             products: mergedProducts,
-            pages: [],
-            articles: [],
+            pages: res.pages || [],
+            articles: res.articles || [],
           },
         },
       };
@@ -261,21 +247,20 @@ class PredictiveSearch extends SearchForm {
       const fromMerge = PredictiveSearch.buildMarkupFromSuggestJson(combinedData, searchTerm);
       if (fromMerge) return fromMerge;
 
-      if (!isHebrewLocale) {
-        try {
-          const response = await fetch(htmlUrl, { signal });
-          if (!response.ok) throw new Error('html');
-          const text = await response.text();
-          const doc = new DOMParser().parseFromString(text, 'text/html');
-          const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
-          const inner = sectionRoot?.innerHTML?.trim() ?? '';
-          if (inner.includes('id="predictive-search-results"')) {
-            const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
-            if (hasSuggestions) return inner;
-          }
-        } catch (error) {
-          if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      /* גם בעברית — אם המיזוג ריק, ניסיון suggest הרשמי של Shopify */
+      try {
+        const response = await fetch(htmlUrl, { signal });
+        if (!response.ok) throw new Error('html');
+        const text = await response.text();
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        const sectionRoot = doc.querySelector('#shopify-section-predictive-search');
+        const inner = sectionRoot?.innerHTML?.trim() ?? '';
+        if (inner.includes('id="predictive-search-results"')) {
+          const hasSuggestions = sectionRoot.querySelector('.predictive-search__list-item');
+          if (hasSuggestions) return inner;
         }
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
 
       try {
@@ -309,7 +294,7 @@ class PredictiveSearch extends SearchForm {
     const url = `${searchBase}?${new URLSearchParams({
       q: searchTerm,
       type: 'product',
-      'options[prefix]': 'none',
+      'options[prefix]': 'last',
     }).toString()}`;
     const response = await fetch(url, { signal, credentials: 'same-origin' });
     if (!response.ok) return '';
@@ -386,7 +371,7 @@ class PredictiveSearch extends SearchForm {
     const params = {
       q: searchTerm,
       type: 'product',
-      'options[prefix]': 'none',
+      'options[prefix]': 'last',
     };
     const urlSectionId = `${searchBase}?${new URLSearchParams({
       ...params,
@@ -404,7 +389,7 @@ class PredictiveSearch extends SearchForm {
       sections: 'search-predictive-fallback',
     }).toString()}`;
     response = await fetch(urlSections, { signal });
-    if (!response.ok) throw new Error('storefront');
+    if (!response.ok) return '';
     const text = await response.text();
     const contentType = response.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
@@ -445,10 +430,15 @@ class PredictiveSearch extends SearchForm {
   }
 
   static normalizeSuggestApiProduct(p) {
-    if (!p || !p.url) return null;
+    if (!p) return null;
+    let url = p.url || '';
+    if (!url && p.handle) {
+      url = `/products/${String(p.handle).replace(/^\/+/, '')}`;
+    }
+    if (!url || !String(url).includes('/products/')) return null;
     return {
       title: p.title || '',
-      url: p.url,
+      url,
       image:
         p.image ||
         p.featured_image?.url ||
@@ -494,18 +484,16 @@ class PredictiveSearch extends SearchForm {
 
   static parseProductsFromPredictiveHtmlFragment(htmlFragment) {
     if (!htmlFragment || typeof htmlFragment !== 'string') return [];
-    if (!htmlFragment.includes('predictive-search-results-products-list')) return [];
+    if (!htmlFragment.includes('predictive-search-results')) return [];
     try {
       const doc = new DOMParser().parseFromString(htmlFragment, 'text/html');
-      const list =
-        doc.getElementById('predictive-search-results-products-list') ||
-        doc.querySelector('[id="predictive-search-results-products-list"]');
-      if (!list) return [];
-      const products = [];
-      list.querySelectorAll('li.predictive-search__list-item').forEach((li) => {
+      const pushFromLi = (li, products, seen) => {
         const a = li.querySelector('a[href*="/products/"]');
         if (!a) return;
         const url = a.getAttribute('href') || '';
+        const k = PredictiveSearch.productUrlKey(url);
+        if (!k || seen.has(k)) return;
+        seen.add(k);
         const titleEl = li.querySelector('.predictive-search__item-heading');
         const title = titleEl ? titleEl.textContent.trim() : '';
         const img = li.querySelector('img.predictive-search__image');
@@ -518,7 +506,21 @@ class PredictiveSearch extends SearchForm {
           if (pe) price = pe.textContent.replace(/\s+/g, ' ').trim();
         }
         products.push({ title, url, image, price });
-      });
+      };
+
+      const products = [];
+      const seen = new Set();
+      const list =
+        doc.getElementById('predictive-search-results-products-list') ||
+        doc.querySelector('[id="predictive-search-results-products-list"]');
+      if (list) {
+        list.querySelectorAll('li.predictive-search__list-item').forEach((li) => pushFromLi(li, products, seen));
+      } else {
+        const root = doc.getElementById('predictive-search-results');
+        if (root) {
+          root.querySelectorAll('li.predictive-search__list-item').forEach((li) => pushFromLi(li, products, seen));
+        }
+      }
       return products;
     } catch (e) {
       return [];
