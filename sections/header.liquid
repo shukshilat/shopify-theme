@@ -271,6 +271,35 @@
       justify-content: center;
     }
 
+    /* Force a single hamburger icon on live mobile using mask (independent of inline SVG visibility). */
+    details:not([open]) > .header__icon--menu > span::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 2.2rem;
+      height: 2.2rem;
+      background-color: #1c1917;
+      -webkit-mask-image: url('{{ 'icon-hamburger.svg' | asset_url }}');
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      -webkit-mask-size: contain;
+      mask-image: url('{{ 'icon-hamburger.svg' | asset_url }}');
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Hide inline hamburger while closed; mask above becomes the only icon. */
+    details:not([open]) > .header__icon--menu .icon-hamburger,
+    details:not([open]) > .header__icon--menu > span > svg:first-child {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+
     details:not([open]) > .header__icon--menu .icon-close {
       visibility: hidden !important;
       opacity: 0 !important;
@@ -279,6 +308,10 @@
 
     details[open] > .header__icon--menu .icon-hamburger {
       display: none !important;
+    }
+
+    details[open] > .header__icon--menu > span::before {
+      content: none !important;
     }
   }
 </style>
