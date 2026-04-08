@@ -421,35 +421,46 @@ a.product__text {
 
 @media screen and (min-width: 990px) {
   .template-product .product__media-wrapper {
-    max-width: 48% !important;
-    width: calc(48% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    max-width: 42% !important;
+    width: calc(42% - var(--grid-desktop-horizontal-spacing) / 2) !important;
   }
 
   .template-product .product__info-wrapper {
-    max-width: 52% !important;
-    width: calc(52% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    max-width: 58% !important;
+    width: calc(58% - var(--grid-desktop-horizontal-spacing) / 2) !important;
   }
 
   .template-product .product--large:not(.product--no-media) .product__media-wrapper {
-    max-width: 48% !important;
-    width: calc(48% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    max-width: 42% !important;
+    width: calc(42% - var(--grid-desktop-horizontal-spacing) / 2) !important;
   }
 
   .template-product .product--large:not(.product--no-media) .product__info-wrapper {
-    max-width: 52% !important;
-    width: calc(52% - var(--grid-desktop-horizontal-spacing) / 2) !important;
+    max-width: 58% !important;
+    width: calc(58% - var(--grid-desktop-horizontal-spacing) / 2) !important;
   }
 
   .template-product .product__media-wrapper .product-media-container {
-    max-width: 68% !important;
+    max-width: 54% !important;
     margin-right: auto;
     margin-left: auto;
   }
 
   .template-product .product__media-wrapper .product__media {
-    max-width: 68% !important;
+    max-width: 54% !important;
     margin-right: auto;
     margin-left: auto;
+  }
+
+  .template-product .product__media-wrapper .product__media img,
+  .template-product .product__media-wrapper .product__media video,
+  .template-product .product__media-wrapper .product__media iframe,
+  .template-product .product__media-wrapper .deferred-media__poster img {
+    width: 74% !important;
+    height: 74% !important;
+    top: 13% !important;
+    left: 13% !important;
+    object-fit: contain !important;
   }
 }
 
