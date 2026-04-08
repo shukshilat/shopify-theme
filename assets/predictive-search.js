@@ -2,6 +2,8 @@
 const PREDICTIVE_MERGED_MAX_PRODUCTS = 24;
 
 class PredictiveSearch extends SearchForm {
+  static productCatalogPromise = null;
+
   constructor() {
     super();
     this.cachedResults = {};
@@ -311,6 +313,13 @@ class PredictiveSearch extends SearchForm {
       try {
         const fromPage = await PredictiveSearch.fetchFullSearchPageMarkup(searchBase, searchTerm, signal);
         if (fromPage.includes('id="predictive-search-results"')) return fromPage;
+      } catch (error) {
+        if (error?.name === 'AbortError' || error?.code === 20) throw error;
+      }
+
+      try {
+        const fromNameMatch = await PredictiveSearch.buildNameMatchFallbackMarkup(searchTerm, signal);
+        if (fromNameMatch) return fromNameMatch;
       } catch (error) {
         if (error?.name === 'AbortError' || error?.code === 20) throw error;
       }
@@ -779,6 +788,63 @@ class PredictiveSearch extends SearchForm {
     return `<div id="predictive-search-results" role="listbox"><div id="predictive-search-option-search-keywords" class="predictive-search__search-for-button"><button class="predictive-search__item predictive-search__item--term link link--text h5 animate-arrow" tabindex="-1" role="option" aria-selected="false"><span data-predictive-search-search-for-text>${searchForText}</span><span class="svg-wrapper"></span></button></div><span class="hidden" data-predictive-search-live-region-count-value>${esc(
       liveText
     )}</span></div>`;
+  }
+
+  static normalizeForSearch(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  static async getProductCatalog(signal) {
+    if (PredictiveSearch.productCatalogPromise) return PredictiveSearch.productCatalogPromise;
+    const base = typeof window.routes !== 'undefined' && window.routes.root_url ? window.routes.root_url : '/';
+    const root = String(base).endsWith('/') ? String(base).slice(0, -1) : String(base);
+    const url = `${root}/products.json?limit=250`;
+    PredictiveSearch.productCatalogPromise = fetch(url, { signal, credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((payload) => {
+        const products = Array.isArray(payload?.products) ? payload.products : [];
+        return products.map((p) => ({
+          title: p.title || '',
+          url: p.handle ? `/products/${p.handle}` : '',
+          image: p?.images?.[0]?.src || '',
+          price:
+            typeof p.price === 'string'
+              ? p.price
+              : typeof p.price_min === 'string'
+                ? p.price_min
+                : p.variants?.[0]?.price || '',
+        }));
+      })
+      .catch(() => []);
+    return PredictiveSearch.productCatalogPromise;
+  }
+
+  static async buildNameMatchFallbackMarkup(searchTerm, signal) {
+    const term = PredictiveSearch.normalizeForSearch(searchTerm);
+    if (!term) return '';
+    const catalog = await PredictiveSearch.getProductCatalog(signal);
+    if (!Array.isArray(catalog) || catalog.length === 0) return '';
+    const matched = catalog
+      .filter((p) => PredictiveSearch.normalizeForSearch(p.title).includes(term))
+      .slice(0, 12);
+    if (!matched.length) return '';
+    return PredictiveSearch.buildMarkupFromSuggestJson(
+      {
+        resources: {
+          results: {
+            queries: [],
+            collections: [],
+            products: matched,
+            pages: [],
+            articles: [],
+          },
+        },
+      },
+      searchTerm
+    );
   }
 
   setLiveRegionLoadingState() {
