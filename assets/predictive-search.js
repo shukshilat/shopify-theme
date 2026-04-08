@@ -275,17 +275,41 @@ class PredictiveSearch extends SearchForm {
       apiProducts.forEach(pushMerged);
       sectionProducts.forEach(pushMerged);
       fullPageProducts.forEach(pushMerged);
+
+      const normalizedTerm = PredictiveSearch.normalizeForSearch(searchTerm);
+      const productNameMatches = mergedProducts.filter((p) =>
+        PredictiveSearch.normalizeForSearch(p?.title || '').includes(normalizedTerm)
+      );
+      const productNonMatches = mergedProducts.filter(
+        (p) => !PredictiveSearch.normalizeForSearch(p?.title || '').includes(normalizedTerm)
+      );
+      const prioritizedProducts = [...productNameMatches, ...productNonMatches];
       if (mergedProducts.length > PREDICTIVE_MERGED_MAX_PRODUCTS) {
-        mergedProducts.length = PREDICTIVE_MERGED_MAX_PRODUCTS;
+        prioritizedProducts.length = PREDICTIVE_MERGED_MAX_PRODUCTS;
       }
+
+      const matchedQueries = (res.queries || []).filter((q) =>
+        PredictiveSearch.normalizeForSearch(q?.text || q?.styled_text || '').includes(normalizedTerm)
+      );
+      const matchedCollections = (res.collections || []).filter((c) =>
+        PredictiveSearch.normalizeForSearch(c?.title || '').includes(normalizedTerm)
+      );
+      const matchedPages = (res.pages || []).filter((p) =>
+        PredictiveSearch.normalizeForSearch(p?.title || '').includes(normalizedTerm)
+      );
+      const matchedArticles = (res.articles || []).filter((a) =>
+        PredictiveSearch.normalizeForSearch(a?.title || '').includes(normalizedTerm)
+      );
+
+      const hasProductNameMatch = productNameMatches.length > 0;
       const combinedData = {
         resources: {
           results: {
-            queries: res.queries || [],
-            collections: res.collections || [],
-            products: mergedProducts,
-            pages: res.pages || [],
-            articles: res.articles || [],
+            queries: hasProductNameMatch ? matchedQueries : res.queries || [],
+            collections: hasProductNameMatch ? matchedCollections : res.collections || [],
+            products: prioritizedProducts,
+            pages: hasProductNameMatch ? matchedPages : res.pages || [],
+            articles: hasProductNameMatch ? matchedArticles : res.articles || [],
           },
         },
       };
