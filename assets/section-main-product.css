@@ -366,6 +366,35 @@ a.product__text {
   letter-spacing: 0.02em;
 }
 
+.main-product-qty-mode__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.main-product-qty-mode__tab {
+  min-height: 4.2rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.18);
+  border-radius: 1.2rem;
+  background: rgb(var(--color-background));
+  color: rgba(var(--color-foreground), 0.8);
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.main-product-qty-mode__tab.is-active {
+  background: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  border-color: rgba(var(--color-foreground), 0.9);
+  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.16);
+}
+
+.main-product-qty-mode__tab:hover {
+  border-color: rgba(var(--color-foreground), 0.35);
+}
+
 .main-product-qty-mode__select {
   width: 100%;
   min-height: 4.4rem;

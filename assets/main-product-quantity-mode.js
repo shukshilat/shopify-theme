@@ -38,15 +38,15 @@
 
     var unitInput = root.querySelector('.js-main-qty-unit');
     var kgInput = root.querySelector('.js-main-qty-kg');
-    var modeSelect = root.querySelector('.main-product-qty-mode__select');
+    var modeButtons = root.querySelectorAll('[data-main-mode-btn]');
 
-    var purchaseHidden = productForm.querySelector('input[name="purchase_mode"][data-main-qty-mode="true"]');
-    if (!purchaseHidden) {
-      purchaseHidden = document.createElement('input');
-      purchaseHidden.type = 'hidden';
-      purchaseHidden.name = 'purchase_mode';
-      purchaseHidden.setAttribute('data-main-qty-mode', 'true');
-      productForm.appendChild(purchaseHidden);
+    var modePropHidden = productForm.querySelector('input[name="properties[_purchase_mode]"][data-main-qty-mode="true"]');
+    if (!modePropHidden) {
+      modePropHidden = document.createElement('input');
+      modePropHidden.type = 'hidden';
+      modePropHidden.name = 'properties[_purchase_mode]';
+      modePropHidden.setAttribute('data-main-qty-mode', 'true');
+      productForm.appendChild(modePropHidden);
     }
 
     var qtyInput = productForm.querySelector('input[name="quantity"]');
@@ -55,7 +55,8 @@
     }
 
     function currentMode() {
-      if (modeSelect && modeSelect.value) return modeSelect.value;
+      var activeBtn = root.querySelector('[data-main-mode-btn].is-active');
+      if (activeBtn) return activeBtn.getAttribute('data-main-mode-btn');
       if (!hasUnit) return 'weight';
       return 'unit';
     }
@@ -80,7 +81,7 @@
 
     function applyModeValues() {
       var mode = currentMode();
-      purchaseHidden.value = mode;
+      modePropHidden.value = mode;
       syncPanels(root, mode);
       ensureWeightScaleProp(mode);
       if (!qtyInput) return;
@@ -91,9 +92,18 @@
       }
     }
 
-    if (modeSelect) {
-      modeSelect.addEventListener('change', applyModeValues);
-    }
+    modeButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var mode = btn.getAttribute('data-main-mode-btn');
+        modeButtons.forEach(function (b) {
+          var active = b === btn;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+        syncPanels(root, mode);
+        applyModeValues();
+      });
+    });
 
     if (kgInput) {
       kgInput.addEventListener('input', function () {
@@ -124,7 +134,7 @@
     });
 
     if (!hasUnit) {
-      purchaseHidden.value = 'weight';
+      modePropHidden.value = 'weight';
       syncPanels(root, 'weight');
     }
     applyModeValues();

@@ -342,13 +342,17 @@
                   </label>
                   {%- if show_weight_mode and show_unit_mode -%}
                     <div class="main-product-qty-mode__switch">
-                      <label class="form__label" for="MainPurchaseMode-{{ section.id }}">
+                      <label class="form__label" id="MainPurchaseModeLabel-{{ section.id }}">
                         {{ 'products.product.card_quantity.mode_group' | t }}
                       </label>
-                      <select id="MainPurchaseMode-{{ section.id }}" class="main-product-qty-mode__select">
-                        <option value="unit">{{ 'products.product.card_quantity.by_units' | t }}</option>
-                        <option value="weight">{{ 'products.product.card_quantity.by_weight' | t }}</option>
-                      </select>
+                      <div class="main-product-qty-mode__tabs" role="tablist" aria-labelledby="MainPurchaseModeLabel-{{ section.id }}">
+                        <button type="button" class="main-product-qty-mode__tab is-active" data-main-mode-btn="unit" aria-pressed="true">
+                          {{ 'products.product.card_quantity.by_units' | t }}
+                        </button>
+                        <button type="button" class="main-product-qty-mode__tab" data-main-mode-btn="weight" aria-pressed="false">
+                          {{ 'products.product.card_quantity.by_weight' | t }}
+                        </button>
+                      </div>
                     </div>
                   {%- endif -%}
                   <div class="price-per-item__container">
