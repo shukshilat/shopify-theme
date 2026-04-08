@@ -280,7 +280,7 @@
       color: #1c1917 !important;
     }
 
-    /* Hard fallback for live mobile: draw hamburger with CSS even if SVG is hidden by external CSS */
+    /* Ultra-safe fallback glyph for live mobile even if SVG is blocked */
     details:not([open]) > .header__icon--menu > span {
       position: relative;
       width: 2.4rem;
@@ -290,17 +290,19 @@
       justify-content: center;
     }
 
-    details:not([open]) > .header__icon--menu > span::before {
-      content: '';
+    .header__hamburger-fallback {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      color: #1c1917 !important;
+      font-size: 2.8rem;
+      line-height: 1;
+      font-weight: 700;
+      visibility: visible !important;
+      opacity: 1 !important;
       position: absolute;
-      width: 2.2rem;
-      height: 0.2rem;
-      background: #1c1917;
-      border-radius: 999px;
-      top: 0.6rem;
-      left: 0.1rem;
-      box-shadow: 0 0.7rem 0 #1c1917, 0 1.4rem 0 #1c1917;
-      z-index: 5;
+      inset: 0;
+      z-index: 6;
       pointer-events: none;
     }
 
@@ -314,8 +316,8 @@
       display: none !important;
     }
 
-    details[open] > .header__icon--menu > span::before {
-      content: none !important;
+    details[open] > .header__icon--menu > span .header__hamburger-fallback {
+      display: none !important;
     }
   }
 </style>
