@@ -32,7 +32,7 @@
         assign related_heading = section.settings.heading | strip
         assign related_heading_key = related_heading | downcase
         if related_heading_key == blank or related_heading_key == 'you may also like' or related_heading_key contains 'you may also like'
-          assign related_heading = 'אולי תאהב גם-'
+          assign related_heading = 'אולי גם תאהבו'
         endif
       -%}
       <h2 class="related-products__heading inline-richtext {{ section.settings.heading_size }}">
