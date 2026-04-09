@@ -134,11 +134,6 @@ h6,
 #MainContent .related-products__heading::after,
 #MainContent .collection__title .title::after,
 #MainContent .multicolumn .title::after {
-  content: '';
-  display: block;
-  width: min(10rem, 36%);
-  height: 0.3rem;
-  margin: 0.65rem auto 0;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(185, 28, 28, 0.18), rgba(185, 28, 28, 0.9), rgba(185, 28, 28, 0.18));
+  content: none !important;
+  display: none !important;
 }

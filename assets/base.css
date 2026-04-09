@@ -2380,9 +2380,9 @@ input[type='checkbox'] {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
 
-/* פס הדגשה תחת הכותרת */
+/* Remove custom accent line under header */
 .section-header .header-wrapper {
-  border-bottom: 3px solid var(--brand-accent) !important;
+  border-bottom: none !important;
 }
 
 .section-header .header.page-width {
