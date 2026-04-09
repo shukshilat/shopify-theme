@@ -18,6 +18,12 @@
     {%- unless settings.type_header_font.system? and settings.type_body_font.system? -%}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
 
     <title>
       {{ page_title }}
@@ -512,6 +518,34 @@
       footer.footer.footer--home-merged {
         background-color: #ffffff !important;
         background-image: none !important;
+      }
+
+      /* Global typography: force Assistant across storefront */
+      :root {
+        --font-body-family: 'Assistant', sans-serif !important;
+        --font-heading-family: 'Assistant', sans-serif !important;
+      }
+
+      body,
+      button,
+      input,
+      select,
+      textarea,
+      .button,
+      .link,
+      .h0,
+      .h1,
+      .h2,
+      .h3,
+      .h4,
+      .h5,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: 'Assistant', sans-serif !important;
       }
     </style>
 
