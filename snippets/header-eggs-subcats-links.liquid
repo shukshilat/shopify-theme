@@ -5,10 +5,39 @@
   Parents must pass: eggs_subcat_tavlinim, eggs_subcat_olive_oil, eggs_subcat_free_eggs, eggs_subcat_grocery
   Param: link_class (required)
 {% endcomment %}
-{%- assign eggs_subcat_tavlinim_resolved = eggs_subcat_tavlinim -%}
-{%- assign eggs_subcat_olive_oil_resolved = eggs_subcat_olive_oil -%}
-{%- assign eggs_subcat_free_eggs_resolved = eggs_subcat_free_eggs -%}
-{%- assign eggs_subcat_grocery_resolved = eggs_subcat_grocery -%}
+{%- assign eggs_subcat_tavlinim_resolved = blank -%}
+{%- assign eggs_subcat_olive_oil_resolved = blank -%}
+{%- assign eggs_subcat_free_eggs_resolved = blank -%}
+{%- assign eggs_subcat_grocery_resolved = blank -%}
+
+{%- if eggs_subcat_tavlinim != blank -%}
+  {%- if eggs_subcat_tavlinim.url != blank -%}
+    {%- assign eggs_subcat_tavlinim_resolved = eggs_subcat_tavlinim -%}
+  {%- else -%}
+    {%- assign eggs_subcat_tavlinim_resolved = collections[eggs_subcat_tavlinim] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if eggs_subcat_olive_oil != blank -%}
+  {%- if eggs_subcat_olive_oil.url != blank -%}
+    {%- assign eggs_subcat_olive_oil_resolved = eggs_subcat_olive_oil -%}
+  {%- else -%}
+    {%- assign eggs_subcat_olive_oil_resolved = collections[eggs_subcat_olive_oil] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if eggs_subcat_free_eggs != blank -%}
+  {%- if eggs_subcat_free_eggs.url != blank -%}
+    {%- assign eggs_subcat_free_eggs_resolved = eggs_subcat_free_eggs -%}
+  {%- else -%}
+    {%- assign eggs_subcat_free_eggs_resolved = collections[eggs_subcat_free_eggs] -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if eggs_subcat_grocery != blank -%}
+  {%- if eggs_subcat_grocery.url != blank -%}
+    {%- assign eggs_subcat_grocery_resolved = eggs_subcat_grocery -%}
+  {%- else -%}
+    {%- assign eggs_subcat_grocery_resolved = collections[eggs_subcat_grocery] -%}
+  {%- endif -%}
+{%- endif -%}
 {%- if eggs_subcat_tavlinim_resolved == blank or eggs_subcat_olive_oil_resolved == blank or eggs_subcat_free_eggs_resolved == blank or eggs_subcat_grocery_resolved == blank -%}
   {%- for c in collections -%}
     {%- assign t = c.title | strip -%}
