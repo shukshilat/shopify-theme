@@ -7,6 +7,18 @@
   margin: 0;
 }
 
+/* Keep "המוצרים שלנו" perfectly centered in this section */
+.section-collection-list .title-wrapper-with-link {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.section-collection-list .title-wrapper-with-link .collection-list-title,
+.section-collection-list .title-wrapper-with-link .title {
+  margin-inline: auto !important;
+  text-align: center !important;
+}
+
 @media screen and (max-width: 749px) {
   .collection-list:not(.slider) {
     padding-left: 0;
