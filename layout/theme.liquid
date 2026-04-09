@@ -550,6 +550,51 @@
         font-family: 'Assistant', sans-serif !important;
         font-style: normal !important;
       }
+
+      /* Global text color (excluding links) */
+      :root {
+        --site-text-color: #012901;
+      }
+
+      body,
+      p,
+      span,
+      li,
+      dt,
+      dd,
+      small,
+      strong,
+      em,
+      label,
+      legend,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      button,
+      input,
+      select,
+      textarea,
+      .title,
+      .subtitle,
+      .caption,
+      .card__heading,
+      .price,
+      .product__title,
+      .product__text,
+      .collection-hero__title {
+        color: var(--site-text-color) !important;
+      }
+
+      /* Keep links in their original link color */
+      a,
+      .link,
+      a:visited,
+      .link:visited {
+        color: rgb(var(--color-link)) !important;
+      }
     </style>
 
     <script>
