@@ -93,7 +93,7 @@
         "columns_desktop": 4,
         "color_scheme": "scheme-1",
         "show_view_all": true,
-        "enable_carousel": true,
+        "enable_carousel": false,
         "columns_mobile": "1",
         "swipe_on_mobile": true,
         "padding_top": 36,
