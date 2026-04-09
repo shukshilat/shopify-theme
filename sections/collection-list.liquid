@@ -15,14 +15,14 @@
     }
   }
 
-  /* Shorter media area than default square (100%) — keeps cards readable without dominating the fold */
+  /* Shorter media area so titles sit closer to category images */
   .collection-list-wrapper.section-{{ section.id }}-padding .card__inner.ratio {
-    --ratio-percent: 100% !important;
+    --ratio-percent: 56% !important;
   }
 
   @media screen and (min-width: 750px) {
     .collection-list-wrapper.section-{{ section.id }}-padding .card__inner.ratio {
-      --ratio-percent: 100% !important;
+      --ratio-percent: 56% !important;
     }
   }
 
