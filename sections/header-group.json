@@ -34,12 +34,16 @@
         "show_line_separator": true,
         "color_scheme": "scheme-1",
         "menu_color_scheme": "scheme-1",
+        "eggs_subcat_tavlinim": "תבליני-פרג",
+        "eggs_subcat_olive_oil": "שמן-זית",
+        "eggs_subcat_free_eggs": "ביצים",
+        "eggs_subcat_grocery": "מוצרי-מרכול",
         "enable_country_selector": true,
         "enable_language_selector": true,
         "enable_customer_avatar": true,
         "margin_bottom": 0,
-        "padding_top": 20,
-        "padding_bottom": 20
+        "padding_top": 0,
+        "padding_bottom": 0
       }
     }
   },

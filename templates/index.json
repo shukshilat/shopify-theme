@@ -215,6 +215,10 @@
         "padding_top": 40,
         "padding_bottom": 28
       }
+    },
+    "17757389369b039f73": {
+      "type": "_blocks",
+      "settings": {}
     }
   },
   "order": [
@@ -223,6 +227,7 @@
     "promo_deals_marquee_home",
     "17746565030139c1a2",
     "featured_collection",
-    "home_unified_closing"
+    "home_unified_closing",
+    "17757389369b039f73"
   ]
 }
