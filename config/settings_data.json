@@ -149,7 +149,7 @@
       "scheme-1": {
         "settings": {
           "background": "#ffffff",
-          "background_gradient": "",
+          "background_gradient": "rgba(0,0,0,0)",
           "text": "#1c1917",
           "button": "#b91c1c",
           "button_label": "#ffffff",
