@@ -551,44 +551,29 @@
         font-style: normal !important;
       }
 
-      /* Global text color (excluding links) */
+      /* Running text color only (exclude links/icons/buttons) */
       :root {
         --site-text-color: #012901;
       }
 
-      body,
-      p,
-      span,
-      li,
-      dt,
-      dd,
-      small,
-      strong,
-      em,
-      label,
-      legend,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6,
-      button,
-      input,
-      select,
-      textarea,
-      .title,
-      .subtitle,
-      .caption,
-      .card__heading,
-      .price,
-      .product__title,
-      .product__text,
-      .collection-hero__title {
+      #MainContent p,
+      #MainContent li,
+      #MainContent dt,
+      #MainContent dd,
+      #MainContent small,
+      #MainContent label,
+      #MainContent legend,
+      #MainContent .rte,
+      #MainContent .rte p,
+      #MainContent .rte li,
+      #MainContent .product__text,
+      #MainContent .product__description,
+      #MainContent .article-template__content,
+      #MainContent .collection-hero__description {
         color: var(--site-text-color) !important;
       }
 
-      /* Keep links in their original link color */
+      /* Keep links/icons/buttons in original theme colors */
       a,
       .link,
       a:visited,
