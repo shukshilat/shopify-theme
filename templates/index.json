@@ -13,7 +13,7 @@
       "type": "hero-asset-carousel",
       "settings": {
         "slide_seconds": 3,
-        "aspect_ratio": "16 / 9",
+        "aspect_ratio": "2.4 / 1",
         "full_width": true,
         "color_scheme": "scheme-1",
         "accessibility_label": "באנרים שיווקיים",
