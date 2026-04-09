@@ -481,6 +481,38 @@
       .shopify-section-header-hidden {
         top: auto !important;
       }
+
+      /* Global override: keep full site background white */
+      html,
+      body.gradient,
+      .section-header,
+      .header-wrapper,
+      .header,
+      .shopify-section > .gradient,
+      main#MainContent,
+      #MainContent .shopify-section,
+      #MainContent .shopify-section .gradient,
+      .shopify-section.collection-page-hero,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__inner,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__text-wrapper,
+      body.template-collection .shopify-section .gradient[class*='color-scheme'],
+      .hero-asset-carousel__viewport,
+      #MainContent .card__inner[class*='color-scheme-'],
+      #MainContent .card--card[class*='color-scheme-'],
+      #MainContent .product-card-wrapper .card__inner,
+      #MainContent .product-card-wrapper .card--card,
+      #MainContent .collection-card-wrapper .card__inner,
+      #MainContent .collection-card-wrapper .card--card,
+      #MainContent .content-container.gradient,
+      #MainContent .multicolumn:not(.background-none) .multicolumn-card,
+      #MainContent .multicolumn.background-primary .multicolumn-card,
+      #MainContent .section-collection-list .card__inner,
+      #MainContent .section-collection-list .card--card,
+      footer.footer.footer--home-merged {
+        background-color: #ffffff !important;
+        background-image: none !important;
+      }
     </style>
 
     <script>
