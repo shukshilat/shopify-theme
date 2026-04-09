@@ -74,7 +74,7 @@ html.a11y-reduce-motion .section-promo-deals-marquee .promo-deals-marquee__track
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: 0.1em;
-  color: rgb(var(--color-foreground));
+  color: #013220 !important;
   transform: scaleX(1.06);
   transform-origin: center center;
 }
