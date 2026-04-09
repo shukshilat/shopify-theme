@@ -120,7 +120,7 @@
         "instafeed_app_block_Mfk3my": {
           "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
           "settings": {
-            "title": "",
+            "title": "שוק שילת ברשתות החברתיות",
             "title_color": "",
             "title_size_v2": 0,
             "alignment": "center",
@@ -128,7 +128,7 @@
             "instafeed_margin_bottom": 0,
             "instafeed_margin_sides": 0,
             "show_instagram_link": false,
-            "link_alignment": "left",
+            "link_alignment": "center",
             "link_color": "#000000",
             "background_color": "",
             "feed_id": "",
