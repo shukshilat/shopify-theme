@@ -302,9 +302,20 @@
 
 .template-list-collections .collection-list__item .card {
   position: relative;
+  /* Theme sets --text-alignment from collection_card_text_alignment (often “left”) — force center on /collections */
+  --text-alignment: center !important;
+  text-align: center !important;
   transform: none !important;
   filter: none !important;
   box-shadow: none !important;
+}
+
+.template-list-collections .collection-card-wrapper {
+  --text-alignment: center !important;
+}
+
+.template-list-collections .collection-list__item .card .full-unstyled-link {
+  text-align: center !important;
 }
 
 .template-list-collections .collection-list__item .card__full-link {
@@ -379,6 +390,7 @@
   box-sizing: border-box !important;
   margin-top: 0.35rem !important;
   padding: 0 0.75rem !important;
+  text-align: center !important;
 }
 
 .template-list-collections .collection-list__item .card__information {
@@ -392,6 +404,7 @@
 }
 
 .template-list-collections .collection-list__item .card__heading {
+  width: 100%;
   margin: 0 !important;
   line-height: 1.25;
 }
