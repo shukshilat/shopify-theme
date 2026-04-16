@@ -285,3 +285,72 @@
 .section-collection-list .collection-list__item .card--media .card__inner > .card__content {
   display: none !important;
 }
+
+/* Collections page (/collections): match home section alignment and spacing */
+.template-list-collections .collection-list__item {
+  display: flex;
+  align-items: flex-start;
+  text-align: center;
+}
+
+.template-list-collections .collection-list__item .card-wrapper {
+  width: 100%;
+  margin-inline: auto;
+  height: auto !important;
+}
+
+.template-list-collections .collection-list__item .card {
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+.template-list-collections .collection-list__item .card__media {
+  min-height: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.template-list-collections .collection-list__item .card__media .media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.template-list-collections .collection-list__item .card__media .media img {
+  max-height: 11.5rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+  grid-template-rows: none !important;
+  min-height: 0 !important;
+  margin-top: 0.25rem !important;
+  padding-top: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card__information,
+.template-list-collections .collection-list__item .card__heading,
+.template-list-collections .collection-list__item .card__heading a {
+  text-align: center !important;
+}
+
+.template-list-collections .collection-list__item .card__heading {
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+.template-list-collections .collection-list__item .card--media .card__inner > .card__content {
+  display: none !important;
+}
