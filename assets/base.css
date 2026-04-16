@@ -4320,3 +4320,9 @@ h1 {
     padding: 0;
   }
 }
+
+.collection-card__title,
+.card__heading,
+.card__information {
+  text-align: center !important;
+}
