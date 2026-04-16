@@ -289,7 +289,8 @@
 /* Collections page (/collections): match home section alignment and spacing */
 .template-list-collections .collection-list__item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
@@ -300,32 +301,70 @@
 }
 
 .template-list-collections .collection-list__item .card {
+  position: relative;
   transform: none !important;
   filter: none !important;
   box-shadow: none !important;
 }
 
-.template-list-collections .collection-list__item .card__media {
-  min-height: auto !important;
-  height: auto !important;
-  margin: 0 !important;
+.template-list-collections .collection-list__item .card__full-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+}
+
+/* Flow layout: drop Dawn ratio box + absolute media so image height = real thumbnail (base.css 240px + ratio was stretching the card) */
+.template-list-collections .collection-list__item .card--media > .card__inner.ratio {
+  display: block !important;
   width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
 
-.template-list-collections .collection-list__item .card__media .media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.template-list-collections .collection-list__item .card--media > .card__inner.ratio::before {
+  display: none !important;
 }
 
-.template-list-collections .collection-list__item .card__media .media img {
-  max-height: 11.5rem;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+.template-list-collections .collection-list__item .card--media .card__inner > .card__media {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+}
+
+.template-list-collections .collection-list__item .card .card__inner .media {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+.template-list-collections .collection-card-wrapper .card__media img,
+.template-list-collections .collection-list__item .card__media img {
+  height: auto !important;
+  max-height: 12rem !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  display: block !important;
+  object-fit: contain !important;
 }
 
 .template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
 }
@@ -336,11 +375,17 @@
   display: block !important;
   grid-template-rows: none !important;
   min-height: 0 !important;
-  margin-top: 0.25rem !important;
-  padding-top: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 0.35rem !important;
+  padding: 0 0.75rem !important;
 }
 
-.template-list-collections .collection-list__item .card__information,
+.template-list-collections .collection-list__item .card__information {
+  padding: 0 !important;
+  text-align: center !important;
+}
+
 .template-list-collections .collection-list__item .card__heading,
 .template-list-collections .collection-list__item .card__heading a {
   text-align: center !important;
@@ -357,8 +402,7 @@
 
 /*
  * /collections (main-list-collections): section has no .section-collection-list, so Dawn’s flex
- * grid + flex-grow:1 on .grid__item stretches every card to the row height. Also “adapt” can set
- * --ratio-percent >100% for portrait images — huge empty frame above/below the thumbnail.
+ * grid + flex-grow:1 on .grid__item stretched cards; ratio + absolute media also detached titles.
  */
 .template-list-collections .page-width > .title.title--primary {
   margin-bottom: 0.75rem;
@@ -433,11 +477,4 @@
   .template-list-collections .collection-list.grid--6-col-desktop:not(.slider) {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
-}
-
-/* Cap “adapt” ratio (portrait assets) so the media frame matches compact thumbnails */
-.template-list-collections .collection-list__item .card--media > .card__inner {
-  --ratio-percent: min(100%, var(--ratio-percent)) !important;
-  max-height: 13rem;
-  overflow: hidden;
 }
