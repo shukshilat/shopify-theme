@@ -4321,8 +4321,24 @@ h1 {
   }
 }
 
+/* Collection cards: theme setting --collection-card-text-alignment often “left”; center titles site-wide */
+.collection-card-wrapper,
+.collection-card-wrapper .card {
+  --text-alignment: center !important;
+}
+
 .collection-card__title,
+.collection-card-wrapper .card__content,
+.collection-card-wrapper .card__information,
+.collection-card-wrapper .card__heading,
+.collection-card-wrapper .card__heading .full-unstyled-link,
+.collection-card-wrapper .full-unstyled-link,
 .card__heading,
 .card__information {
   text-align: center !important;
+}
+
+.collection-card-wrapper .card__information,
+.collection-card-wrapper .card__heading {
+  width: 100% !important;
 }

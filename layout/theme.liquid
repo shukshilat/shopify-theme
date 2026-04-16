@@ -589,7 +589,7 @@
     </script>
   </head>
 
-  <body class="gradient site-body-scroll-context{% if template.name == 'collection' %} template-collection{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
+  <body class="gradient site-body-scroll-context{% if template.name == 'collection' %} template-collection{% endif %}{% if template.name == 'list-collections' %} template-list-collections{% endif %}{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
