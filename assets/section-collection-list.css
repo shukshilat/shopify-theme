@@ -286,137 +286,7 @@
   display: none !important;
 }
 
-/* Collections page (/collections): match home section alignment and spacing */
-.template-list-collections .collection-list__item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.template-list-collections .collection-list__item .card-wrapper {
-  width: 100%;
-  margin-inline: auto;
-  height: auto !important;
-}
-
-.template-list-collections .collection-list__item .card {
-  position: relative;
-  /* Theme sets --text-alignment from collection_card_text_alignment (often “left”) — force center on /collections */
-  --text-alignment: center !important;
-  text-align: center !important;
-  transform: none !important;
-  filter: none !important;
-  box-shadow: none !important;
-}
-
-.template-list-collections .collection-card-wrapper {
-  --text-alignment: center !important;
-}
-
-.template-list-collections .collection-list__item .card .full-unstyled-link {
-  text-align: center !important;
-}
-
-.template-list-collections .collection-list__item .card__full-link {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: block;
-}
-
-/* Flow layout: drop Dawn ratio box + absolute media so image height = real thumbnail (base.css 240px + ratio was stretching the card) */
-.template-list-collections .collection-list__item .card--media > .card__inner.ratio {
-  display: block !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-.template-list-collections .collection-list__item .card--media > .card__inner.ratio::before {
-  display: none !important;
-}
-
-.template-list-collections .collection-list__item .card--media .card__inner > .card__media {
-  position: relative !important;
-  inset: auto !important;
-  top: auto !important;
-  bottom: auto !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  margin: 0 auto !important;
-}
-
-.template-list-collections .collection-list__item .card .card__inner .media {
-  position: relative !important;
-  inset: auto !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: auto !important;
-}
-
-.template-list-collections .collection-card-wrapper .card__media img,
-.template-list-collections .collection-list__item .card__media img {
-  height: auto !important;
-  max-height: 12rem !important;
-  width: auto !important;
-  max-width: 100% !important;
-  margin-inline: auto !important;
-  display: block !important;
-  object-fit: contain !important;
-}
-
-.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  width: 100% !important;
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  display: block !important;
-  grid-template-rows: none !important;
-  min-height: 0 !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  margin-top: 0.35rem !important;
-  padding: 0 0.75rem !important;
-  text-align: center !important;
-}
-
-.template-list-collections .collection-list__item .card__information {
-  padding: 0 !important;
-  text-align: center !important;
-}
-
-.template-list-collections .collection-list__item .card__heading,
-.template-list-collections .collection-list__item .card__heading a {
-  text-align: center !important;
-}
-
-.template-list-collections .collection-list__item .card__heading {
-  width: 100%;
-  margin: 0 !important;
-  line-height: 1.25;
-}
-
-.template-list-collections .collection-list__item .card--media .card__inner > .card__content {
-  display: none !important;
-}
-
-/*
- * /collections (main-list-collections): section has no .section-collection-list, so Dawn’s flex
- * grid + flex-grow:1 on .grid__item stretched cards; ratio + absolute media also detached titles.
- */
+/* Collections page (/collections): keep Dawn media behavior, only tighten spacing + center content */
 .template-list-collections .page-width > .title.title--primary {
   margin-bottom: 0.75rem;
 }
@@ -432,6 +302,90 @@
     row-gap: min(1.25rem, var(--grid-desktop-vertical-spacing));
     column-gap: min(1.25rem, var(--grid-desktop-horizontal-spacing));
   }
+}
+
+.template-list-collections .collection-list__item {
+  text-align: center;
+}
+
+.template-list-collections .collection-list__item .card-wrapper {
+  width: 100%;
+  margin-inline: auto;
+  height: auto !important;
+}
+
+.template-list-collections .collection-card-wrapper,
+.template-list-collections .collection-list__item .card {
+  --text-alignment: center !important;
+}
+
+.template-list-collections .collection-list__item .card {
+  position: relative;
+  transform: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+/* Restore Dawn absolute media stack in case global CSS changed it */
+.template-list-collections .collection-list__item .card__media,
+.template-list-collections .collection-list__item .card .media {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card .media {
+  width: 100% !important;
+}
+
+.template-list-collections .collection-list__item .card__full-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+}
+
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+  grid-template-rows: none !important;
+  min-height: 0 !important;
+  margin-top: 0.35rem !important;
+  padding: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card__information,
+.template-list-collections .collection-list__item .card__heading,
+.template-list-collections .collection-list__item .card__heading a,
+.template-list-collections .collection-list__item .card .full-unstyled-link {
+  text-align: center !important;
+}
+
+.template-list-collections .collection-list__item .card__information {
+  width: 100%;
+  padding: 0 !important;
+}
+
+.template-list-collections .collection-list__item .card__heading {
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+.template-list-collections .collection-list__item .card--media .card__inner > .card__content {
+  display: none !important;
+}
+
+.template-list-collections .collection-list__item .card__media .media img {
+  max-height: 11.5rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
 .template-list-collections .collection-list > .grid__item.collection-list__item {
