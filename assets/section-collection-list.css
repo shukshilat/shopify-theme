@@ -72,95 +72,30 @@
   margin-top: 2rem;
 }
 
-/* Category name centered under each image (no arrows — see card-collection.liquid) */
+/* Tighten image-to-title spacing on standard/card media layouts (shared rules below) */
 .section-collection-list .card--standard.card--media > .card__content,
-.section-collection-list .card--card.card--media > .card__content {
-  text-align: center;
-}
-
-.section-collection-list .card--standard.card--media > .card__content .card__information,
-.section-collection-list .card--card.card--media > .card__content .card__information {
-  width: 100%;
-}
-
-/* Collection cards: larger centered images and centered labels */
-.section-collection-list .collection-list__item {
-  text-align: center;
-}
-
-.section-collection-list .collection-list__item .card-wrapper {
-  margin-inline: auto;
-  width: 100%;
-  height: auto !important;
-  align-self: flex-start;
-}
-
-.section-collection-list .collection-list__item .card {
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
-}
-
-.section-collection-list .collection-list__item .card__full-link {
-  position: absolute;
-  inset: 0;
-  display: block;
-  z-index: 20;
-}
-
-.section-collection-list .collection-list__item .card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 1.2rem 2.6rem rgba(var(--color-shadow), 0.26);
-  filter: saturate(1.06);
-}
-
-.section-collection-list .collection-list__item .card:hover .card__media img {
-  transform: scale(1.1);
-}
-
-.section-collection-list .collection-list__item .card:active {
-  transform: translateY(-3px) scale(1.01);
-}
-
-.section-collection-list .collection-list__item .card__media {
-  margin: 0 !important;
-  width: 100% !important;
-}
-
-.section-collection-list .collection-list__item .card .media {
-  justify-content: center;
-  align-items: center;
-}
-
-.section-collection-list .collection-list__item .card__content,
-.section-collection-list .collection-list__item .card__information,
-.section-collection-list .collection-list__item .card__heading,
-.section-collection-list .collection-list__item .card__heading a {
-  text-align: center !important;
-  justify-content: center;
-}
-
-/* Tighten image-to-title spacing and keep title centered directly below image */
-.section-collection-list .card--standard.card--media > .card__content,
-.section-collection-list .card--card.card--media > .card__content {
+.section-collection-list .card--card.card--media > .card__content,
+.template-list-collections .card--standard.card--media > .card__content,
+.template-list-collections .card--card.card--media > .card__content {
   display: block !important;
   padding-top: 0.35rem !important;
   margin-top: 0 !important;
+  text-align: center !important;
 }
 
 .section-collection-list .card--standard.card--media > .card__content .card__information,
-.section-collection-list .card--card.card--media > .card__content .card__information {
+.section-collection-list .card--card.card--media > .card__content .card__information,
+.template-list-collections .card--standard.card--media > .card__content .card__information,
+.template-list-collections .card--card.card--media > .card__content .card__information {
+  width: 100%;
   padding: 0 !important;
 }
 
 .section-collection-list .card--standard.card--media > .card__content .card__heading,
-.section-collection-list .card--card.card--media > .card__content .card__heading {
+.section-collection-list .card--card.card--media > .card__content .card__heading,
+.template-list-collections .card--standard.card--media > .card__content .card__heading,
+.template-list-collections .card--card.card--media > .card__content .card__heading {
   margin: 0 !important;
-}
-
-/* Make category images look bigger and visually centered */
-.section-collection-list .collection-list__item .card__media .media img {
-  transform: none;
 }
 
 /* Static grid only when not a horizontal slider (carousel uses flex from component-slider) */
@@ -210,13 +145,35 @@
   gap: 2rem;
 }
 
-/* --- Collection cards alignment fix: image + title synchronized --- */
-.section-collection-list .collection-list__item {
+/*
+ * Shared category cards: homepage collection-list section + /collections page.
+ * Same centered image + title; flex media (not absolute) so labels sit under thumbnails.
+ */
+.section-collection-list .collection-list__item,
+.template-list-collections .collection-list__item {
   display: flex;
   align-items: flex-start;
+  text-align: center;
 }
 
-.section-collection-list .collection-list__item .card {
+.section-collection-list .collection-list__item .card-wrapper,
+.template-list-collections .collection-list__item .card-wrapper {
+  width: 100%;
+  margin-inline: auto;
+  height: auto !important;
+}
+
+.section-collection-list .collection-card-wrapper,
+.section-collection-list .collection-list__item .card,
+.template-list-collections .collection-card-wrapper,
+.template-list-collections .collection-list__item .card {
+  --text-alignment: center !important;
+  text-align: center !important;
+}
+
+.section-collection-list .collection-list__item .card,
+.template-list-collections .collection-list__item .card {
+  position: relative;
   transform: none !important;
   filter: none !important;
   box-shadow: none !important;
@@ -229,66 +186,101 @@
   filter: none !important;
 }
 
-.section-collection-list .collection-list__item .card__media {
+.section-collection-list .collection-list__item .card__full-link,
+.template-list-collections .collection-list__item .card__full-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+}
+
+.section-collection-list .collection-list__item .card__media,
+.template-list-collections .collection-list__item .card__media {
+  margin: 0 !important;
+  width: 100% !important;
   min-height: auto !important;
   height: auto !important;
 }
 
-.section-collection-list .collection-list__item .card__media .media {
+.section-collection-list .collection-list__item .card .media,
+.template-list-collections .collection-list__item .card .media {
+  justify-content: center;
+  align-items: center;
+}
+
+.section-collection-list .collection-list__item .card__media .media,
+.template-list-collections .collection-list__item .card__media .media {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.section-collection-list .collection-list__item .card__media .media img {
+.section-collection-list .collection-list__item .card__media .media img,
+.template-list-collections .collection-list__item .card__media .media img {
   max-height: 11.5rem;
   width: auto;
-  height: auto;
+  height: auto !important;
   object-fit: contain;
+  transform: none;
 }
 
-.section-collection-list .collection-list__item .card__content {
+.section-collection-list .collection-list__item .card__content,
+.template-list-collections .collection-list__item .card__content,
+.section-collection-list .collection-list__item .card__information,
+.template-list-collections .collection-list__item .card__information,
+.section-collection-list .collection-list__item .card__heading,
+.template-list-collections .collection-list__item .card__heading,
+.section-collection-list .collection-list__item .card__heading a,
+.template-list-collections .collection-list__item .card__heading a,
+.section-collection-list .collection-list__item .card .full-unstyled-link,
+.template-list-collections .collection-list__item .card .full-unstyled-link {
+  text-align: center !important;
+}
+
+.section-collection-list .collection-list__item .card__information,
+.template-list-collections .collection-list__item .card__information {
+  width: 100%;
+  padding: 0 !important;
+}
+
+.section-collection-list .collection-list__item .card__content,
+.template-list-collections .collection-list__item .card__content {
   margin-top: 0.35rem !important;
   padding-top: 0 !important;
 }
 
-.section-collection-list .collection-list__item .card__heading {
+.section-collection-list .collection-list__item .card__heading,
+.template-list-collections .collection-list__item .card__heading {
   margin: 0 !important;
   line-height: 1.25;
 }
 
-/*
- * Do NOT remove Dawn’s .ratio::before or force .card__media out of absolute positioning here.
- * Without the ratio box height, absolute media collapses to 0px and category images vanish.
- * Spacing image↔title is fixed via flex rules below + hiding duplicate inner .card__content.
- */
-
-/*
- * Root cause of huge image↔title gap (not ratio alone):
- * `.card` uses `height: 100%` in a slider row + `.card__content` has `flex-grow: 1` and a 3-row grid
- * with `1fr` rows — the title block grows to fill slide height, so the label sits far below the image.
- */
-.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal) {
+.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal),
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
   height: auto !important;
   min-height: 0 !important;
 }
 
-.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
+.section-collection-list .collection-list__item .card.card--media:not(.card--horizontal) > .card__content,
+.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
   flex-grow: 0 !important;
   flex-shrink: 0 !important;
   display: block !important;
   grid-template-rows: none !important;
   min-height: 0 !important;
+  padding: 0 !important;
 }
 
-/* Inner duplicate title area (information hidden by theme) still participates in flex/grid — remove it */
-.section-collection-list .collection-list__item .card--media .card__inner > .card__content {
+.section-collection-list .collection-list__item .card--media .card__inner > .card__content,
+.template-list-collections .collection-list__item .card--media .card__inner > .card__content {
   display: none !important;
 }
 
-/* Collections page (/collections): keep Dawn media behavior, only tighten spacing + center content */
+/* /collections page: page title + grid spacing (card look matches homepage above) */
 .template-list-collections .page-width > .title.title--primary {
   margin-bottom: 0.75rem;
+  text-align: center !important;
+  width: 100%;
 }
 
 .template-list-collections .collection-list {
@@ -302,90 +294,6 @@
     row-gap: min(1.25rem, var(--grid-desktop-vertical-spacing));
     column-gap: min(1.25rem, var(--grid-desktop-horizontal-spacing));
   }
-}
-
-.template-list-collections .collection-list__item {
-  text-align: center;
-}
-
-.template-list-collections .collection-list__item .card-wrapper {
-  width: 100%;
-  margin-inline: auto;
-  height: auto !important;
-}
-
-.template-list-collections .collection-card-wrapper,
-.template-list-collections .collection-list__item .card {
-  --text-alignment: center !important;
-}
-
-.template-list-collections .collection-list__item .card {
-  position: relative;
-  transform: none !important;
-  filter: none !important;
-  box-shadow: none !important;
-}
-
-/* Restore Dawn absolute media stack in case global CSS changed it */
-.template-list-collections .collection-list__item .card__media,
-.template-list-collections .collection-list__item .card .media {
-  position: absolute !important;
-  top: 0 !important;
-  bottom: 0 !important;
-}
-
-.template-list-collections .collection-list__item .card .media {
-  width: 100% !important;
-}
-
-.template-list-collections .collection-list__item .card__full-link {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: block;
-}
-
-.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) {
-  height: auto !important;
-  min-height: 0 !important;
-}
-
-.template-list-collections .collection-list__item .card.card--media:not(.card--horizontal) > .card__content {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  display: block !important;
-  grid-template-rows: none !important;
-  min-height: 0 !important;
-  margin-top: 0.35rem !important;
-  padding: 0 !important;
-}
-
-.template-list-collections .collection-list__item .card__information,
-.template-list-collections .collection-list__item .card__heading,
-.template-list-collections .collection-list__item .card__heading a,
-.template-list-collections .collection-list__item .card .full-unstyled-link {
-  text-align: center !important;
-}
-
-.template-list-collections .collection-list__item .card__information {
-  width: 100%;
-  padding: 0 !important;
-}
-
-.template-list-collections .collection-list__item .card__heading {
-  margin: 0 !important;
-  line-height: 1.25;
-}
-
-.template-list-collections .collection-list__item .card--media .card__inner > .card__content {
-  display: none !important;
-}
-
-.template-list-collections .collection-list__item .card__media .media img {
-  max-height: 11.5rem;
-  width: auto;
-  height: auto;
-  object-fit: contain;
 }
 
 .template-list-collections .collection-list > .grid__item.collection-list__item {

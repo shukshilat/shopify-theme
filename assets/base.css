@@ -4342,3 +4342,31 @@ h1 {
 .collection-card-wrapper .card__heading {
   width: 100% !important;
 }
+
+/* Collection thumbnails: override fixed 240px height so titles sit under images site-wide */
+.collection-card-wrapper .card__media img {
+  height: auto !important;
+  max-height: 11.5rem;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+  display: block;
+  object-fit: contain !important;
+}
+
+.collection-card-wrapper .card__media .media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collection-card-wrapper .card:hover,
+.collection-card-wrapper .card:active {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.collection-card-wrapper .card:hover .card__media img {
+  transform: none !important;
+}
