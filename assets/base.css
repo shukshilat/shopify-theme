@@ -4370,3 +4370,17 @@ h1 {
 .collection-card-wrapper .card:hover .card__media img {
   transform: none !important;
 }
+
+/* Mobile: force white shell (overrides color-scheme red gradients on full-width sections) */
+@media screen and (max-width: 749px) {
+  html,
+  body.gradient,
+  .gradient,
+  [class*='color-scheme'].gradient,
+  .shopify-section > .gradient,
+  #MainContent .shopify-section > [class*='color-scheme'].gradient {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+  }
+}

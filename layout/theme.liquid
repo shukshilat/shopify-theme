@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#b91c1c">
+    <meta name="theme-color" content="#ffffff">
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- if settings.favicon != blank -%}
@@ -314,53 +314,22 @@
     {{ 'instafeed-mobile-fix.css' | asset_url | stylesheet_tag }}
 
     {% comment %}
-      רקע ורוד־אדום בהיר — אחרי כל ה־CSS כדי שלא יידרס; מכסה גם .shopify-section > .gradient (הילד הישיר, לא העוטף)
+      רקע לבן אחיד (דסקטופ + מובייל) — אחרי כל ה־CSS; מבטל גם --gradient-background של scheme-3/4
     {% endcomment %}
     <style id="theme-site-shell-bg">
-      /* Anchor for position:absolute (cart drawer, floating shortcuts) so they scroll with the page */
+      :root {
+        --site-shell-bg: #ffffff;
+      }
+
       body.site-body-scroll-context {
         position: relative;
       }
+
       html {
-        background-color: #f8dede !important;
         min-height: 100%;
       }
-      body.gradient {
-        background-color: #f8dede !important;
-        background-image: none !important;
-      }
-      .section-header,
-      .header-wrapper,
-      .header {
-        background-color: #f8dede !important;
-        background-image: none !important;
-      }
-      .shopify-section > .gradient {
-        background-color: #f8dede !important;
-        background-image: none !important;
-      }
 
-      /*
-        בדף: רקע מעטפת מלא על main + על כל .shopify-section (גם אם יש עטיפות נוספות),
-        דורס את main#MainContent,.shopify-section { background: transparent } מ-base.css.
-      */
-      main#MainContent {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      #MainContent .shopify-section {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /* כל .gradient בתוך סקשן — מעטפות מקוננות (featured-collection, collection-list וכו') */
-      #MainContent .shopify-section .gradient {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /* מיכלים פנימיים נפוצים — ללא "קופסה" לבנה */
+      /* מיכלים פנימיים — שקופים; הרקע הלבן על המעטפת */
       #MainContent .shopify-section .collection,
       #MainContent .shopify-section .collection-list-wrapper,
       #MainContent .shopify-section slider-component,
@@ -370,51 +339,12 @@
         background-color: transparent !important;
         background-image: none !important;
       }
-      /* כותרת אוסף: אחרי <link>/<style> הילד הישיר אינו .gradient — מאחדים רקע עם המעטפת */
-      .shopify-section.collection-page-hero,
-      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain,
-      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__inner,
-      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__text-wrapper {
-        background-color: #f8dede !important;
-        background-image: none !important;
-        border: 0 !important;
-        box-shadow: none !important;
-      }
-      /* דף אוסף: כל מעטפת .gradient של סקשן = רקע מעטפת (בלי פס שונה מערכת הצבעים) */
-      body.template-collection .shopify-section .gradient[class*='color-scheme'] {
-        background-color: #f8dede !important;
-        background-image: none !important;
-      }
 
-      /* מעטפת אחידה — בלי קופסאות לבנות: כרטיסים, הירו, תיבות תוכן */
       .hero-asset-carousel__frame {
         background: transparent !important;
         box-shadow: none !important;
       }
 
-      .hero-asset-carousel__viewport {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-      }
-
-      #MainContent .card__inner[class*='color-scheme-'],
-      #MainContent .card--card[class*='color-scheme-'] {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /* כרטיסי מוצר/אוסף — תמיד מעטפת (גם כשאין substring במחלקה או סגנון card) */
-      #MainContent .product-card-wrapper .card__inner,
-      #MainContent .product-card-wrapper .card--card,
-      #MainContent .collection-card-wrapper .card__inner,
-      #MainContent .collection-card-wrapper .card--card {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /*
-        הכלל body,.color-scheme-X { background: rgb(var(--color-background)) } ב-head נוגע גם ל-.card__media
-        עם gradient — משאיר "מלבן לבן" סביב תמונה; משביתים כאן.
-      */
       #MainContent .product-card-wrapper .card__media[class*='color-scheme-'],
       #MainContent .collection-card-wrapper .card__media[class*='color-scheme-'] {
         background-color: transparent !important;
@@ -422,7 +352,14 @@
       }
 
       #MainContent .card--standard .card__inner:after,
-      #MainContent .card--card:after {
+      #MainContent .card--card:after,
+      #MainContent .product-card-wrapper .card--standard .card__inner:after,
+      #MainContent .product-card-wrapper .card--card:after,
+      #MainContent .collection-card-wrapper .card--standard .card__inner:after,
+      #MainContent .collection-card-wrapper .card--card:after,
+      #MainContent .section-collection-list .card--standard .card__inner:after,
+      #MainContent .section-collection-list .card--card:after,
+      #MainContent .content-container:after {
         box-shadow: none !important;
       }
 
@@ -432,51 +369,19 @@
         border-color: transparent !important;
       }
 
-      #MainContent .product-card-wrapper .card--standard .card__inner:after,
-      #MainContent .product-card-wrapper .card--card:after,
-      #MainContent .collection-card-wrapper .card--standard .card__inner:after,
-      #MainContent .collection-card-wrapper .card--card:after {
-        box-shadow: none !important;
-      }
-
-      /* כולל color_scheme ריק (מחלקה color- בלי מספר) */
       #MainContent .content-container.gradient {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
         border-color: transparent !important;
         border-width: 0 !important;
       }
 
-      #MainContent .content-container:after {
+      .shopify-section.collection-page-hero,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__inner,
+      .shopify-section.collection-page-hero .collection-hero.collection-hero--plain .collection-hero__text-wrapper {
+        border: 0 !important;
         box-shadow: none !important;
       }
 
-      /* עמודות/כרטיסים בסקשנים — בלי רקע לבן נפרד */
-      #MainContent .multicolumn:not(.background-none) .multicolumn-card,
-      #MainContent .multicolumn.background-primary .multicolumn-card {
-        background: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /* רשימת קטגוריות: כרטיסים גם בלי substring במחלקה — דורס rgb(var(--color-background)) מה-head */
-      #MainContent .section-collection-list .card__inner,
-      #MainContent .section-collection-list .card--card {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      #MainContent .section-collection-list .card--standard .card__inner:after,
-      #MainContent .section-collection-list .card--card:after {
-        box-shadow: none !important;
-      }
-
-      /* פוטר במיזוג לדף הבית — style מהסקשן נטען ב-body ועלול לדרוס רקע */
-      footer.footer.footer--home-merged {
-        background-color: var(--site-shell-bg, #f8dede) !important;
-        background-image: none !important;
-      }
-
-      /* Kill Dawn sticky header classes (may exist from cached HTML or old sessions) */
       .section-header.shopify-section-group-header-group,
       .section-header.shopify-section-header-sticky,
       .shopify-section-header-sticky.section-header {
@@ -488,13 +393,14 @@
         top: auto !important;
       }
 
-      /* Global override: keep full site background white */
+      /* רקע לבן — כל המעטפות (כולל color-scheme עם גרדיאנט אדום) */
       html,
       body.gradient,
       .section-header,
       .header-wrapper,
       .header,
       .shopify-section > .gradient,
+      [class*='color-scheme'].gradient,
       main#MainContent,
       #MainContent .shopify-section,
       #MainContent .shopify-section .gradient,
@@ -516,8 +422,29 @@
       #MainContent .section-collection-list .card__inner,
       #MainContent .section-collection-list .card--card,
       footer.footer.footer--home-merged {
+        background: #ffffff !important;
         background-color: #ffffff !important;
         background-image: none !important;
+      }
+
+      /* מובייל: Dawn מפעיל לעיתים --gradient-background מחדש על .gradient */
+      @media screen and (max-width: 749px) {
+        html,
+        body.gradient,
+        body.site-body-scroll-context.gradient,
+        .section-header,
+        .header-wrapper,
+        .header,
+        .shopify-section > .gradient,
+        [class*='color-scheme'].gradient,
+        #MainContent .shopify-section > [class*='color-scheme'].gradient,
+        main#MainContent,
+        #MainContent .shopify-section,
+        #MainContent .shopify-section .gradient {
+          background: #ffffff !important;
+          background-color: #ffffff !important;
+          background-image: none !important;
+        }
       }
 
       /* Global typography: force Assistant across storefront */

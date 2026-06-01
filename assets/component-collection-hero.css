@@ -5,7 +5,7 @@
 
 /* כותרת אוסף בלי תמונה — ללא .gradient כדי לא למשוך שכבות רקע; רקע = מעטפת האתר */
 .collection-hero.collection-hero--plain {
-  background-color: var(--site-shell-bg, #f8dede) !important;
+  background-color: var(--site-shell-bg, #ffffff) !important;
   background-image: none !important;
   box-shadow: none;
   border: none;

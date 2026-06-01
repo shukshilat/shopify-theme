@@ -131,7 +131,7 @@ body.template-collection .facets__display {
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background-color: var(--site-shell-bg, #f8dede) !important;
+  background-color: var(--site-shell-bg, #ffffff) !important;
   border-color: rgba(var(--color-foreground), 0.12) !important;
   box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.06);
 }

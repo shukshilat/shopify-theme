@@ -41,7 +41,7 @@
   width: 100%;
   aspect-ratio: var(--hero-aspect, 16 / 9);
   overflow: hidden;
-  background: var(--site-shell-bg, #f8dede);
+  background: var(--site-shell-bg, #ffffff);
 }
 
 .hero-asset-carousel__slide {
