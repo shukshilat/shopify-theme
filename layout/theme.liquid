@@ -500,11 +500,12 @@
         color: var(--site-text-color) !important;
       }
 
-      /* Keep links/icons/buttons in original theme colors */
-      a,
-      .link,
-      a:visited,
-      .link:visited {
+      /* Links only — do not override .button (e.g. "צפה בכל הקטגוריות") */
+      a.link,
+      a:not(.button):not(.shopify-payment-button__button--unbranded),
+      .link:not(.button),
+      a.link:visited,
+      a:not(.button):visited {
         color: rgb(var(--color-link)) !important;
       }
     </style>

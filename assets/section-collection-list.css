@@ -72,6 +72,27 @@
   margin-top: 2rem;
 }
 
+/* "צפה בכל הקטגוריות" — אדום מותג, טקסט לבן (לא ירוק מ-scheme-1 / color-link) */
+.section-collection-list .collection-list-view-all .button {
+  --color-button: 185, 28, 28;
+  --color-button-text: 255, 255, 255;
+  background-color: var(--brand-accent, #b91c1c) !important;
+  color: #ffffff !important;
+  border: none;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.section-collection-list .collection-list-view-all .button::after {
+  box-shadow: none !important;
+}
+
+.section-collection-list .collection-list-view-all .button:hover,
+.section-collection-list .collection-list-view-all .button:focus-visible {
+  background-color: var(--brand-accent-hover, #991b1b) !important;
+  color: #ffffff !important;
+}
+
 /* Tighten image-to-title spacing on standard/card media layouts (shared rules below) */
 .section-collection-list .card--standard.card--media > .card__content,
 .section-collection-list .card--card.card--media > .card__content,
