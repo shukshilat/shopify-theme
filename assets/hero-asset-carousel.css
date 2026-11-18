@@ -1,6 +1,5 @@
 /*
-  באנר ברוחב התוכן — מסגרת עם יחס גובה קבוע; התמונות ממלאות את המסגרת (cover)
-  בלי פסים בצדדים. נקודות ניווט מתחת.
+  Hero: קרוסלת תמונות (fallback) או באנר וידאו (כשנבחר hero_video בעורך).
 */
 
 .hero-asset-carousel {
@@ -19,7 +18,6 @@
   width: 100%;
 }
 
-/* רוחב מלא כמו שאר הסקשנים — בלי צר של כרטיס */
 .hero-asset-carousel__frame {
   width: 100%;
   max-width: 100%;
@@ -102,4 +100,181 @@
 .hero-asset-carousel__dot.is-active {
   background: rgb(var(--color-foreground));
   transform: scale(1.25);
+}
+
+/* ——— Video hero (scoped) ——— */
+
+.hero-asset-carousel--video-mode {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.hero-asset-carousel__video-outer {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--site-shell-bg, #ffffff);
+}
+
+.hero-asset-carousel__video-viewport {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  background: var(--site-shell-bg, #ffffff);
+  /* focal: רכב משלוח ולוגו — קבוע לפי breakpoint */
+  --hero-video-focal: 50% 42%;
+}
+
+@media screen and (min-width: 750px) and (max-width: 1199px) {
+  .hero-asset-carousel__video-viewport {
+    height: 500px;
+    --hero-video-focal: 52% 44%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .hero-asset-carousel__video-viewport {
+    height: 650px;
+    --hero-video-focal: 54% 46%;
+  }
+}
+
+.hero-asset-carousel__video-poster,
+.hero-asset-carousel__video-media,
+.hero-asset-carousel__video-media video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: block;
+}
+
+.hero-asset-carousel__video-poster {
+  object-fit: cover;
+  object-position: var(--hero-video-focal);
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+
+.hero-asset-carousel__video-viewport.is-video-revealed .hero-asset-carousel__video-poster {
+  opacity: 0;
+}
+
+.hero-asset-carousel__video-viewport.is-load-failed .hero-asset-carousel__video-poster {
+  opacity: 1;
+}
+
+.hero-asset-carousel__video-media {
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.hero-asset-carousel__video-viewport.is-video-revealed .hero-asset-carousel__video-media {
+  opacity: 1;
+}
+
+.hero-asset-carousel__video-viewport.is-load-failed .hero-asset-carousel__video-media {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-asset-carousel__video-media video {
+  object-fit: cover;
+  object-position: var(--hero-video-focal);
+  background: transparent;
+}
+
+.hero-asset-carousel__video-toggle {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 4;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: rgba(18, 22, 20, 0.38);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
+  transform: scale(1);
+}
+
+.hero-asset-carousel__video-toggle:hover {
+  transform: scale(1.05);
+  background: rgba(18, 22, 20, 0.48);
+}
+
+.hero-asset-carousel__video-toggle:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.hero-asset-carousel__video-viewport.is-ready .hero-asset-carousel__video-toggle {
+  opacity: 1;
+}
+
+@media screen and (min-width: 750px) {
+  .hero-asset-carousel__video-viewport.is-ready:not(:hover):not(:focus-within) .hero-asset-carousel__video-toggle {
+    opacity: 0;
+  }
+
+  .hero-asset-carousel__video-viewport.is-ready.is-manual-pause .hero-asset-carousel__video-toggle,
+  .hero-asset-carousel__video-viewport.is-ready:is(:hover, :focus-within) .hero-asset-carousel__video-toggle {
+    opacity: 1;
+  }
+}
+
+.hero-asset-carousel__video-toggle[hidden] {
+  display: none !important;
+}
+
+.hero-asset-carousel__video-toggle-icon {
+  display: none;
+  line-height: 0;
+}
+
+.hero-asset-carousel__video-viewport.is-playing .hero-asset-carousel__video-toggle-icon--pause {
+  display: block;
+}
+
+.hero-asset-carousel__video-viewport.is-paused-ui .hero-asset-carousel__video-toggle-icon--play {
+  display: block;
+}
+
+/* מובייל: באנר מלא cover עם דגש על הרכב (צד ימין בפריים המקור) */
+@media screen and (max-width: 749px) {
+  .hero-asset-carousel__video-viewport {
+    height: clamp(200px, 56.25vw, 300px);
+    --hero-video-focal: 78% 44%;
+    background: transparent;
+  }
+
+  .hero-asset-carousel__video-poster,
+  .hero-asset-carousel__video-media video {
+    object-fit: cover;
+    object-position: var(--hero-video-focal);
+  }
 }

@@ -12,6 +12,7 @@
     "hero_asset_carousel": {
       "type": "hero-asset-carousel",
       "settings": {
+        "hero_video": "shopify://files/videos/סרטון סופי_955f7ea4-53d1-41f1-ae74-1487157ec9e7.mp4",
         "slide_seconds": 3,
         "aspect_ratio": "16 / 9",
         "full_width": true,

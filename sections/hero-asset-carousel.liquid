@@ -3,6 +3,12 @@
 {%- liquid
   assign interval_ms = section.settings.slide_seconds | times: 1000
   assign slides = 'hero-slide-1.png|hero-slide-2.png' | split: '|'
+  assign hero_video = section.settings.hero_video
+  assign poster_asset = 'hero-slide-1.png'
+  assign has_hero_video = false
+  if hero_video != null
+    assign has_hero_video = true
+  endif
 -%}
 
 {%- style -%}
@@ -16,71 +22,140 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- if has_hero_video -%}
+    #shopify-section-{{ section.id }} .hero-asset-carousel--video-mode.section-{{ section.id }}-padding {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
-<div
-  class="hero-asset-carousel color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding{% if section.settings.full_width %} hero-asset-carousel--full{% endif %}"
-  data-hero-asset-carousel
->
-  <div class="hero-asset-carousel__outer page-width">
-    <div class="hero-asset-carousel__frame">
+{%- if has_hero_video -%}
+  <div
+    class="hero-asset-carousel hero-asset-carousel--video-mode color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding"
+    data-hero-asset-carousel
+    data-hero-video-mode="true"
+  >
+    <div class="hero-asset-carousel__video-outer">
       <div
-        class="hero-asset-carousel__viewport"
-        style="--hero-aspect: {{ section.settings.aspect_ratio }};"
-        data-hero-asset-viewport
-        data-interval-ms="{{ interval_ms }}"
+        class="hero-asset-carousel__video-viewport"
+        data-hero-video-viewport
         role="region"
-        {% if slides.size > 1 %}
-          aria-roledescription="carousel"
-        {% endif %}
-        aria-label="{{ section.settings.accessibility_label | escape }}"
+        aria-label="{{ section.settings.accessibility_label | default: 'באנר סרטון' | escape }}"
       >
-        {%- for file in slides -%}
-          <div
-            class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
-            role="group"
-            {% if slides.size > 1 %}
-              aria-roledescription="slide"
-              aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
-            {% endif %}
-            {% unless forloop.first %}
-              aria-hidden="true"
-            {% else %}
-              aria-hidden="false"
-            {% endunless %}
-          >
-            <img
-              src="{{ file | asset_url }}"
-              alt=""
-              class="hero-asset-carousel__img"
-              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-              {% if forloop.first and section.index == 1 %}
-                fetchpriority="high"
-              {% endif %}
-              decoding="async"
-            >
-          </div>
-        {%- endfor -%}
+        <img
+          src="{{ poster_asset | asset_url }}"
+          alt=""
+          class="hero-asset-carousel__video-poster"
+          data-hero-video-poster
+          width="1920"
+          height="1080"
+          loading="eager"
+          decoding="async"
+          {% if section.index == 1 %}
+            fetchpriority="high"
+          {% endif %}
+        >
+        <div class="hero-asset-carousel__video-media" data-hero-video-media>
+          {{
+            hero_video
+            | video_tag:
+              autoplay: true,
+              loop: true,
+              muted: true,
+              controls: false,
+              loading: 'eager'
+          }}
+        </div>
+        <button
+          type="button"
+          class="hero-asset-carousel__video-toggle"
+          data-hero-video-toggle
+          hidden
+          aria-label="השהה סרטון"
+          aria-pressed="false"
+        >
+          <span class="hero-asset-carousel__video-toggle-icon hero-asset-carousel__video-toggle-icon--pause" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" focusable="false">
+              <rect x="4" y="3" width="4" height="14" rx="1" />
+              <rect x="12" y="3" width="4" height="14" rx="1" />
+            </svg>
+          </span>
+          <span class="hero-asset-carousel__video-toggle-icon hero-asset-carousel__video-toggle-icon--play" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" focusable="false">
+              <path d="M6 4.5v11l9-5.5-9-5.5z" />
+            </svg>
+          </span>
+        </button>
       </div>
     </div>
-
-    {%- if slides.size > 1 -%}
-      <div class="hero-asset-carousel__dots" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
-        {%- for file in slides -%}
-          <button
-            type="button"
-            class="hero-asset-carousel__dot{% if forloop.first %} is-active{% endif %}"
-            role="tab"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-            aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
-          >
-            <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
-          </button>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
   </div>
-</div>
+{%- else -%}
+  <div
+    class="hero-asset-carousel color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding{% if section.settings.full_width %} hero-asset-carousel--full{% endif %}"
+    data-hero-asset-carousel
+  >
+    <div class="hero-asset-carousel__outer page-width">
+      <div class="hero-asset-carousel__frame">
+        <div
+          class="hero-asset-carousel__viewport"
+          style="--hero-aspect: {{ section.settings.aspect_ratio }};"
+          data-hero-asset-viewport
+          data-interval-ms="{{ interval_ms }}"
+          role="region"
+          {% if slides.size > 1 %}
+            aria-roledescription="carousel"
+          {% endif %}
+          aria-label="{{ section.settings.accessibility_label | escape }}"
+        >
+          {%- for file in slides -%}
+            <div
+              class="hero-asset-carousel__slide{% if forloop.first %} is-active{% endif %}"
+              role="group"
+              {% if slides.size > 1 %}
+                aria-roledescription="slide"
+                aria-label="{{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+              {% endif %}
+              {% unless forloop.first %}
+                aria-hidden="true"
+              {% else %}
+                aria-hidden="false"
+              {% endunless %}
+            >
+              <img
+                src="{{ file | asset_url }}"
+                alt=""
+                class="hero-asset-carousel__img"
+                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                {% if forloop.first and section.index == 1 %}
+                  fetchpriority="high"
+                {% endif %}
+                decoding="async"
+              >
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if slides.size > 1 -%}
+        <div class="hero-asset-carousel__dots" role="tablist" aria-label="{{ section.settings.accessibility_label | escape }}">
+          {%- for file in slides -%}
+            <button
+              type="button"
+              class="hero-asset-carousel__dot{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-label="{{ 'sections.slideshow.load_slide' | t }} {{ forloop.index }} {{ 'general.slider.of' | t }} {{ forloop.length }}"
+            >
+              <span class="visually-hidden">{{ forloop.index }} / {{ forloop.length }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -91,6 +166,20 @@
     "groups": ["header", "footer"]
   },
   "settings": [
+    {
+      "type": "header",
+      "content": "סרטון באנר"
+    },
+    {
+      "type": "video",
+      "id": "hero_video",
+      "label": "סרטון באנר ראשי",
+      "info": "יש לבחור או להעלות סרטון דרך בוחר הווידאו (Settings > Files). קבצי וידאו בתיקיית Assets של התמה אינם נתמכים כאן. לאחר העלאה, המתן לסיום עיבוד הקובץ לפני שמירה."
+    },
+    {
+      "type": "paragraph",
+      "content": "כשנבחר סרטון — מוצג באנר וידאו במקום הקרוסלה. ללא סרטון — נשמרת קרוסלת התמונות (hero-slide-1.png, hero-slide-2.png). תמונת hero-slide-1 משמשת כ-poster."
+    },
     {
       "type": "paragraph",
       "content": "Banners: hero-slide-1.png, hero-slide-2.png in Assets. Replace those files to change slides. Rotation: Time per slide."
