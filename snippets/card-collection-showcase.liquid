@@ -1,0 +1,123 @@
+{% comment %}
+  Premium landscape category card for collection-list showcase mode.
+  Accepts: card_collection, banner_image, card_color, title_color, placeholder_image, card_index
+{% endcomment %}
+
+{%- liquid
+  assign collection_obj = card_collection
+  if collection_obj != blank and collection_obj.title != blank
+    assign title_text = collection_obj.title
+  else
+    assign title_text = 'onboarding.collection_title' | t
+  endif
+  if collection_obj != blank and collection_obj.url != blank
+    assign link_url = collection_obj.url
+  else
+    assign link_url = routes.collections_url
+  endif
+  assign has_banner = false
+
+  assign pastel_1 = '#FFE8DC'
+  assign pastel_2 = '#E8F5E9'
+  assign pastel_3 = '#FFF3E0'
+  assign pastel_4 = '#E3F2FD'
+  assign pastel_5 = '#F3E5F5'
+  assign pastel_6 = '#FFF9C4'
+  assign pastel_7 = '#E0F2F1'
+  assign pastel_8 = '#FCE4EC'
+  assign idx = card_index | default: 0 | plus: 0
+  assign idx_mod = idx | modulo: 8
+
+  if card_color != blank
+    assign bg_color = card_color
+  elsif idx_mod == 0
+    assign bg_color = pastel_1
+  elsif idx_mod == 1
+    assign bg_color = pastel_2
+  elsif idx_mod == 2
+    assign bg_color = pastel_3
+  elsif idx_mod == 3
+    assign bg_color = pastel_4
+  elsif idx_mod == 4
+    assign bg_color = pastel_5
+  elsif idx_mod == 5
+    assign bg_color = pastel_6
+  elsif idx_mod == 6
+    assign bg_color = pastel_7
+  else
+    assign bg_color = pastel_8
+  endif
+
+  if banner_image != blank
+    assign has_banner = true
+    assign banner_src = banner_image
+  endif
+
+  assign banner_position = banner_focal_point | default: 'center center'
+
+  assign collection_image = collection_obj.featured_image
+  if collection_image == blank and collection_obj.image != blank
+    assign collection_image = collection_obj.image
+  endif
+
+  if has_banner
+    if title_color != blank
+      assign title_col = title_color
+    else
+      assign title_col = '#FFFFFF'
+    endif
+  else
+    assign title_col = '#1a2420'
+  endif
+-%}
+
+<div class="showcase-card" style="--showcase-bg: {{ bg_color }};">
+  <a
+    href="{{ link_url }}"
+    class="showcase-card__link{% if has_banner %} showcase-card__link--has-banner{% else %} showcase-card__link--fallback{% endif %}"
+    style="background-color: {{ bg_color }}; --showcase-title-color: {{ title_col }};{% if has_banner %} --showcase-banner-position: {{ banner_position }};{% endif %}"
+    aria-label="{{ title_text | escape }}"
+  >
+    <span class="showcase-card__surface" aria-hidden="true"></span>
+
+    {%- if has_banner -%}
+      <div class="showcase-card__media showcase-card__media--banner" aria-hidden="true">
+        {{
+          banner_src
+          | image_url: width: 1200
+          | image_tag:
+            widths: '375, 550, 750, 1100, 1200',
+            sizes: '(min-width: 990px) 22vw, (min-width: 750px) 42vw, 82vw',
+            class: 'showcase-card__banner-img',
+            loading: 'lazy',
+            alt: '',
+            decoding: 'async'
+        }}
+      </div>
+    {%- elsif collection_image != blank -%}
+      <div class="showcase-card__media showcase-card__media--decor" aria-hidden="true">
+        {{
+          collection_image
+          | image_url: width: 900
+          | image_tag:
+            widths: '300, 450, 600, 900',
+            sizes: '(min-width: 990px) 28vw, (min-width: 750px) 32vw, 45vw',
+            class: 'showcase-card__decor-img',
+            loading: 'lazy',
+            alt: '',
+            decoding: 'async'
+        }}
+      </div>
+    {%- elsif placeholder_image != blank -%}
+      <div class="showcase-card__media showcase-card__media--placeholder" aria-hidden="true">
+        {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+      </div>
+    {%- endif -%}
+
+    <h3 class="showcase-card__title">
+      <span
+        class="showcase-card__title-text"
+      >{{ title_text | escape }}</span>
+    </h3>
+  </a>
+</div>

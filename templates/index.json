@@ -28,49 +28,81 @@
         "featured_collection_b3xXkj": {
           "type": "featured_collection",
           "settings": {
-            "collection": "פירות"
+            "collection": "פירות",
+            "banner_image": "shopify://shop_images/f76c6ce1-b8a7-47c6-8ffe-3dcfb71bc7f1.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_DwDdbc": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ירקות"
+            "collection": "ירקות",
+            "banner_image": "shopify://shop_images/5e6ec5f6-eca8-40c4-a437-23cd59103371.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_VFKDaG": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ירק"
+            "collection": "ירק",
+            "banner_image": "shopify://shop_images/8e910d07-fe6d-4a70-9a6c-944e5f043899.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_AVag9t": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ירקות-ארוזים"
+            "collection": "ירקות-ארוזים",
+            "banner_image": "shopify://shop_images/b05ac6c0-5d74-40c4-8a6c-47552ff175f1.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_WWEi3j": {
           "type": "featured_collection",
           "settings": {
-            "collection": "מוצרי-מרכול"
+            "collection": "מוצרי-מרכול",
+            "banner_image": "shopify://shop_images/bf5554f1-b2a4-4a54-a845-adb4322b45e1.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_jEVHU6": {
           "type": "featured_collection",
           "settings": {
-            "collection": "ביצים"
+            "collection": "ביצים",
+            "banner_image": "shopify://shop_images/88ec9d06-c15a-496c-bf8c-cb32d107e891.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_yWDjAe": {
           "type": "featured_collection",
           "settings": {
-            "collection": "שמן-זית"
+            "collection": "שמן-זית",
+            "banner_image": "shopify://shop_images/f98eecec-4fa9-486e-9e1c-9ad984abbf2b.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         },
         "featured_collection_raBYxH": {
           "type": "featured_collection",
           "settings": {
-            "collection": "תבליני-פרג"
+            "collection": "תבליני-פרג",
+            "banner_image": "shopify://shop_images/fa27fd14-cf4f-4ec2-a422-f0ae7292d9d6.png",
+            "banner_focal_point": "center center",
+            "card_color": "#fff0e8",
+            "title_color": "#ffffff"
           }
         }
       },
@@ -87,6 +119,7 @@
       "name": "t:sections.collection-list.presets.name",
       "settings": {
         "list_source": "blocks",
+        "display_style": "showcase",
         "menu": "main-menu",
         "title": "המוצרים שלנו",
         "heading_size": "hxxl",
